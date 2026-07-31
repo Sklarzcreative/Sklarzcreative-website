@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <meta
+    name="description"
+    content="Sklarz Creative is a strategic brand and marketing consultancy helping wellness, science-driven, and innovative companies build trust through strategy, storytelling, education, and thoughtful creative direction."
+  >
+
+  <title>Sklarz Creative | Strategic Brand & Marketing Consultancy</title>
+
+  <!-- Official brand typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat:wght@600;700;800&family=Playfair+Display:ital,wght@1,600&display=swap"
+    rel="stylesheet"
+  >
+
+  <style>
+    :root {
+      --navy: #1A2F4B;
+      --navy-dark: #102136;
+      --gold: #C9A84C;
+      --gold-light: #E1CA83;
+      --white: #FFFFFF;
+      --off-white: #F7F8FA;
+      --charcoal: #2B2B2B;
+      --gray: #E6E8EC;
+      --text-muted: #626B77;
+      --max-width: 1180px;
+      --shadow: 0 18px 50px rgba(26, 47, 75, 0.10);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background: var(--white);
+      color: var(--charcoal);
+      font-family: "Inter", Arial, sans-serif;
+      line-height: 1.7;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4 {
+      margin-top: 0;
+      color: var(--navy);
+      font-family: "Montserrat", Arial, sans-serif;
+      line-height: 1.12;
+    }
+
+    p {
+      margin-top: 0;
+    }
+
+    .container {
+      width: min(calc(100% - 40px), var(--max-width));
+      margin: 0 auto;
+    }
+
+    .eyebrow {
+      margin-bottom: 16px;
+      color: var(--gold);
+      font-family: "Montserrat", Arial, sans-serif;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .section-title {
+      max-width: 760px;
+      margin-bottom: 20px;
+      font-size: clamp(2rem, 4vw, 3.5rem);
+    }
+
+    .section-intro {
+      max-width: 720px;
+      color: var(--text-muted);
+      font-size: 1.08rem;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 52px;
+      padding: 14px 24px;
+      border: 1px solid transparent;
+      border-radius: 4px;
+      font-family: "Montserrat", Arial, sans-serif;
+      font-size: 0.88rem;
+      font-weight: 700;
+      letter-spacing: 0.025em;
+      text-decoration: none;
+      transition:
+        transform 180ms ease,
+        background 180ms ease,
+        color 180ms ease,
+        border-color 180ms ease;
+    }
+
+    .button:hover {
+      transform: translateY(-2px);
+    }
+
+    .button-primary {
+      background: var(--gold);
+      color: var(--navy-dark);
+    }
+
+    .button-primary:hover {
+      background: var(--gold-light);
+    }
+
+    .button-secondary {
+      border-color: rgba(255, 255, 255, 0.48);
+      color: var(--white);
+    }
+
+    .button-secondary:hover {
+      border-color: var(--gold);
+      color: var(--gold-light);
+    }
+
+    /* Navigation */
+
+    .site-header {
+      position: absolute;
+      z-index: 10;
+      top: 0;
+      left: 0;
+      width: 100%;
+      color: var(--white);
+    }
+
+    .navigation {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 84px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    .brand {
+      font-family: "Montserrat", Arial, sans-serif;
+      font-size: 1.15rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-decoration: none;
+      text-transform: uppercase;
+    }
+
+    .brand span {
+      color: var(--gold);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+    }
+
+    .nav-links a {
+      font-size: 0.9rem;
+      font-weight: 500;
+      text-decoration: none;
+    }
+
+    .nav-links a:hover {
+      color: var(--gold-light);
+    }
+
+    /* Hero */
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      min-height: 760px;
+      padding: 190px 0 110px;
+      background:
+        linear-gradient(
+          115deg,
+          rgba(16, 33, 54, 0.98),
+          rgba(26, 47, 75, 0.94)
+        );
+      color: var(--white);
+    }
+
+    .hero::before {
+      position: absolute;
+      top: -180px;
+      right: -150px;
+      width: 540px;
+      height: 540px;
+      border: 1px solid rgba(201, 168, 76, 0.26);
+      border-radius: 50%;
+      content: "";
+    }
+
+    .hero::after {
+      position: absolute;
+      right: 10%;
+      bottom: -210px;
+      width: 410px;
+      height: 410px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 50%;
+      content: "";
+    }
+
+    .hero-grid {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1.2fr 0.55fr;
+      gap: 80px;
+      align-items: end;
+    }
+
+    .hero h1 {
+      max-width: 900px;
+      margin-bottom: 28px;
+      color: var(--white);
+      font-size: clamp(3rem, 7vw, 6.25rem);
+      letter-spacing: -0.055em;
+    }
+
+    .hero h1 span {
+      color: var(--gold-light);
+    }
+
+    .hero-copy {
+      max-width: 720px;
+      margin-bottom: 34px;
+      color: rgba(255, 255, 255, 0.82);
+      font-size: clamp(1.05rem, 2vw, 1.25rem);
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+
+    .hero-note {
+      padding-left: 25px;
+      border-left: 2px solid var(--gold);
+      color: rgba(255, 255, 255, 0.76);
+    }
+
+    .hero-note strong {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--white);
+      font-family: "Montserrat", Arial, sans-serif;
+    }
+
+    /* Trust statement */
+
+    .trust-strip {
+      padding: 32px 0;
+      background: var(--gold);
+      color: var(--navy-dark);
+    }
+
+    .trust-strip p {
+      margin: 0;
+      text-align: center;
+      font-family: "Montserrat", Arial, sans-serif;
+      font-size: clamp(1rem, 2vw, 1.3rem);
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    /* Introduction */
+
+    .intro {
+      padding: 120px 0;
+      background: var(--off-white);
+    }
+
+    .intro-grid {
+      display: grid;
+      grid-template-columns: 0.8fr 1.2fr;
+      gap: 90px;
+      align-items: start;
+    }
+
+    .editorial-quote {
+      margin: 0;
+      color: var(--navy);
+      font-family: "Playfair Display", Georgia, serif;
+      font-size: clamp(2rem, 4vw, 3.6rem);
+      font-style: italic;
+      line-height: 1.25;
+    }
+
+    .intro-copy p {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+    }
+
+    .intro-copy strong {
+      color: var(--navy);
+    }
+
+    /* Services */
+
+    .services-section {
+      padding: 120px 0;
+    }
+
+    .services-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 50px;
+      align-items: end;
+      margin-bottom: 55px;
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 22px;
+    }
+
+    .service-card {
+      position: relative;
+      min-height: 310px;
+      padding: 34px;
+      overflow: hidden;
+      border: 1px solid var(--gray);
+      background: var(--white);
+      transition:
+        transform 180ms ease,
+        box-shadow 180ms ease,
+        border-color 180ms ease;
+    }
+
+    .service-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(201, 168, 76, 0.7);
+      box-shadow: var(--shadow);
+    }
+
+    .service-number {
+      display: block;
+      margin-bottom: 58px;
+      color: var(--gold);
+      font-family: "Montserrat", Arial, sans-serif;
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    .service-card h3 {
+      margin-bottom: 16px;
+      font-size: 1.35rem;
+    }
+
+    .service-card p {
+      margin: 0;
+      color: var(--text-muted);
+    }
+
+    /* Approach */
+
+    .approach {
+      padding: 120px 0;
+      background: var(--navy);
+      color: var(--white);
+    }
+
+    .approach h2 {
+      color: var(--white);
+    }
+
+    .approach-grid {
+      display: grid;
+      grid-template-columns: 0.8fr 1.2fr;
+      gap: 90px;
+      align-items: start;
+    }
+
+    .principles {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border-top: 1px solid rgba(255, 255, 255, 0.15);
+      border-left: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .principle {
+      min-height: 185px;
+      padding: 28px;
+      border-right: 1px solid rgba(255, 255, 255, 0.15);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .principle h3 {
+      color: var(--gold-light);
+      font-size: 1rem;
+    }
+
+    .principle p {
+      margin: 0;
+      color: rgba(255, 255, 255, 0.72);
+      font-size: 0.95rem;
+    }
+
+    /* Industries */
+
+    .industries {
+      padding: 105px 0;
+      background: var(--off-white);
+    }
+
+    .industry-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 38px;
+    }
+
+    .industry-list span {
+      padding: 11px 17px;
+      border: 1px solid var(--gray);
+      background: var(--white);
+      color: var(--navy);
+      font-size: 0.93rem;
+      font-weight: 600;
+    }
+
+    /* Manifesto */
+
+    .manifesto {
+      padding: 120px 0;
+    }
+
+    .manifesto-grid {
+      display: grid;
+      grid-template-columns: 0.7fr 1.3fr;
+      gap: 90px;
+    }
+
+    .manifesto-statement {
+      color: var(--navy);
+      font-family: "Montserrat", Arial, sans-serif;
+      font-size: clamp(2.1rem, 4vw, 4rem);
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      line-height: 1.05;
+    }
+
+    .manifesto-copy {
+      max-width: 700px;
+      color: var(--text-muted);
+      font-size: 1.08rem;
+    }
+
+    /* Call to action */
+
+    .cta {
+      padding: 105px 0;
+      background: var(--gold);
+    }
+
+    .cta-grid {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 50px;
+      align-items: center;
+    }
+
+    .cta h2 {
+      max-width: 760px;
+      margin-bottom: 12px;
+      font-size: clamp(2rem, 4vw, 3.8rem);
+    }
+
+    .cta p {
+      max-width: 690px;
+      margin-bottom: 0;
+      color: rgba(16, 33, 54, 0.76);
+    }
+
+    .cta .button {
+      background: var(--navy);
+      color: var(--white);
+    }
+
+    .cta .button:hover {
+      background: var(--navy-dark);
+    }
+
+    /* Footer */
+
+    footer {
+      padding: 65px 0 35px;
+      background: var(--navy-dark);
+      color: rgba(255, 255, 255, 0.72);
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 50px;
+      align-items: start;
+      padding-bottom: 45px;
+    }
+
+    .footer-brand {
+      margin-bottom: 12px;
+      color: var(--white);
+      font-family: "Montserrat", Arial, sans-serif;
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: 0.055em;
+      text-transform: uppercase;
+    }
+
+    .footer-tagline {
+      color: var(--gold-light);
+      font-size: 0.94rem;
+    }
+
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 22px;
+    }
+
+    .footer-links a {
+      color: rgba(255, 255, 255, 0.78);
+      font-size: 0.9rem;
+      text-decoration: none;
+    }
+
+    .footer-links a:hover {
+      color: var(--gold-light);
+    }
+
+    .copyright {
+      padding-top: 25px;
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+      font-size: 0.85rem;
+    }
+
+    /* Responsive */
+
+    @media (max-width: 900px) {
+      .nav-links {
+        display: none;
+      }
+
+      .hero {
+        min-height: auto;
+        padding-top: 160px;
+      }
+
+      .hero-grid,
+      .intro-grid,
+      .approach-grid,
+      .manifesto-grid,
+      .cta-grid,
+      .footer-grid {
+        grid-template-columns: 1fr;
+        gap: 45px;
+      }
+
+      .hero-note {
+        max-width: 520px;
+      }
+
+      .services-header {
+        display: block;
+      }
+
+      .services-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .container {
+        width: min(calc(100% - 30px), var(--max-width));
+      }
+
+      .navigation {
+        min-height: 72px;
+      }
+
+      .hero {
+        padding: 135px 0 80px;
+      }
+
+      .hero h1 {
+        font-size: 2.8rem;
+      }
+
+      .hero-actions {
+        flex-direction: column;
+      }
+
+      .button {
+        width: 100%;
+      }
+
+      .intro,
+      .services-section,
+      .approach,
+      .manifesto {
+        padding: 85px 0;
+      }
+
+      .services-grid,
+      .principles {
+        grid-template-columns: 1fr;
+      }
+
+      .service-card {
+        min-height: auto;
+      }
+
+      .service-number {
+        margin-bottom: 35px;
+      }
+
+      .footer-links {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="site-header">
+    <div class="container navigation">
+      <a class="brand" href="#home">
+        Sklarz <span>Creative</span>
+      </a>
+
+      <nav class="nav-links" aria-label="Primary navigation">
+        <a href="#about">About</a>
+        <a href="#services">Services</a>
+        <a href="#approach">Approach</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+
+    <section class="hero" id="home">
+      <div class="container hero-grid">
+
+        <div>
+          <p class="eyebrow">
+            Strategic Brand & Marketing Consultancy
+          </p>
+
+          <h1>
+            Building Trust.<br>
+            Telling Stories.<br>
+            <span>Growing Brands.</span>
+          </h1>
+
+          <p class="hero-copy">
+            Sklarz Creative helps innovative companies translate complex
+            ideas into clear, meaningful stories that people understand,
+            remember, and believe.
+          </p>
+
+          <div class="hero-actions">
+
+            <!-- calendly.com/sklarzcreative -->
+            <a
+              class="button button-primary"
+              href="YOUR-CALENDLY-LINK-HERE"
+              target="_blank"
+              rel="noopener"
+            >
+              Book a Discovery Call
+            </a>
+
+            <a class="button button-secondary" href="#services">
+              Explore Our Services
+            </a>
+
+          </div>
+        </div>
+
+        <aside class="hero-note">
+          <strong>Our guiding belief</strong>
+          Trust is the most valuable marketing asset a company can build.
+        </aside>
+
+      </div>
+    </section>
+
+    <section class="trust-strip">
+      <div class="container">
+        <p>
+          Visibility gets attention. Credibility builds businesses.
+        </p>
+      </div>
+    </section>
+
+    <section class="intro" id="about">
+      <div class="container intro-grid">
+
+        <blockquote class="editorial-quote">
+          “Groundbreaking companies deserve better stories.”
+        </blockquote>
+
+        <div class="intro-copy">
+          <p class="eyebrow">About Sklarz Creative</p>
+
+          <h2 class="section-title">
+            Strategy and storytelling built around credibility.
+          </h2>
+
+          <p>
+            Sklarz Creative is a strategic brand and marketing consultancy
+            helping wellness, science-driven, and innovative organizations
+            earn trust through authentic storytelling, thoughtful design,
+            education, and evidence-based marketing.
+          </p>
+
+          <p>
+            We make complex ideas easier to understand without stripping
+            away their meaning. Every strategy, campaign, and piece of
+            content should create <strong>greater clarity, stronger trust,
+            and a deeper understanding</strong> of a brand’s value.
+          </p>
+
+          <p>
+            We do not chase attention for attention’s sake. We help build
+            brands people believe in.
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+    <section class="services-section" id="services">
+      <div class="container">
+
+        <div class="services-header">
+          <div>
+            <p class="eyebrow">What We Do</p>
+
+            <h2 class="section-title">
+              Clear strategy. Thoughtful creative. Meaningful growth.
+            </h2>
+          </div>
+
+          <p class="section-intro">
+            Our work connects brand positioning, messaging, content, media,
+            education, and community so every part of your marketing builds
+            toward the same goal.
+          </p>
+        </div>
+
+        <div class="services-grid">
+
+          <article class="service-card">
+            <span class="service-number">01</span>
+            <h3>Brand Strategy</h3>
+            <p>
+              Positioning, audience clarity, messaging, brand architecture,
+              and strategic direction designed to create lasting credibility.
+            </p>
+          </article>
+
+          <article class="service-card">
+            <span class="service-number">02</span>
+            <h3>Marketing Strategy</h3>
+            <p>
+              Practical marketing systems, campaign planning, content
+              strategy, partnerships, and growth priorities connected to
+              real business objectives.
+            </p>
+          </article>
+
+          <article class="service-card">
+            <span class="service-number">03</span>
+            <h3>Storytelling & Messaging</h3>
+            <p>
+              Clear, authentic narratives that translate complex ideas into
+              stories customers, partners, and communities can understand.
+            </p>
+          </article>
+
+          <article class="service-card">
+            <span class="service-number">04</span>
+            <h3>Content & Social Media</h3>
+            <p>
+              Educational and story-led content for websites, campaigns,
+              social media, podcasts, video, and long-form thought leadership.
+            </p>
+          </article>
+
+          <article class="service-card">
+            <span class="service-number">05</span>
+            <h3>Creative Direction</h3>
+            <p>
+              Cohesive visual and editorial direction that keeps every
+              campaign, platform, and customer touchpoint aligned.
+            </p>
+          </article>
+
+          <article class="service-card">
+            <span class="service-number">06</span>
+            <h3>Community & Events</h3>
+            <p>
+              Event representation, relationship building, community
+              engagement, partnerships, and experiences that create
+              meaningful human connection.
+            </p>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <section class="approach" id="approach">
+      <div class="container approach-grid">
+
+        <div>
+          <p class="eyebrow">How We Work</p>
+
+          <h2 class="section-title">
+            Teach first. Sell second.
+          </h2>
+
+          <p class="section-intro" style="color: rgba(255,255,255,.72);">
+            The strongest brands do not simply promote themselves. They
+            educate, communicate honestly, and create value before asking
+            for attention.
+          </p>
+        </div>
+
+        <div class="principles">
+
+          <article class="principle">
+            <h3>Trust First</h3>
+            <p>
+              Trust is earned before sales are made.
+            </p>
+          </article>
+
+          <article class="principle">
+            <h3>Lead With Education</h3>
+            <p>
+              Helpful information creates understanding and confidence.
+            </p>
+          </article>
+
+          <article class="principle">
+            <h3>Human Connection</h3>
+            <p>
+              People remember how brands make them feel.
+            </p>
+          </article>
+
+          <article class="principle">
+            <h3>Scientific Integrity</h3>
+            <p>
+              Evidence matters. Honesty matters.
+            </p>
+          </article>
+
+          <article class="principle">
+            <h3>Curiosity</h3>
+            <p>
+              Keep learning, questioning assumptions, and exploring.
+            </p>
+          </article>
+
+          <article class="principle">
+            <h3>Creative Excellence</h3>
+            <p>
+              Thoughtful design and compelling storytelling create an
+              enduring advantage.
+            </p>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <section class="industries">
+      <div class="container">
+
+        <p class="eyebrow">Industries We Understand</p>
+
+        <h2 class="section-title">
+          Built for organizations shaping what comes next.
+        </h2>
+
+        <p class="section-intro">
+          Sklarz Creative works with purpose-driven organizations where
+          credibility, education, regulation, innovation, and public trust
+          matter.
+        </p>
+
+        <div class="industry-list">
+          <span>Wellness</span>
+          <span>Botanical Innovation</span>
+          <span>Biotechnology</span>
+          <span>Health Innovation</span>
+          <span>Science-Driven Consumer Brands</span>
+          <span>Emerging Technologies</span>
+        </div>
+
+      </div>
+    </section>
+
+    <section class="manifesto">
+      <div class="container manifesto-grid">
+
+        <div class="manifesto-statement">
+          The world does not need more marketing.
+        </div>
+
+        <div class="manifesto-copy">
+          <p class="eyebrow">Our Perspective</p>
+
+          <h2 class="section-title">
+            It needs more meaning.
+          </h2>
+
+          <p>
+            People are overwhelmed by noise, advertising, and empty promises.
+            The companies making the greatest impact are not always the
+            loudest. They are the ones willing to educate, build
+            relationships, and lead with authenticity.
+          </p>
+
+          <p>
+            Marketing is not simply about chasing attention. It is about
+            creating understanding. Trust grows when brands communicate with
+            honesty, consistency, and purpose.
+          </p>
+
+          <p>
+            We help build brands people remember—not because they shouted the
+            loudest, but because they made the greatest impact.
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+    <section class="cta" id="contact">
+      <div class="container cta-grid">
+
+        <div>
+          <p class="eyebrow" style="color: var(--navy-dark);">
+            Start a Conversation
+          </p>
+
+          <h2>
+            Your brand deserves more than visibility.
+          </h2>
+
+          <p>
+            Let’s discuss your goals, current challenges, and where strategy,
+            storytelling, and creative direction can help you build lasting
+            trust and sustainable growth.
+          </p>
+        </div>
+
+        <!-- calendly.com/sklarzcreative -->
+        <a
+          class="button"
+          href="calendly.com/sklarzcreative"
+          target="_blank"
+          rel="noopener"
+        >
+          Book a Discovery Call
+        </a>
+
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <div class="container">
+
+      <div class="footer-grid">
+
+        <div>
+          <div class="footer-brand">Sklarz Creative</div>
+
+          <div class="footer-tagline">
+            Building Trust. Telling Stories. Growing Brands.
+          </div>
+        </div>
+
+        <nav class="footer-links" aria-label="Footer navigation">
+          <a href="#about">About</a>
+          <a href="#services">Services</a>
+          <a href="#approach">Approach</a>
+
+          <!-- Replace this with your preferred business email -->
+          <a href="mailto:sklarzcreative@gmail.com">
+            Email
+          </a>
+        </nav>
+
+      </div>
+
+      <div class="copyright">
+        © 2026 Sklarz Creative. Serving clients nationwide and remotely.
+      </div>
+
+    </div>
+  </footer>
+
+</body>
+</html>
