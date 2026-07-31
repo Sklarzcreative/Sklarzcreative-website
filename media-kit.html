@@ -1,0 +1,1162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <meta
+    name="description"
+    content="Official media kit for Sklarz Creative and founder Cassandra Sklarz. Access company information, professional bios, services, speaking topics, partnership opportunities, and brand assets."
+  >
+
+  <title>Media Kit | Sklarz Creative</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat:wght@600;700;800&family=Playfair+Display:ital,wght@1,600&display=swap"
+    rel="stylesheet"
+  >
+
+  <style>
+    :root {
+      --navy: #1A2F4B;
+      --navy-dark: #102136;
+      --gold: #C9A84C;
+      --gold-light: #E1CA83;
+      --white: #FFFFFF;
+      --off-white: #F7F8FA;
+      --charcoal: #2B2B2B;
+      --gray: #E6E8EC;
+      --muted: #626B77;
+      --max-width: 1160px;
+      --shadow: 0 18px 50px rgba(26, 47, 75, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background: var(--white);
+      color: var(--charcoal);
+      font-family: "Inter", Arial, sans-serif;
+      line-height: 1.7;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4 {
+      margin-top: 0;
+      color: var(--navy);
+      font-family: "Montserrat", Arial, sans-serif;
+      line-height: 1.15;
+    }
+
+    p {
+      margin-top: 0;
+    }
+
+    .container {
+      width: min(calc(100% - 40px), var(--max-width));
+      margin: 0 auto;
+    }
+
+    .eyebrow {
+      margin-bottom: 14px;
+      color: var(--gold);
+      font-family: "Montserrat", Arial, sans-serif;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .section {
+      padding: 100px 0;
+    }
+
+    .section-alt {
+      background: var(--off-white);
+    }
+
+    .section-dark {
+      background: var(--navy);
+      color: var(--white);
+    }
+
+    .section-dark h2,
+    .section-dark h3 {
+      color: var(--white);
+    }
+
+    .section-title {
+      max-width: 760px;
+      margin-bottom: 22px;
+      font-size: clamp(2rem, 4vw, 3.6rem);
+    }
+
+    .section-intro {
+      max-width: 760px;
+      color: var(--muted);
+      font-size: 1.08rem;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 50px;
+      padding: 13px 22px;
+      border: 1px solid transparent;
+      border-radius: 4px;
+      font-family: "Montserrat", Arial, sans-serif;
+      font-size: 0.86rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      text-decoration: none;
+      transition:
+        transform 180ms ease,
+        background 180ms ease,
+        color 180ms ease;
+    }
+
+    .button:hover {
+      transform: translateY(-2px);
+    }
+
+    .button-primary {
+      background: var(--gold);
+      color: var(--navy-dark);
+    }
+
+    .button-primary:hover {
+      background: var(--gold-light);
+    }
+
+    .button-outline {
+      border-color: rgba(255, 255, 255, 0.45);
+      color: var(--white);
+    }
+
+    .button-outline:hover {
+      border-color: var(--gold);
+      color: var(--gold-light);
+    }
+
+    /* Header */
+
+    .site-header {
+      background: var(--navy-dark);
+      color: var(--white);
+    }
+
+    .navigation {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 82px;
+    }
+
+    .brand {
+      font-family: "Montserrat", Arial, sans-serif;
+      font-size: 1.12rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-decoration: none;
+      text-transform: uppercase;
+    }
+
+    .brand span {
+      color: var(--gold);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 26px;
+    }
+
+    .nav-links a {
+      font-size: 0.9rem;
+      text-decoration: none;
+    }
+
+    .nav-links a:hover {
+      color: var(--gold-light);
+    }
+
+    /* Hero */
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 120px 0;
+      background:
+        radial-gradient(
+          circle at 85% 20%,
+          rgba(201, 168, 76, 0.18),
+          transparent 28%
+        ),
+        linear-gradient(
+          120deg,
+          var(--navy-dark),
+          var(--navy)
+        );
+      color: var(--white);
+    }
+
+    .hero::after {
+      position: absolute;
+      right: -160px;
+      bottom: -220px;
+      width: 520px;
+      height: 520px;
+      border: 1px solid rgba(201, 168, 76, 0.25);
+      border-radius: 50%;
+      content: "";
+    }
+
+    .hero-grid {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 80px;
+      align-items: center;
+    }
+
+    .hero h1 {
+      margin-bottom: 24px;
+      color: var(--white);
+      font-size: clamp(3rem, 7vw, 6rem);
+      letter-spacing: -0.055em;
+    }
+
+    .hero h1 span {
+      color: var(--gold-light);
+    }
+
+    .hero-copy {
+      max-width: 690px;
+      margin-bottom: 30px;
+      color: rgba(255, 255, 255, 0.82);
+      font-size: 1.15rem;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+
+    .logo-panel {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 430px;
+      padding: 45px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+    }
+
+    .logo-panel img {
+      width: min(100%, 390px);
+      height: auto;
+    }
+
+    /* Quick facts */
+
+    .facts {
+      padding: 34px 0;
+      background: var(--gold);
+      color: var(--navy-dark);
+    }
+
+    .facts-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 25px;
+    }
+
+    .fact {
+      text-align: center;
+    }
+
+    .fact strong {
+      display: block;
+      font-family: "Montserrat", Arial, sans-serif;
+      font-size: 1rem;
+    }
+
+    .fact span {
+      font-size: 0.88rem;
+    }
+
+    /* Founder */
+
+    .founder-grid {
+      display: grid;
+      grid-template-columns: 0.8fr 1.2fr;
+      gap: 80px;
+      align-items: start;
+    }
+
+    .portrait-wrap {
+      position: sticky;
+      top: 30px;
+    }
+
+    .portrait-wrap img {
+      width: 100%;
+      box-shadow: var(--shadow);
+    }
+
+    .founder-copy p {
+      color: var(--muted);
+      font-size: 1.06rem;
+    }
+
+    .quote {
+      margin: 35px 0;
+      padding-left: 24px;
+      border-left: 3px solid var(--gold);
+      color: var(--navy);
+      font-family: "Playfair Display", Georgia, serif;
+      font-size: clamp(1.7rem, 3vw, 2.7rem);
+      font-style: italic;
+      line-height: 1.35;
+    }
+
+    /* Cards */
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 22px;
+      margin-top: 45px;
+    }
+
+    .card {
+      padding: 30px;
+      border: 1px solid var(--gray);
+      background: var(--white);
+    }
+
+    .card h3 {
+      margin-bottom: 12px;
+      font-size: 1.2rem;
+    }
+
+    .card p {
+      margin-bottom: 0;
+      color: var(--muted);
+    }
+
+    /* Topics */
+
+    .topic-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      margin-top: 42px;
+    }
+
+    .topic {
+      padding: 24px 26px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+    }
+
+    .topic h3 {
+      margin-bottom: 9px;
+      color: var(--gold-light);
+      font-size: 1rem;
+    }
+
+    .topic p {
+      margin: 0;
+      color: rgba(255, 255, 255, 0.72);
+      font-size: 0.94rem;
+    }
+
+    /* Opportunities */
+
+    .opportunity-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 35px;
+    }
+
+    .opportunity-list span {
+      padding: 11px 16px;
+      border: 1px solid var(--gray);
+      background: var(--white);
+      color: var(--navy);
+      font-weight: 600;
+    }
+
+    /* Brand assets */
+
+    .asset-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+      margin-top: 45px;
+    }
+
+    .asset {
+      padding: 34px;
+      border: 1px solid var(--gray);
+      background: var(--white);
+    }
+
+    .asset-preview {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 300px;
+      margin-bottom: 25px;
+      padding: 25px;
+      background: var(--off-white);
+    }
+
+    .asset-preview img {
+      max-height: 280px;
+      object-fit: contain;
+    }
+
+    .asset h3 {
+      margin-bottom: 8px;
+    }
+
+    .asset p {
+      color: var(--muted);
+    }
+
+    .asset-link {
+      color: var(--navy);
+      font-family: "Montserrat", Arial, sans-serif;
+      font-size: 0.88rem;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .asset-link:hover {
+      color: var(--gold);
+    }
+
+    /* Contact */
+
+    .contact {
+      padding: 100px 0;
+      background: var(--gold);
+    }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 50px;
+      align-items: center;
+    }
+
+    .contact h2 {
+      max-width: 740px;
+      margin-bottom: 14px;
+      font-size: clamp(2rem, 4vw, 3.7rem);
+    }
+
+    .contact p {
+      max-width: 700px;
+      margin-bottom: 0;
+      color: rgba(16, 33, 54, 0.76);
+    }
+
+    .contact-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .contact .button {
+      background: var(--navy);
+      color: var(--white);
+    }
+
+    .contact .button:hover {
+      background: var(--navy-dark);
+    }
+
+    /* Footer */
+
+    footer {
+      padding: 60px 0 30px;
+      background: var(--navy-dark);
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 40px;
+      align-items: start;
+      padding-bottom: 38px;
+    }
+
+    .footer-brand {
+      margin-bottom: 10px;
+      color: var(--white);
+      font-family: "Montserrat", Arial, sans-serif;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .footer-tagline {
+      color: var(--gold-light);
+      font-size: 0.93rem;
+    }
+
+    .social-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+    }
+
+    .social-links a {
+      font-size: 0.88rem;
+      text-decoration: none;
+    }
+
+    .social-links a:hover {
+      color: var(--gold-light);
+    }
+
+    .copyright {
+      padding-top: 22px;
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+      font-size: 0.84rem;
+    }
+
+    @media (max-width: 900px) {
+      .nav-links {
+        display: none;
+      }
+
+      .hero-grid,
+      .founder-grid,
+      .contact-grid,
+      .footer-grid {
+        grid-template-columns: 1fr;
+        gap: 45px;
+      }
+
+      .facts-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .cards {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .portrait-wrap {
+        position: static;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .container {
+        width: min(calc(100% - 30px), var(--max-width));
+      }
+
+      .hero,
+      .section,
+      .contact {
+        padding: 78px 0;
+      }
+
+      .hero h1 {
+        font-size: 3rem;
+      }
+
+      .hero-actions,
+      .contact-actions {
+        flex-direction: column;
+      }
+
+      .button {
+        width: 100%;
+      }
+
+      .facts-grid,
+      .cards,
+      .topic-grid,
+      .asset-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .logo-panel {
+        min-height: 300px;
+      }
+    }
+
+    @media print {
+      .site-header,
+      .hero-actions,
+      .contact,
+      footer {
+        display: none;
+      }
+
+      body {
+        background: white;
+      }
+
+      .hero,
+      .section-dark {
+        background: white;
+        color: black;
+      }
+
+      .hero h1,
+      .section-dark h2,
+      .section-dark h3 {
+        color: var(--navy);
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="site-header">
+    <div class="container navigation">
+
+      <a class="brand" href="index.html">
+        Sklarz <span>Creative</span>
+      </a>
+
+      <nav class="nav-links" aria-label="Primary navigation">
+        <a href="index.html">Home</a>
+        <a href="#founder">Founder</a>
+        <a href="#services">Services</a>
+        <a href="#topics">Topics</a>
+        <a href="#assets">Assets</a>
+        <a href="#contact">Contact</a>
+      </nav>
+
+    </div>
+  </header>
+
+  <main>
+
+    <section class="hero">
+      <div class="container hero-grid">
+
+        <div>
+          <p class="eyebrow">Official Media Kit</p>
+
+          <h1>
+            Sklarz<br>
+            <span>Creative</span>
+          </h1>
+
+          <p class="hero-copy">
+            A strategic brand and marketing consultancy helping innovative
+            businesses build trust, communicate complex ideas clearly, and
+            grow through strategy, storytelling, education, and creative
+            direction.
+          </p>
+
+          <div class="hero-actions">
+
+            <a
+              class="button button-primary"
+              href="https://calendly.com/sklarzcreative"
+              target="_blank"
+              rel="noopener"
+            >
+              Book Cassandra
+            </a>
+
+            <a
+              class="button button-outline"
+              href="mailto:sklarzcreative@gmail.com"
+            >
+              Media Inquiry
+            </a>
+
+          </div>
+        </div>
+
+        <div class="logo-panel">
+          <img
+            src="sklarz-creative-logo.png"
+            alt="Sklarz Creative navy and gold logo"
+          >
+        </div>
+
+      </div>
+    </section>
+
+    <section class="facts">
+      <div class="container facts-grid">
+
+        <div class="fact">
+          <strong>Founder</strong>
+          <span>Cassandra Sklarz</span>
+        </div>
+
+        <div class="fact">
+          <strong>Category</strong>
+          <span>Brand & Marketing Consultancy</span>
+        </div>
+
+        <div class="fact">
+          <strong>Location</strong>
+          <span>United States</span>
+        </div>
+
+        <div class="fact">
+          <strong>Availability</strong>
+          <span>Nationwide & Remote</span>
+        </div>
+
+      </div>
+    </section>
+
+    <section class="section" id="founder">
+      <div class="container founder-grid">
+
+        <div class="portrait-wrap">
+          <img
+            src="cassandra-sklarz-headshot.png"
+            alt="Professional portrait of Cassandra Sklarz"
+          >
+        </div>
+
+        <div class="founder-copy">
+
+          <p class="eyebrow">Founder Biography</p>
+
+          <h2 class="section-title">
+            Cassandra Sklarz
+          </h2>
+
+          <p>
+            Cassandra Sklarz is a strategic marketing consultant, creative
+            director, storyteller, researcher, and founder of Sklarz Creative.
+            She helps innovative and purpose-driven organizations build
+            credibility through clear positioning, authentic storytelling,
+            thoughtful content, and meaningful audience connection.
+          </p>
+
+          <p>
+            Her experience spans brand strategy, social media, content
+            creation, event promotion, community engagement, partnerships,
+            podcast and media production, scientific research, and business
+            development.
+          </p>
+
+          <p>
+            Cassandra is particularly interested in wellness, biotechnology,
+            health innovation, botanical science, emerging technologies,
+            entrepreneurship, and companies translating complex ideas into
+            meaningful products and services.
+          </p>
+
+          <blockquote class="quote">
+            “Trust is the most valuable marketing asset a company can build.”
+          </blockquote>
+
+          <p>
+            Through Sklarz Creative, she works with founders, organizations,
+            creators, and innovative brands that want more than visibility.
+            They want to be understood, remembered, and believed.
+          </p>
+
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-alt" id="services">
+      <div class="container">
+
+        <p class="eyebrow">Areas of Expertise</p>
+
+        <h2 class="section-title">
+          Strategy, storytelling, and creative execution.
+        </h2>
+
+        <p class="section-intro">
+          Sklarz Creative supports brands across the full marketing
+          ecosystem—from positioning and planning to content, campaigns,
+          partnerships, events, and community.
+        </p>
+
+        <div class="cards">
+
+          <article class="card">
+            <h3>Brand Strategy</h3>
+            <p>
+              Positioning, messaging, audience clarity, brand architecture,
+              identity direction, and credibility development.
+            </p>
+          </article>
+
+          <article class="card">
+            <h3>Marketing Strategy</h3>
+            <p>
+              Campaign planning, audience development, growth priorities,
+              strategic roadmaps, partnerships, and marketing systems.
+            </p>
+          </article>
+
+          <article class="card">
+            <h3>Creative Direction</h3>
+            <p>
+              Visual, editorial, and campaign direction that creates a
+              consistent experience across every brand touchpoint.
+            </p>
+          </article>
+
+          <article class="card">
+            <h3>Content & Social Media</h3>
+            <p>
+              Educational content, social strategy, thought leadership,
+              photography, video, copywriting, and community engagement.
+            </p>
+          </article>
+
+          <article class="card">
+            <h3>Podcast & Media</h3>
+            <p>
+              Show development, research, interview preparation, production
+              strategy, founder stories, and documentary-style storytelling.
+            </p>
+          </article>
+
+          <article class="card">
+            <h3>Events & Partnerships</h3>
+            <p>
+              Event promotion, brand representation, strategic partnerships,
+              audience engagement, sponsorships, and community-building.
+            </p>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-dark" id="topics">
+      <div class="container">
+
+        <p class="eyebrow">Speaking & Podcast Topics</p>
+
+        <h2 class="section-title">
+          Conversations built around trust, innovation, and growth.
+        </h2>
+
+        <p
+          class="section-intro"
+          style="color: rgba(255,255,255,.72);"
+        >
+          Cassandra is available for podcasts, interviews, panels,
+          educational content, event appearances, and collaborative media.
+        </p>
+
+        <div class="topic-grid">
+
+          <article class="topic">
+            <h3>Building Trust in a Skeptical Market</h3>
+            <p>
+              Why credibility—not attention—is the foundation of sustainable
+              brand growth.
+            </p>
+          </article>
+
+          <article class="topic">
+            <h3>Translating Complex Ideas</h3>
+            <p>
+              How science-driven and innovative companies can communicate
+              clearly without oversimplifying their work.
+            </p>
+          </article>
+
+          <article class="topic">
+            <h3>Authentic Storytelling</h3>
+            <p>
+              Using founder stories, education, and human connection to build
+              stronger brands.
+            </p>
+          </article>
+
+          <article class="topic">
+            <h3>Marketing Beyond Likes</h3>
+            <p>
+              Moving beyond vanity metrics to build relationships,
+              reputation, and long-term business value.
+            </p>
+          </article>
+
+          <article class="topic">
+            <h3>Wellness & Innovation Marketing</h3>
+            <p>
+              Navigating education, credibility, regulation, culture, and
+              responsible communication.
+            </p>
+          </article>
+
+          <article class="topic">
+            <h3>Creative Entrepreneurship</h3>
+            <p>
+              Lessons from building an independent consultancy, personal
+              brand, media platform, and professional network.
+            </p>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-alt">
+      <div class="container">
+
+        <p class="eyebrow">Collaboration Opportunities</p>
+
+        <h2 class="section-title">
+          Ways to work together.
+        </h2>
+
+        <p class="section-intro">
+          Sklarz Creative welcomes thoughtful collaborations aligned with
+          education, innovation, entrepreneurship, wellness, science,
+          creativity, and community impact.
+        </p>
+
+        <div class="opportunity-list">
+          <span>Podcast Interviews</span>
+          <span>Speaking Engagements</span>
+          <span>Panel Discussions</span>
+          <span>Brand Partnerships</span>
+          <span>Event Representation</span>
+          <span>Media Commentary</span>
+          <span>Sponsored Content</span>
+          <span>Creative Collaborations</span>
+          <span>Consulting Engagements</span>
+          <span>Educational Campaigns</span>
+        </div>
+
+      </div>
+    </section>
+
+    <section class="section" id="assets">
+      <div class="container">
+
+        <p class="eyebrow">Approved Brand Assets</p>
+
+        <h2 class="section-title">
+          Logo and founder photography.
+        </h2>
+
+        <p class="section-intro">
+          These assets may be used for approved media coverage, interviews,
+          events, partnerships, and professional features. Please do not
+          alter the logo colors, proportions, or design.
+        </p>
+
+        <div class="asset-grid">
+
+          <article class="asset">
+
+            <div class="asset-preview">
+              <img
+                src="sklarz-creative-logo.png"
+                alt="Sklarz Creative official logo"
+              >
+            </div>
+
+            <h3>Official Logo</h3>
+
+            <p>
+              Navy-and-gold primary Sklarz Creative emblem.
+            </p>
+
+            <a
+              class="asset-link"
+              href="sklarz-creative-logo.png"
+              download
+            >
+              Download Logo
+            </a>
+
+          </article>
+
+          <article class="asset">
+
+            <div class="asset-preview">
+              <img
+                src="cassandra-sklarz-headshot.png"
+                alt="Official professional headshot of Cassandra Sklarz"
+              >
+            </div>
+
+            <h3>Founder Headshot</h3>
+
+            <p>
+              Approved professional portrait of Cassandra Sklarz.
+            </p>
+
+            <a
+              class="asset-link"
+              href="cassandra-sklarz-headshot.png"
+              download
+            >
+              Download Headshot
+            </a>
+
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <section class="contact" id="contact">
+      <div class="container contact-grid">
+
+        <div>
+          <p
+            class="eyebrow"
+            style="color: var(--navy-dark);"
+          >
+            Media, Speaking & Partnerships
+          </p>
+
+          <h2>
+            Let’s create something meaningful.
+          </h2>
+
+          <p>
+            For interviews, speaking engagements, media commentary,
+            partnerships, events, consulting, or creative collaborations,
+            contact Sklarz Creative directly.
+          </p>
+        </div>
+
+        <div class="contact-actions">
+
+          <a
+            class="button"
+            href="mailto:sklarzcreative@gmail.com"
+          >
+            Email Sklarz Creative
+          </a>
+
+          <a
+            class="button"
+            href="https://calendly.com/sklarzcreative"
+            target="_blank"
+            rel="noopener"
+          >
+            Schedule a Conversation
+          </a>
+
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <div class="container">
+
+      <div class="footer-grid">
+
+        <div>
+          <div class="footer-brand">
+            Sklarz Creative
+          </div>
+
+          <div class="footer-tagline">
+            Building Trust. Telling Stories. Growing Brands.
+          </div>
+        </div>
+
+        <nav
+          class="social-links"
+          aria-label="Social media links"
+        >
+          <a
+            href="https://www.instagram.com/sklarzcreative/"
+            target="_blank"
+            rel="noopener"
+          >
+            Instagram
+          </a>
+
+          <a
+            href="https://www.threads.com/@sklarzcreative"
+            target="_blank"
+            rel="noopener"
+          >
+            Threads
+          </a>
+
+          <a
+            href="https://x.com/Sklarzcreative"
+            target="_blank"
+            rel="noopener"
+          >
+            X
+          </a>
+
+          <a
+            href="https://www.youtube.com/@SklarzCreative"
+            target="_blank"
+            rel="noopener"
+          >
+            YouTube
+          </a>
+
+          <a
+            href="https://www.linkedin.com/in/cassandra-sklarz"
+            target="_blank"
+            rel="noopener"
+          >
+            LinkedIn
+          </a>
+        </nav>
+
+      </div>
+
+      <div class="copyright">
+        © 2026 Sklarz Creative. All rights reserved.
+      </div>
+
+    </div>
+  </footer>
+
+</body>
+</html>
