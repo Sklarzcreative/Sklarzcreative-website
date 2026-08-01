@@ -226,6 +226,22 @@
       align-items: center;
       gap: 30px;
     }
+    .menu-toggle {
+  display: none;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+}
+
+.menu-toggle span {
+  display: block;
+  width: 26px;
+  height: 3px;
+  margin: 5px 0;
+  background: var(--gold);
+  border-radius: 2px;
+}
 
     .nav-links a {
       font-size: 0.9rem;
@@ -614,9 +630,28 @@
     /* Responsive */
 
     @media (max-width: 900px) {
-      .nav-links {
-        display: none;
-      }
+      .menu-toggle {
+  display: block;
+}
+
+.nav-links {
+  display: none;
+  position: absolute;
+  top: 80px;
+  right: 20px;
+  width: 260px;
+  background: rgba(10,16,28,.98);
+  border: 1px solid rgba(201,169,97,.2);
+  border-radius: 16px;
+  padding: 24px;
+  flex-direction: column;
+  gap: 18px;
+  box-shadow: 0 20px 60px rgba(0,0,0,.4);
+}
+
+.nav-links.open {
+  display: flex;
+}
 
       .hero {
         min-height: auto;
@@ -740,6 +775,18 @@
         Sklarz <span>Creative</span>
       </a>
 
+      <button
+  class="menu-toggle"
+  type="button"
+  aria-label="Open navigation menu"
+  aria-expanded="false"
+  aria-controls="primary-navigation"
+>
+  <span></span>
+  <span></span>
+  <span></span>
+      </button>
+      
       <nav class="nav-links" aria-label="Primary navigation">
         <a href="#about">About</a>
         <a href="#services">Services</a>
@@ -1121,6 +1168,28 @@
 
     </div>
   </footer>
+  <script>
+  const menuButton = document.querySelector(".menu-toggle");
+  const navigation = document.querySelector(".nav-links");
+
+  menuButton.addEventListener("click", () => {
+    const isOpen = navigation.classList.toggle("open");
+
+    menuButton.setAttribute("aria-expanded", isOpen);
+    menuButton.setAttribute(
+      "aria-label",
+      isOpen ? "Close navigation menu" : "Open navigation menu"
+    );
+  });
+
+  navigation.querySelectorAll("a").forEach((link) => {
+    link.addEventListener("click", () => {
+      navigation.classList.remove("open");
+      menuButton.setAttribute("aria-expanded", "false");
+      menuButton.setAttribute("aria-label", "Open navigation menu");
+    });
+  });
+  </script>
 
   <script>
   const revealElements = document.querySelectorAll(".reveal");
