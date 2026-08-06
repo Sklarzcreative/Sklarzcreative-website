@@ -539,6 +539,46 @@
       font-size: 1.08rem;
     }
 
+    /* Insights */
+
+    .insights {
+      padding: 110px 0;
+      background: var(--off-white);
+    }
+
+    .insights-grid {
+      display: grid;
+      grid-template-columns: 0.75fr 1.25fr;
+      gap: 90px;
+      align-items: start;
+    }
+
+    .insight-card {
+      padding: 42px;
+      border: 1px solid var(--gray);
+      background: var(--white);
+      box-shadow: var(--shadow);
+    }
+
+    .insight-card h3 {
+      margin-bottom: 18px;
+      font-size: clamp(1.7rem, 3vw, 2.45rem);
+    }
+
+    .insight-card p {
+      color: var(--text-muted);
+    }
+
+    .insight-card .button {
+      margin-top: 8px;
+      background: var(--navy);
+      color: var(--white);
+    }
+
+    .insight-card .button:hover {
+      background: var(--navy-dark);
+    }
+
     /* Call to action */
 
     .cta {
@@ -679,6 +719,7 @@
       .intro-grid,
       .approach-grid,
       .manifesto-grid,
+      .insights-grid,
       .cta-grid,
       .footer-grid {
         grid-template-columns: 1fr;
@@ -731,7 +772,8 @@
       .intro,
       .services-section,
       .approach,
-      .manifesto {
+      .manifesto,
+      .insights {
         padding: 85px 0;
       }
 
@@ -813,6 +855,7 @@
         <a href="#about">About</a>
         <a href="#services">Services</a>
         <a href="#approach">Approach</a>
+        <a href="#insights">Insights</a>
         <a href="media-kit.html">Media Kit</a>
         <a href="#contact">Contact</a>
       </nav>
@@ -1123,6 +1166,46 @@
       </div>
     </section>
 
+    <section class="insights reveal" id="insights">
+      <div class="container insights-grid">
+
+        <div>
+          <p class="eyebrow">Latest Insight</p>
+
+          <h2 class="section-title">
+            Ideas work better when they have a clear purpose.
+          </h2>
+
+          <p class="section-intro">
+            Explore practical perspectives on strategy, storytelling, trust,
+            and building marketing that feels more connected.
+          </p>
+        </div>
+
+        <article class="insight-card">
+          <p class="eyebrow">Clarity Before Content</p>
+
+          <h3>
+            Why better marketing starts with a better plan.
+          </h3>
+
+          <p>
+            Posting more is not always the answer. Better marketing begins
+            with a clear message, audience, priority, review process, and
+            next step.
+          </p>
+
+          <a
+            class="button"
+            href="insights/clarity-before-content/"
+          >
+            Read the Insight
+          </a>
+        </article>
+
+      </div>
+    </section>
+
     <section class="cta reveal" id="contact">
       <div class="container cta-grid">
 
@@ -1174,6 +1257,7 @@
           <a href="#about">About</a>
           <a href="#services">Services</a>
           <a href="#approach">Approach</a>
+          <a href="#insights">Insights</a>
           <a href="media-kit.html">Media Kit</a>
 
           <!-- Replace this with your preferred business email -->
