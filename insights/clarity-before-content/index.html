@@ -302,6 +302,28 @@
       max-width: 960px;
     }
 
+    .insights-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      margin-bottom: 26px;
+      color: rgba(255, 255, 255, 0.78);
+      font-family: "Montserrat", Arial, sans-serif;
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-decoration: none;
+    }
+
+    .insights-back:hover {
+      color: var(--gold-light);
+    }
+
+    .insights-back:focus-visible {
+      outline: 3px solid var(--gold-light);
+      outline-offset: 3px;
+    }
+
     .article-hero h1 {
       max-width: 900px;
       margin-bottom: 26px;
@@ -611,7 +633,7 @@
         <a href="/#about">About</a>
         <a href="/#services">Services</a>
         <a href="/#approach">Approach</a>
-        <a href="/#insights" aria-current="page">Insights</a>
+        <a href="/insights/">Insights</a>
         <a href="/media-kit.html">Media Kit</a>
         <a href="/#contact">Contact</a>
       </nav>
@@ -621,6 +643,11 @@
   <main>
     <header class="article-hero">
       <div class="container article-hero-inner">
+        <a class="insights-back" href="/insights/">
+          <span aria-hidden="true">←</span>
+          All Insights
+        </a>
+
         <p class="eyebrow">Sklarz Creative Insights</p>
 
         <h1>
@@ -876,7 +903,7 @@
         <nav class="footer-links" aria-label="Footer navigation">
           <a href="/">Home</a>
           <a href="/#services">Services</a>
-          <a href="/#insights">Insights</a>
+          <a href="/insights/">Insights</a>
           <a href="/media-kit.html">Media Kit</a>
           <a href="mailto:sklarzcreative@gmail.com">Email</a>
         </nav>
