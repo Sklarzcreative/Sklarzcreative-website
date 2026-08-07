@@ -263,6 +263,70 @@
       font-size: clamp(1.05rem, 2vw, 1.25rem);
     }
 
+    .insight-categories {
+      padding: 100px 0;
+      background: var(--white);
+    }
+
+    .category-heading {
+      max-width: 760px;
+      margin-bottom: 45px;
+    }
+
+    .category-heading h2 {
+      margin-bottom: 18px;
+      font-size: clamp(2rem, 4vw, 3.5rem);
+    }
+
+    .category-heading p:last-child {
+      margin-bottom: 0;
+      color: var(--text-muted);
+      font-size: 1.06rem;
+    }
+
+    .category-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .category-card {
+      min-height: 230px;
+      padding: 30px;
+      border: 1px solid var(--gray);
+      background: var(--off-white);
+    }
+
+    .category-card h3 {
+      margin-bottom: 14px;
+      font-size: 1.28rem;
+    }
+
+    .category-card p {
+      color: var(--text-muted);
+      font-size: 0.96rem;
+    }
+
+    .category-card a {
+      color: var(--navy);
+      font-family: "Montserrat", Arial, sans-serif;
+      font-size: 0.86rem;
+      font-weight: 700;
+      text-decoration-color: var(--gold);
+      text-underline-offset: 4px;
+    }
+
+    .category-status {
+      display: inline-block;
+      margin-top: 8px;
+      color: var(--gold);
+      font-family: "Montserrat", Arial, sans-serif;
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
     .articles {
       padding: 110px 0 120px;
       background: var(--off-white);
@@ -547,6 +611,7 @@
 
       .articles-header,
       .article-card,
+      .category-grid,
       .coming-next-grid,
       .cta-grid,
       .footer-grid {
@@ -576,6 +641,7 @@
         font-size: 2.75rem;
       }
 
+      .insight-categories,
       .articles {
         padding: 82px 0 90px;
       }
@@ -656,7 +722,83 @@
       </div>
     </header>
 
-    <section class="articles" aria-labelledby="latest-insights">
+    <section
+      class="insight-categories"
+      aria-labelledby="explore-insights"
+    >
+      <div class="container">
+        <div class="category-heading">
+          <p class="eyebrow">Explore Insights</p>
+
+          <h2 id="explore-insights">
+            Five ways to go deeper.
+          </h2>
+
+          <p>
+            Follow the work by format, from long-form perspectives and
+            conversations to research observations and practical tools.
+          </p>
+        </div>
+
+        <div class="category-grid">
+          <article class="category-card">
+            <p class="eyebrow">Signature Series</p>
+            <h3>The Trust Files</h3>
+            <p>
+              Stories and analysis about how organizations earn belief,
+              credibility, and lasting confidence.
+            </p>
+            <span class="category-status">Coming soon</span>
+          </article>
+
+          <article class="category-card">
+            <p class="eyebrow">Published Now</p>
+            <h3>Articles</h3>
+            <p>
+              Practical perspectives on strategy, storytelling, content,
+              creative direction, and stronger marketing decisions.
+            </p>
+            <a href="#articles">View Articles</a>
+          </article>
+
+          <article class="category-card">
+            <p class="eyebrow">Conversations</p>
+            <h3>Podcast</h3>
+            <p>
+              Thoughtful discussions with builders, researchers, creatives,
+              and people shaping what comes next.
+            </p>
+            <span class="category-status">Coming soon</span>
+          </article>
+
+          <article class="category-card">
+            <p class="eyebrow">Evidence and Context</p>
+            <h3>Research Notes</h3>
+            <p>
+              Concise examinations of useful evidence, emerging ideas, and
+              claims that deserve a closer look.
+            </p>
+            <span class="category-status">Coming soon</span>
+          </article>
+
+          <article class="category-card">
+            <p class="eyebrow">Practical Tools</p>
+            <h3>Resources</h3>
+            <p>
+              Guides, checklists, and frameworks designed to help small teams
+              make clearer decisions.
+            </p>
+            <span class="category-status">Coming soon</span>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section
+      class="articles"
+      id="articles"
+      aria-labelledby="latest-insights"
+    >
       <div class="container">
         <div class="articles-header">
           <div>
