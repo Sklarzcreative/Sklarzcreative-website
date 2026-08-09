@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://sklarzcreative.com/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
-  <url><loc>https://sklarzcreative.com/media-kit.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://sklarzcreative.com/insights/</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
   <url><loc>https://sklarzcreative.com/insights/the-trust-files/</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://sklarzcreative.com/insights/the-trust-files/trust-is-not-a-vibe.html</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://sklarzcreative.com/insights/the-trust-files/trust-is-not-a-vibe/</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
   <url><loc>https://sklarzcreative.com/insights/articles/</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://sklarzcreative.com/insights/clarity-before-content/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://sklarzcreative.com/insights/podcast/</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://sklarzcreative.com/insights/research-notes/</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://sklarzcreative.com/insights/resources/</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://sklarzcreative.com/insights/clarity-before-content/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://sklarzcreative.com/insights/research-notes/</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://sklarzcreative.com/insights/resources/</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://sklarzcreative.com/media-kit.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
 </urlset>
