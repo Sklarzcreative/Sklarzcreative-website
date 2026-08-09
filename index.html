@@ -1,1 +1,35 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="refresh" content="0; url=/Index.html"><link rel="canonical" href="https://sklarzcreative.com/"><title>Sklarz Creative</title><script>window.location.replace('/Index.html');</script></head><body><p><a href="/Index.html">Open Sklarz Creative</a></p></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Sklarz Creative is a strategic brand and marketing consultancy helping innovative companies build trust through strategy, storytelling, education, and thoughtful creative direction.">
+  <link rel="canonical" href="https://sklarzcreative.com/">
+  <title>Sklarz Creative | Strategic Brand & Marketing Consultancy</title>
+  <style>
+    html,body{margin:0;min-height:100%;background:#102136;color:#fff;font-family:Arial,sans-serif}
+    .loading{min-height:100vh;display:grid;place-items:center;text-align:center;padding:24px;box-sizing:border-box}
+    .loading strong{color:#E1CA83}
+  </style>
+</head>
+<body>
+  <div class="loading" id="homepage-loader"><p><strong>Sklarz Creative</strong><br>Loading…</p></div>
+  <script>
+  (function(){
+    fetch('/Index.html',{cache:'no-store'})
+      .then(function(response){if(!response.ok){throw new Error('Homepage unavailable');}return response.text();})
+      .then(function(html){
+        html=html.replace(/<head>/i,'<head><base href="/">');
+        document.open();
+        document.write(html);
+        document.close();
+        if(location.pathname!=='/'||location.search||location.hash){history.replaceState(null,'','/');}
+      })
+      .catch(function(){
+        document.getElementById('homepage-loader').innerHTML='<p><strong>Sklarz Creative</strong><br><a href="/Index.html" style="color:#E1CA83">Open the website</a></p>';
+      });
+  })();
+  </script>
+  <noscript><p style="padding:40px;text-align:center"><a href="/Index.html" style="color:#E1CA83">Open Sklarz Creative</a></p></noscript>
+</body>
+</html>
