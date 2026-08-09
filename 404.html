@@ -1,1 +1,38 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Redirecting | Sklarz Creative</title><meta name="robots" content="noindex"><style>body{margin:0;display:grid;place-items:center;min-height:100vh;background:#102136;color:#fff;font-family:Arial,sans-serif}main{max-width:620px;padding:40px;text-align:center}a{color:#E1CA83}</style></head><body><main><h1>Finding the right page…</h1><p>If you are not redirected, <a id="fallback" href="/">return to Sklarz Creative</a>.</p></main><script>(function(){var p=location.pathname.replace(/\/+$/,'');var map={'/insights/the-trust-files/trust-is-not-a-vibe':'/insights/the-trust-files/trust-is-not-a-vibe.html'};var target=map[p]||'/';document.getElementById('fallback').href=target;location.replace(target);})();</script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Redirecting | Sklarz Creative</title>
+  <meta name="robots" content="noindex">
+  <style>
+    body{margin:0;display:grid;place-items:center;min-height:100vh;background:#102136;color:#fff;font-family:Arial,sans-serif}
+    main{max-width:620px;padding:40px;text-align:center}
+    a{color:#E1CA83}
+  </style>
+</head>
+<body>
+<main>
+  <h1>Finding the right page…</h1>
+  <p>If you are not redirected, <a id="fallback" href="/">return to Sklarz Creative</a>.</p>
+</main>
+<script>
+(function(){
+  var p=location.pathname.replace(/\/+$/,'') || '/';
+  var map={
+    '/insights':'/insights/index.html',
+    '/insights/the-trust-files':'/insights/the-trust-files/index.html',
+    '/insights/articles':'/insights/articles/index.html',
+    '/insights/podcast':'/insights/podcast/index.html',
+    '/insights/research-notes':'/insights/research-notes/index.html',
+    '/insights/resources':'/insights/resources/index.html',
+    '/insights/clarity-before-content':'/insights/clarity-before-content/index.html',
+    '/insights/the-trust-files/trust-is-not-a-vibe':'/insights/the-trust-files/trust-is-not-a-vibe.html'
+  };
+  var target=map[p]||'/';
+  document.getElementById('fallback').href=target;
+  location.replace(target);
+})();
+</script>
+</body>
+</html>
