@@ -49,6 +49,7 @@ jobs:
               text = path.read_text(encoding='utf-8')
               original = text
               text = text.replace('/favicon.png', '/favicon.svg')
+              text = text.replace('type="image/png" href="/favicon.svg"', 'type="image/svg+xml" href="/favicon.svg"')
               text = text.replace('https://calendly.com/sklarzcreative"', 'https://calendly.com/sklarzcreative/30min"')
               text = text.replace('https://calendly.com/sklarzcreative\'', 'https://calendly.com/sklarzcreative/30min\'')
               text = text.replace('https://www.linkedin.com/in/cassandra-sklarz"', 'https://www.linkedin.com/in/cassandra-sklarz-762738179"')
