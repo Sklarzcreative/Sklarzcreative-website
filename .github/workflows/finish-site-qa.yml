@@ -1,0 +1,75 @@
+name: Finish site QA cleanup
+
+on:
+  push:
+    paths:
+      - '.github/workflows/finish-site-qa.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Pillow
+        run: python -m pip install --disable-pip-version-check pillow
+
+      - name: Optimize headshot and normalize site links
+        shell: python
+        run: |
+          from pathlib import Path
+          from PIL import Image
+
+          root = Path('.')
+          source = root / 'cassandra-sklarz-headshot.jpg.png'
+          out_dir = root / 'assets' / 'images'
+          out_dir.mkdir(parents=True, exist_ok=True)
+          out = out_dir / 'cassandra-sklarz-headshot.webp'
+
+          with Image.open(source) as im:
+              im = im.convert('RGB')
+              max_width = 900
+              if im.width > max_width:
+                  new_height = round(im.height * (max_width / im.width))
+                  im = im.resize((max_width, new_height), Image.Resampling.LANCZOS)
+              im.save(out, 'WEBP', quality=82, method=6)
+
+          for path in root.rglob('*.html'):
+              text = path.read_text(encoding='utf-8')
+              original = text
+              text = text.replace('/favicon.png', '/favicon.svg')
+              text = text.replace('https://calendly.com/sklarzcreative"', 'https://calendly.com/sklarzcreative/30min"')
+              text = text.replace('https://calendly.com/sklarzcreative\'', 'https://calendly.com/sklarzcreative/30min\'')
+              text = text.replace('https://www.linkedin.com/in/cassandra-sklarz"', 'https://www.linkedin.com/in/cassandra-sklarz-762738179"')
+              text = text.replace('src="/cassandra-sklarz-headshot.jpg.png"', 'src="/assets/images/cassandra-sklarz-headshot.webp"')
+
+              if path.as_posix() == 'insights/clarity-before-content/index.html':
+                  text = text.replace('--gold: #C9A84C;\n      --gold-light:', '--gold: #C9A84C;\n      --gold-text: #806000;\n      --gold-light:')
+                  text = text.replace('.eyebrow {\n      margin-bottom: 16px;\n      color: var(--gold);', '.eyebrow {\n      margin-bottom: 16px;\n      color: var(--gold-text);')
+                  text = text.replace('a:focus-visible,\n    button:focus-visible {\n      outline: 3px solid var(--gold-light);', 'a:focus-visible,\n    button:focus-visible {\n      outline: 3px solid var(--gold-text);')
+
+              if text != original:
+                  path.write_text(text, encoding='utf-8')
+
+      - name: Commit optimized asset and normalized links
+        run: |
+          git config user.name "Sklarz Creative Site QA"
+          git config user.email "actions@users.noreply.github.com"
+          git add assets/images/cassandra-sklarz-headshot.webp '*.html' 'insights/**/*.html' || true
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Finish QA cleanup and optimize founder headshot"
+            git push
+          fi
