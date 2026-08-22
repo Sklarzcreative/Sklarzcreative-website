@@ -313,6 +313,9 @@ p:last-child { margin-bottom: 0; }
 .split--even { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 
 .stack { display: grid; gap: var(--space-block); }
+/* --space-block is the gap between unrelated sections of a page. Blocks inside
+   one article column need roughly half that. */
+.stack--tight { gap: clamp(1.75rem, 3vw, 2.75rem); }
 
 /* Hairline rule with a gold leading segment */
 .rule {
@@ -725,6 +728,195 @@ p:last-child { margin-bottom: 0; }
 }
 
 /* --------------------------------------------------------------------------
+   08b  PAGE HERO  (every page except the homepage)
+   A compact dark opener. It exists for composition and for one hard
+   constraint: the header is fixed and transparent at scroll-top, so the top of
+   every page must be dark or the champagne nav type loses its contrast.
+   -------------------------------------------------------------------------- */
+.page-hero {
+  position: relative;
+  padding-block: clamp(8rem, 15vh, 11rem) clamp(3.5rem, 7vh, 5.5rem);
+  /* Declared as longhands on purpose. The `background` shorthand resets
+     background-color to transparent, which leaves a gradient-only dark
+     surface with no solid fallback — it renders, but forced-colors modes and
+     any contrast tooling both resolve it to whatever is behind it. */
+  background-color: var(--void);
+  background-image:
+    radial-gradient(90% 120% at 82% 8%, rgba(201, 168, 76, .16), transparent 58%),
+    linear-gradient(155deg, var(--abyss), var(--void) 70%);
+  color: var(--on-dark);
+  overflow: hidden;
+  isolation: isolate;
+}
+.page-hero :where(h1, h2, h3) { color: var(--on-dark); }
+.page-hero .lede { color: var(--on-dark-muted); max-width: 52ch; }
+.page-hero .eyebrow { color: var(--champagne); }
+
+/* A single large outlined arc, cropped by the section. Depth, no asset. */
+.page-hero::after {
+  content: "";
+  position: absolute;
+  right: -8%;
+  top: -55%;
+  z-index: -1;
+  width: 40rem;
+  aspect-ratio: 1;
+  border: 1px solid rgba(201, 168, 76, .18);
+  border-radius: 50%;
+  pointer-events: none;
+}
+.page-hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, .75fr);
+  gap: clamp(2rem, 5vw, 4.5rem);
+  align-items: end;
+}
+
+.breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .55rem;
+  margin: 0 0 1.5rem;
+  padding: 0;
+  list-style: none;
+  font: 600 .7rem/1 var(--struct);
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--on-dark-faint);
+}
+.breadcrumb li { display: flex; align-items: center; gap: .55rem; }
+.breadcrumb li + li::before { content: "/"; opacity: .5; }
+.breadcrumb a { transition: color var(--t-micro) var(--ease-soft); }
+.breadcrumb a:hover { color: var(--champagne); }
+.breadcrumb [aria-current="page"] { color: var(--champagne); }
+
+/* .page-hero is a dark surface, but it cannot carry .is-dark because that
+   class sets its own flat background and would erase the hero gradient. So
+   every dark-context override has to be restated for it. Without this block a
+   ghost button resolves to navy-on-near-black (~1.3:1) and gold accents fall
+   below AA — the components look fine in isolation and fail only in this one
+   context, which is exactly the kind of bug that ships. */
+.page-hero .accent,
+.page-hero .link-arrow,
+.page-hero .founder-signature { color: var(--champagne); }
+
+.page-hero .body-copy { color: var(--on-dark-muted); }
+.page-hero .meta,
+.page-hero .figure-caption { color: var(--on-dark-faint); }
+.page-hero .numeral { color: var(--gold); }
+
+.page-hero .btn--ghost {
+  --btn-fg: var(--bone);
+  --btn-line: var(--line-dark);
+}
+.page-hero .btn--ghost:hover {
+  --btn-line: var(--gold);
+  --btn-fg: var(--champagne);
+  background: rgba(201, 168, 76, .07);
+}
+
+.page-hero :where(a, button, [tabindex]):focus-visible { outline-color: var(--champagne); }
+
+.page-hero .pull-quote { color: var(--bone); }
+.page-hero .pull-quote cite { color: var(--champagne); }
+
+.page-hero .rule {
+  background: linear-gradient(90deg, var(--gold) 0 6rem, var(--line-dark-2) 6rem);
+}
+
+.page-hero .facts,
+.page-hero .stats,
+.page-hero .card-grid {
+  background: var(--line-dark-2);
+  border-color: var(--line-dark-2);
+}
+.page-hero .fact,
+.page-hero .stat,
+.page-hero .card { background: rgba(255, 255, 255, .04); }
+.page-hero .fact dt, .page-hero .fact b { color: var(--gold); }
+.page-hero .fact dd, .page-hero .fact span { color: var(--on-dark); }
+.page-hero .stat b { color: var(--gold); }
+.page-hero .stat span { color: var(--on-dark-faint); }
+.page-hero .card h3 { color: var(--on-dark); }
+.page-hero .card p { color: var(--on-dark-muted); }
+
+.page-hero .chip { border-color: var(--line-dark); color: var(--on-dark-muted); }
+.page-hero .chip:hover { border-color: var(--gold); color: var(--champagne); }
+
+/* --------------------------------------------------------------------------
+   08c  PROSE  (long-form articles)
+   A single measure, generous leading, and a gold-marked hierarchy.
+   -------------------------------------------------------------------------- */
+.prose { max-width: 68ch; }
+.prose > * + * { margin-top: 1.3em; }
+.prose h2 {
+  margin-top: 2.6em;
+  font-size: clamp(1.65rem, 2.6vw, 2.4rem);
+  line-height: 1.1;
+}
+.prose h3 {
+  margin-top: 2em;
+  font-family: var(--struct);
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: .01em;
+}
+.prose p { color: var(--ink-muted); }
+.prose strong { color: var(--ink); font-weight: 600; }
+.prose a:not(.btn):not(.link-arrow) {
+  color: var(--gold-ink);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: .22em;
+  transition: color var(--t-micro) var(--ease-soft);
+}
+.prose a:not(.btn):not(.link-arrow):hover { color: var(--navy); }
+.prose ul, .prose ol { padding-left: 1.3em; color: var(--ink-muted); }
+.prose li + li { margin-top: .55em; }
+.prose li::marker { color: var(--gold); }
+.prose blockquote {
+  margin: 2.2em 0;
+  padding-left: clamp(1.25rem, 3vw, 2.25rem);
+  border-left: 2px solid var(--gold);
+  font-family: var(--display);
+  font-style: italic;
+  font-size: clamp(1.25rem, 2vw, 1.6rem);
+  line-height: 1.4;
+  color: var(--navy);
+}
+.prose hr {
+  margin: 3em 0;
+  height: 1px;
+  border: 0;
+  background: linear-gradient(90deg, var(--gold) 0 5rem, var(--line-light) 5rem);
+}
+.prose figure { margin: 2.4em 0; }
+.prose figcaption {
+  margin-top: .9rem;
+  font: 500 .82rem/1.5 var(--body);
+  color: var(--ink-faint);
+}
+
+/* Sticky side rail for article meta / contents */
+.article-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 15rem);
+  gap: clamp(2.5rem, 6vw, 5.5rem);
+  align-items: start;
+}
+.article-aside { position: sticky; top: 7.5rem; display: grid; gap: 1.75rem; }
+.article-aside dl { margin: 0; display: grid; gap: .35rem; }
+.article-aside dt {
+  font: 700 .64rem/1 var(--struct);
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--gold-ink);
+}
+.article-aside dd { margin: 0; font-size: .92rem; color: var(--ink-muted); }
+
+/* --------------------------------------------------------------------------
    09  MARQUEE
    A slow gold ticker that states the positioning line. Pure CSS, paused on
    hover, and duplicated so the loop is seamless.
@@ -794,9 +986,16 @@ p:last-child { margin-bottom: 0; }
   background: var(--line-dark-2);
   border: 1px solid var(--line-dark-2);
 }
-/* Four items in a narrow column: auto-fit lands on three-plus-one and leaves a
-   dead cell, so pin it to a 2x2 block. */
-.stats--quad { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+/* Fixed counts need pinning: auto-fit leaves dead hairline cells whenever the
+   item count does not divide into the track count it settles on. */
+.stats--quad  { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.stats--quint { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+@media (max-width: 1080px) {
+  .stats--quint { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 620px) {
+  .stats--quint { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
 .stat { padding: clamp(1.5rem, 3vw, 2.25rem); background: var(--deep); }
 .is-warm .stats, .is-light .stats { background: var(--line-light); border-color: var(--line-light); }
 .is-warm .stat { background: var(--alabaster); }
@@ -911,9 +1110,11 @@ a.card:hover h3 { color: var(--gold-ink); }
 .is-warm .editorial-lead { background: var(--alabaster); }
 .editorial-lead img {
   width: 100%;
-  /* Matches the source artwork (1200x800) so the diagram is never cropped. */
-  aspect-ratio: 3 / 2;
-  object-fit: cover;
+  height: auto;
+  /* No forced ratio. Lead artwork here is diagrams of differing proportions
+     (3:2 and 16:9), and any fixed ratio with object-fit:cover crops one of
+     them. The width/height attributes supply the intrinsic ratio instead, so
+     nothing is ever clipped and there is still no layout shift. */
 }
 .editorial-lead-body { padding: clamp(1.75rem, 3vw, 2.5rem); }
 .editorial-lead-body h3 {
@@ -930,7 +1131,10 @@ a.card:hover h3 { color: var(--gold-ink); }
   transition: background var(--t-base) var(--ease-soft);
 }
 .is-warm .editorial-item { background: var(--alabaster); }
-.editorial-item:hover { background: color-mix(in srgb, var(--gold) 7%, var(--paper)); }
+a.editorial-item:hover { background: color-mix(in srgb, var(--gold) 7%, var(--paper)); }
+/* Rows for unpublished items are plain divs. Without this they inherit the
+   hover wash and advertise a destination that does not exist. */
+.editorial-item:not(a) { cursor: default; }
 .editorial-item h3 {
   font-family: var(--struct);
   font-size: 1rem;
@@ -1175,6 +1379,74 @@ a.card:hover h3 { color: var(--gold-ink); }
   text-transform: uppercase;
 }
 
+/* Fact strip — a hairline row of label/value pairs */
+.facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+  gap: 1px;
+  background: var(--line-light);
+  border: 1px solid var(--line-light);
+}
+.is-dark .facts { background: var(--line-dark-2); border-color: var(--line-dark-2); }
+.fact { display: grid; gap: .4rem; padding: clamp(1.25rem, 2.4vw, 1.85rem); background: var(--paper); }
+.is-warm .fact { background: var(--alabaster); }
+.is-dark .fact { background: var(--deep); }
+.fact dt, .fact b {
+  font: 700 .64rem/1 var(--struct);
+  font-weight: 700;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--gold-ink);
+}
+.is-dark .fact dt, .is-dark .fact b { color: var(--gold); }
+.fact dd, .fact span {
+  margin: 0;
+  font-family: var(--display);
+  font-size: 1.15rem;
+  line-height: 1.3;
+  color: var(--navy);
+}
+.is-dark .fact dd, .is-dark .fact span { color: var(--on-dark); }
+
+/* Downloadable brand asset card */
+.asset {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: clamp(1.5rem, 3vw, 2.25rem);
+  background: var(--paper);
+}
+.is-warm .asset { background: var(--alabaster); }
+.asset-preview {
+  display: grid;
+  place-items: center;
+  /* Reserve the box here rather than on the image. Constraining the image to
+     width:auto + height:auto defeats its width/height attributes, so it
+     occupies zero space until it decodes — a visible layout shift, and the
+     asset previews are lazy-loaded so it happens mid-scroll. */
+  min-height: 18rem;
+  padding: clamp(1.25rem, 3vw, 2.5rem);
+  background: var(--deep);
+  outline: 1px solid rgba(201, 168, 76, .3);
+  outline-offset: -1px;
+}
+.asset-preview img {
+  max-height: 15rem;
+  max-width: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+.asset h3 {
+  margin: 0;
+  font-family: var(--struct);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: .01em;
+}
+.asset p { margin: 0; font-size: .93rem; color: var(--ink-muted); }
+.asset .link-arrow { margin-top: auto; }
+
 /* --------------------------------------------------------------------------
    18  RESPONSIVE
    -------------------------------------------------------------------------- */
@@ -1255,9 +1527,11 @@ a.card:hover h3 { color: var(--gold-ink); }
   .hero-rail { grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); }
   .hero-rail .scroll-cue { display: none; }
 
-  .split, .split--even, .founder, .editorial, .cta-grid {
+  .split, .split--even, .founder, .editorial, .cta-grid,
+  .page-hero-grid, .article-layout {
     grid-template-columns: 1fr;
   }
+  .article-aside { position: static; }
   .founder-portrait { max-width: 30rem; }
   .cta-grid { align-items: start; }
 }
