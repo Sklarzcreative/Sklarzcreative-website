@@ -227,6 +227,7 @@
     /* Cheap roughness blur: mix the sharp reflection toward a normal-facing
        sample instead of taking multiple env taps. */
     '      spec = mix(spec, env(normalize(n + refl * 0.35)), rough * 1.5);',
+    '      spec = spec / (1.0 + spec * 0.5);',
 
     '      float occ = ambientOcc(p, n);',
 
@@ -261,7 +262,7 @@
     '      m += CHAMP * fres * 0.42;',
 
     /* Fine sparkle along the facet seams. */
-    '      m += CHAMP * pow(streak, 6.0) * 0.20;',
+    '      m += CHAMP * pow(streak, 6.0) * 0.12;',
     '    }',
 
     /* Fog the far side into the void so the object has real depth. */
@@ -278,7 +279,7 @@
        down hard — legibility of the type wins over spectacle. */
     '  col *= mix(1.0, 0.34, uPortrait);',
 
-    '  col = tonemap(col * 0.95);',
+    '  col = tonemap(col * 0.88);',
     '  col = pow(col, vec3(0.4545));',
 
     /* Dither. Without this a navy gradient this dark bands visibly on 8-bit. */
