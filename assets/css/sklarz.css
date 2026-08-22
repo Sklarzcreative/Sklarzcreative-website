@@ -102,6 +102,14 @@
 *, *::before, *::after { box-sizing: border-box; }
 
 html {
+  /* Decorative layers deliberately exceed the viewport (the film grain is
+     inset -50%, the marquee track is twice its container). Their parents clip
+     them, and no page can be scrolled sideways — but `overflow-x: hidden` on
+     body alone is unreliable on iOS Safari, so the clip is declared on both
+     elements. `clip` is preferred because it does not create a scroll
+     container at all; `hidden` stays first as the fallback. */
+  overflow-x: hidden;
+  overflow-x: clip;
   scroll-behavior: smooth;
   /* Nav is fixed; keep in-page anchors from landing under it */
   scroll-padding-top: 6.5rem;
@@ -119,6 +127,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
+  overflow-x: clip;
 }
 
 img, svg, video, canvas { display: block; max-width: 100%; }
