@@ -1284,6 +1284,42 @@ a.editorial-item:hover { background: color-mix(in srgb, var(--gold) 7%, var(--pa
 .foot-col ul { margin: 0; padding: 0; list-style: none; display: grid; gap: .7rem; }
 .foot-col a { transition: color var(--t-micro) var(--ease-soft); }
 .foot-col a:hover { color: var(--champagne); }
+/* Social row — the five platforms become their own marks. A recognisable glyph
+   is faster to parse than a word, and the tiles give each a 44px tap target,
+   which the old text list did not have. Each anchor carries an aria-label, so
+   the accessible name survives dropping the visible word. */
+.foot-col ul.social-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin-top: 1.35rem;
+  padding: 0;
+  list-style: none;
+}
+.foot-col .social-row a {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 1px solid var(--line-dark-2);
+  border-radius: 2px;
+  color: var(--on-dark-muted);
+  transition:
+    border-color var(--t-base) var(--ease-soft),
+    color        var(--t-base) var(--ease-soft),
+    background   var(--t-base) var(--ease-soft);
+}
+.foot-col .social-row a:hover {
+  border-color: var(--gold);
+  color: var(--champagne);
+  background: rgba(201, 168, 76, .07);
+}
+.foot-col .social-row svg {
+  width: 1.05rem;
+  height: 1.05rem;
+  fill: currentColor;
+}
+
 .foot-base {
   display: flex;
   flex-wrap: wrap;
@@ -1519,9 +1555,16 @@ a.editorial-item:hover { background: color-mix(in srgb, var(--gold) 7%, var(--pa
      bright enough to swallow the lede and the ghost button. Guarantee a dark
      ground for the type rather than relying on the shader's dimming alone. */
   .hero-stage::after {
+    /* Heavy over the headline and lede, then clear through the object's band,
+       then lifting again behind the credential rail. */
     background:
-      linear-gradient(180deg, rgba(5, 11, 19, .88) 0%, rgba(5, 11, 19, .66) 52%, rgba(5, 11, 19, .30) 100%),
-      radial-gradient(130% 110% at 50% 45%, transparent 40%, rgba(5, 11, 19, .70) 100%);
+      linear-gradient(180deg,
+        rgba(5, 11, 19, .93) 0%,
+        rgba(5, 11, 19, .88) 26%,
+        rgba(5, 11, 19, .32) 44%,
+        rgba(5, 11, 19, .08) 68%,
+        rgba(5, 11, 19, .58) 100%),
+      radial-gradient(130% 110% at 50% 58%, transparent 54%, rgba(5, 11, 19, .34) 100%);
   }
   .hero .eyebrow { white-space: normal; }
   .hero-rail { grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); }
@@ -1537,6 +1580,23 @@ a.editorial-item:hover { background: color-mix(in srgb, var(--gold) 7%, var(--pa
 }
 
 @media (max-width: 620px) {
+  /* A phone hero has no spare room: headline, lede, actions and credentials
+     fill it. Sharing space with the 3D object meant either scrimming the object
+     into invisibility or letting the text sit on its lit facets. So the stack
+     is tightened and a clear band is opened for the object between the actions
+     and the credentials — nothing overlays it there, so it needs no scrim of
+     its own and shows at full strength. The credential rail lands just below
+     the first screen and arrives on scroll. */
+  .hero { padding-block: 7rem 2.75rem; }
+  .hero h1 { margin-bottom: 1.25rem; }
+  .hero .btn-row { margin-top: 1.75rem; }
+  .hero-rail {
+    margin-top: 17rem;
+    padding-top: 1.25rem;
+    gap: 1.25rem;
+  }
+  .hero-rail dd { font-size: .82rem; }
+
   .rail-steps { grid-template-columns: 1fr; }
   .foot-grid { grid-template-columns: 1fr; }
   .btn-row { flex-direction: column; align-items: stretch; }

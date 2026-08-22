@@ -46,7 +46,7 @@
     'uniform float uScroll;',    // 0..1 across the hero
     'uniform float uIntro;',     // 0..1 load choreography
     'uniform float uSteps;',     // march budget, lowered on weak hardware
-    'uniform float uPortrait;',  // 1.0 when the object sits behind the type
+    'uniform float uPortrait;',  // 1.0 on portrait, where the object gets its own band
 
     /* Brand constants, linearised from the official swatches. */
     'const vec3 GOLD  = vec3(0.788, 0.659, 0.298);',  // #C9A84C
@@ -184,7 +184,7 @@
        object, so the parallax feels like a head movement. The base distance is
        set so the monolith reads as an object in a room rather than filling the
        frame — it has to share the composition with the headline. */
-    '  float dolly = 7.6 + uScroll * 1.9 + (1.0 - uIntro) * 1.1;',
+    '  float dolly = 7.6 + uPortrait * 12.0 + uScroll * 1.9 + (1.0 - uIntro) * 1.1;',
     '  vec3 ro = vec3(0.0, 0.0, -dolly);',
     '  vec3 rd = normalize(vec3(suv, 1.52));',
     '  rd.yz *= rot(-uPointer.y * 0.055);',
@@ -199,7 +199,7 @@
     '    vec2 h = map(p);',
     '    if (h.x < 0.0016 * t + 0.0009){ hit = true; mid = h.y; break; }',
     '    t += h.x * 0.92;',
-    '    if (t > 14.5) break;',
+    '    if (t > dolly + 7.0) break;',
     '  }',
 
     '  if (hit){',
@@ -266,7 +266,7 @@
     '    }',
 
     /* Fog the far side into the void so the object has real depth. */
-    '    col = mix(col, m, 1.0 - smoothstep(8.2, 14.0, t));',
+    '    col = mix(col, m, 1.0 - smoothstep(dolly + 0.6, dolly + 6.4, t));',
     '  }',
 
     '  col += CHAMP * dust(uv) * 0.5 * (1.0 - uScroll * 0.6);',
@@ -277,7 +277,7 @@
     '  col *= 1.0 - uScroll * 0.55;',
     /* In portrait the object is a backdrop behind the headline, so pull it
        down hard — legibility of the type wins over spectacle. */
-    '  col *= mix(1.0, 0.34, uPortrait);',
+    '  /* Portrait no longer needs dimming: the object has its own clear band. */',
 
     '  col = tonemap(col * 0.88);',
     '  col = pow(col, vec3(0.4545));',
@@ -372,11 +372,27 @@
   }
 
   function centerFor() {
-    // Landscape: the object owns the right half, clear of the headline column.
-    // Portrait: it centres and sits low, behind the type as a backdrop.
     var rect = canvas.getBoundingClientRect();
     var aspect = rect.height ? rect.width / rect.height : 1;
-    return aspect > 1.05 ? [0.42, 0.10, 0.0] : [0.04, -0.62, 1.0];
+
+    // Landscape: the object owns the right half, clear of the headline column.
+    if (aspect > 1.05) return [0.42, 0.10, 0.0];
+
+    // Portrait has no spare room, so the stylesheet opens a clear band between
+    // the actions and the credential rail. Aim at the middle of that band,
+    // measured from the live layout rather than hard-coded: hero height varies
+    // with phone size and text wrap, and a fixed offset lands wrong on some
+    // devices — which is exactly how the object ended up half out of frame.
+    var hero = canvas.closest('.hero');
+    var btns = hero && hero.querySelector('.btn-row');
+    var rail = hero && hero.querySelector('.hero-rail');
+    var y = 0.62;
+    if (btns && rail && rect.height) {
+      var top = btns.getBoundingClientRect().bottom - rect.top;
+      var bot = rail.getBoundingClientRect().top - rect.top;
+      if (bot > top) y = ((top + bot) / 2) / rect.height;
+    }
+    return [0.0, 0.5 - y, 1.0];
   }
 
   function draw(timeMs) {
