@@ -16,6 +16,24 @@ record.
 | 06 | [Making It Feel $20K+](./06-making-it-feel-premium.md) | Audit of what read as generic before, and the exact change made in each case. |
 | 07 | [Final Polish & Launch QA](./07-launch-qa.md) | Every issue found and fixed, what was verified locally, what needs the live domain, and the launch checklist. |
 
+## Update — 22 August 2026 · strategic positioning pass
+
+The documents above describe the design system, which is unchanged. The
+positioning on top of it was sharpened after the first build:
+
+| | Before | After |
+| --- | --- | --- |
+| Founder title | "strategic marketing consultant, creative director, storyteller, researcher, and founder" | **Founder & Strategic Marketing Consultant**, with a discipline line beneath: Brand Strategy · Creative Direction · Research & Intelligence · Growth & Partnerships |
+| Company | "brand and marketing consultancy" | **Strategic brand, marketing and creative consultancy** |
+| Promise | "turn complex ideas into positioning, stories and content" | "helps expert-led and innovative organisations become **clearer, more credible, more discoverable, and better equipped to grow**" |
+| Capabilities | Brand · Marketing · Content & Social · Creative Direction · Podcast & Media · Research | Brand Strategy · Marketing & Growth Strategy · Creative Direction & Content · Research & Intelligence · Media & Storytelling · **Partnerships & Business Development** |
+| AI | absent | An "AI-enabled strategy & systems" section framing it as one component of the practice, with an explicit human-judgement column. Never positioned as an AI agency. |
+| Proof | none | A `/work/` page and a homepage Selected Work block, describing scope, role and output — no invented clients, metrics or testimonials |
+
+The reason the founder title changed: a six-item list of job titles reads as a
+skills inventory. Stating one senior role and then the disciplines underneath it
+reads as a level of practice.
+
 ## The one-paragraph version
 
 Sklarz Creative sells judgement, and judgement is bought on a single signal:
