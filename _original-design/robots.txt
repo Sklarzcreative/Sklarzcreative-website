@@ -1,5 +1,4 @@
 User-agent: *
 Allow: /
-Disallow: /_original-design/
 
 Sitemap: https://sklarzcreative.com/sitemap.xml
