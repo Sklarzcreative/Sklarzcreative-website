@@ -121,7 +121,9 @@ reflection lands on olive). Full detail in
 
 **Performance posture**
 - Zero framework, zero npm dependency, zero build step
-- CSS ~40 KB, JS ~19 KB total, both uncompressed and un-minified
+- Measured, un-minified: CSS 48.8 KB (**12.6 KB gzipped**), JS 32.4 KB
+  (**11.5 KB gzipped**), homepage HTML 6.2 KB gzipped. Roughly **30 KB** of
+  gzipped CSS + JS + HTML for the whole first load, before fonts.
 - 3D hero adds no library; grain and noise are generated in-browser, costing
   no requests
 - Only `transform` / `opacity` / `filter` are animated
