@@ -1,0 +1,20 @@
+# This repository is public. Nothing that could carry a credential belongs in
+# it — provider keys live in Netlify → Site configuration → Environment
+# variables. These patterns are here so an accidental `git add .` cannot
+# publish one.
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+credentials*
+secrets*
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/

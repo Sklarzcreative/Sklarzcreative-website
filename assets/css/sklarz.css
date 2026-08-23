@@ -1447,7 +1447,7 @@ a.editorial-item:hover { background: color-mix(in srgb, var(--gold) 7%, var(--pa
   background: var(--deep);
   color: var(--on-dark);
 }
-.score-cat-head h2 {
+.score-cat-head :where(h2, h3) {
   margin: 0 0 .35rem;
   font-size: clamp(1.4rem, 2.4vw, 2rem);
   color: var(--on-dark);
@@ -1561,6 +1561,148 @@ html { scroll-padding-bottom: 8rem; }
   color: var(--champagne);
 }
 .score-band span { font-size: .92rem; color: var(--on-dark-muted); }
+/* The weakest signal, named. The point of the instrument is not the total but
+   knowing which of the five to work on, so it is stated rather than left to be
+   read off five subtotals. Empty until every statement is answered. */
+.score-low { font-size: .88rem; color: var(--champagne); }
+.score-low:empty { display: none; }
+
+/* The print action sits after the running total rather than inside it. It does
+   not need to follow the reader down the page, and a button inside an
+   aria-live region gets re-announced every time the score changes. */
+.score-actions { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 1.5rem; }
+
+/* ---- Lead capture ---------------------------------------------------------
+   A first name and an email, then the diagnostic opens in place. This is a
+   courtesy ask rather than a paywall, and it is built that way on purpose:
+   the reveal below is driven by JavaScript and scoped to `html.js`, so if
+   scripting fails, nothing is hidden and the tool is simply available. Access
+   never depends on a form round-trip, a redirect, or an email arriving.
+   -------------------------------------------------------------------------- */
+.score-gate { max-width: 46rem; }
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+  gap: 1.25rem;
+  margin-top: clamp(1.75rem, 3vw, 2.25rem);
+}
+.form-wide { grid-column: 1 / -1; }
+
+.field { display: grid; gap: .5rem; }
+/* The field's name. `.consent` is also a <label> child of `.field` but carries
+   a sentence, not a name, so it is excluded from the uppercase treatment. */
+.field > label:not(.consent) {
+  font: 700 .68rem/1 var(--struct);
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+.field input[type="text"],
+.field input[type="email"] {
+  min-height: 3.25rem;
+  padding: .75rem .95rem;
+  border: 1px solid var(--line-light);
+  border-radius: 2px;
+  background: var(--paper);
+  font: 400 1rem/1.4 var(--body);
+  color: var(--ink);
+  transition: border-color var(--t-micro) var(--ease-soft),
+              box-shadow   var(--t-micro) var(--ease-soft);
+}
+.field input:hover { border-color: var(--gold); }
+.field input:focus-visible { outline: 2px solid var(--gold-ink); outline-offset: 2px; }
+
+/* Invalid state. The palette is navy and gold only, so there is no red to
+   reach for — and an error signalled by colour alone would fail AA regardless.
+   The border doubles in weight via an inset shadow (no 1px layout shift) and
+   the actual identification is the message text below the field. */
+.field.is-invalid input { border-color: var(--navy); box-shadow: inset 0 0 0 1px var(--navy); }
+.field-msg {
+  display: none;
+  font: 500 .86rem/1.5 var(--body);
+  color: var(--ink);
+}
+.field-msg::before {
+  content: "";
+  display: inline-block;
+  width: .85rem;
+  height: 1px;
+  margin-right: .5rem;
+  vertical-align: middle;
+  background: var(--gold);
+}
+.field.is-invalid .field-msg { display: block; }
+
+.consent {
+  display: flex;
+  gap: .8rem;
+  align-items: flex-start;
+  /* The whole label is the hit area. On one line the text alone is only ~22px
+     tall, which is under the 24px target minimum, so the row is padded rather
+     than relying on the 18px box itself. */
+  min-height: 1.75rem;
+  padding-block: .3rem;
+  font: 400 .93rem/1.6 var(--body);
+  letter-spacing: normal;
+  text-transform: none;
+  color: var(--ink-muted);
+  cursor: pointer;
+}
+.consent input {
+  flex: none;
+  width: 1.15rem;
+  height: 1.15rem;
+  margin: .25rem 0 0;
+  accent-color: var(--gold);
+  cursor: pointer;
+}
+.consent input:focus-visible { outline: 2px solid var(--gold-ink); outline-offset: 2px; }
+
+.form-note { margin: 1.1rem 0 0; font-size: .86rem; line-height: 1.6; color: var(--ink-faint); }
+.form-note a { text-decoration: underline; text-underline-offset: .18em; }
+
+/* Netlify's spam trap. Positioned off-screen rather than display:none, because
+   a bot that skips hidden inputs would skip the trap too. aria-hidden on the
+   wrapper and tabindex="-1" on the input keep it out of the keyboard order and
+   out of the accessibility tree. */
+.form-hp {
+  position: absolute !important;
+  left: -9999px !important;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* Short standing message — access confirmed, or a capture that did not reach
+   the server. Not a toast: it stays on the page and is announced once. */
+.notice {
+  padding: clamp(.95rem, 2vw, 1.25rem) clamp(1.1rem, 2.4vw, 1.5rem);
+  border-left: 2px solid var(--gold);
+  background: var(--alabaster);
+}
+.is-light .notice { background: var(--alabaster); }
+.is-warm .notice { background: var(--paper); }
+.notice b {
+  display: block;
+  margin-bottom: .4rem;
+  font: 700 .7rem/1 var(--struct);
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--gold-ink);
+}
+.notice p { margin: 0; font-size: .93rem; line-height: 1.65; color: var(--ink-muted); }
+
+/* The gate and the diagnostic swap places. Both rules are scoped to `html.js`
+   so that with scripting unavailable neither applies: the ask and the full
+   scorecard both render, which is the correct failure mode — every statement
+   is still readable, scoreable on paper, and printable. Only the live total is
+   lost, and a <noscript> note says so. */
+html.js .score-shell,
+html.js .score-open { display: none; }
+html.js.tfcs-open .score-shell { display: block; }
+html.js.tfcs-open .score-open { display: block; }
+html.js.tfcs-open .score-gate { display: none; }
 
 /* Write-in fields for the follow-up decisions, usable on screen and on paper. */
 .write-in {
@@ -1581,13 +1723,60 @@ html { scroll-padding-bottom: 8rem; }
 }
 .write-in i { display: block; height: 1px; margin-bottom: 1.35rem; background: var(--line-light); }
 
+@media (max-width: 620px) {
+  /* A phone has no room for a bar that follows the reader down the page and
+     still takes a third of it. The total, the band and the weakest signal are
+     what earn the sticky treatment; everything else is read once, at the end. */
+  .score-result { gap: .5rem 1.25rem; }
+  .score-total { font-size: 2.1rem; }
+  .score-band { flex-basis: 100%; }
+
+  /* The legend is floated because a <legend> and a flex container do not mix.
+     Widening it to the full row (rather than un-floating it, which changes how
+     the legend is laid out at all) pushes the three score buttons onto their
+     own line without touching the mechanism. */
+  .score-q legend { width: 100%; }
+  .score-opts { margin-left: 0; }
+}
+
 @media print {
-  .score-result { position: static; background: #fff !important; color: #000 !important; border-color: #999; }
-  .score-total, .score-band strong { color: #000 !important; }
-  .score-cat-head { background: #fff !important; color: #000 !important; }
-  .score-cat-head h2, .score-cat-head p, .score-subtotal { color: #000 !important; }
+  /* The scorecard is meant to be filled in, filed, or handed over. Everything
+     that is navigation or conversion chrome comes off; the instrument stays. */
+  .score-result {
+    position: static;
+    background: #fff !important;
+    color: #000 !important;
+    border-color: #000;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  .score-total, .score-band strong, .score-band span, .score-low { color: #000 !important; }
+  .score-cat { border-color: #000; break-inside: avoid; page-break-inside: avoid; }
+  .score-cat-head { background: #fff !important; color: #000 !important; border-bottom: 1px solid #000; }
+  .score-cat-head :where(h2, h3), .score-cat-head p, .score-subtotal { color: #000 !important; }
+  .score-q { break-inside: avoid; page-break-inside: avoid; border-top-color: #999; }
+  .score-q legend, .score-q legend b { color: #000 !important; }
   .score-opt label { border-color: #666; color: #000; }
-  .score-opt input:checked + label { background: #ddd !important; }
+  /* A gold fill will not survive a monochrome printer, and browsers drop
+     backgrounds by default — so the chosen score is inked solid and forced to
+     print. Without this the printout shows twenty identical rows of empty
+     boxes, which is the one thing a completed scorecard must not do. */
+  .score-opt input:checked + label {
+    background: #000 !important;
+    color: #fff !important;
+    border-color: #000 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  #categories { padding-bottom: 0; }
+  .score-access, .score-actions { display: none !important; }
+  .scale li { border-color: #666; }
+  .scale b { color: #000; }
+  .write-in { break-inside: avoid; page-break-inside: avoid; }
+  .write-in i { background: #000; }
+  /* The global print rule appends every href after its link text. That is
+     useful in an article and pure noise on a worksheet. */
+  .score-shell a::after, .breadcrumb a::after { content: none !important; }
 }
 
 /* --------------------------------------------------------------------------
@@ -1642,6 +1831,9 @@ html { scroll-padding-bottom: 8rem; }
   border: 1px solid var(--line-light);
 }
 .is-dark .facts { background: var(--line-dark-2); border-color: var(--line-dark-2); }
+/* Three facts in a narrow column (a page-hero side rail) auto-fit to two
+   columns and leave a dead cell. Stacked, they read as a spec list instead. */
+.facts--stack { grid-template-columns: 1fr; }
 .fact { display: grid; gap: .4rem; padding: clamp(1.25rem, 2.4vw, 1.85rem); background: var(--paper); }
 .is-warm .fact { background: var(--alabaster); }
 .is-dark .fact { background: var(--deep); }
@@ -1848,10 +2040,23 @@ html { scroll-padding-bottom: 8rem; }
 }
 
 @media print {
-  .site-head, .scroll-cue, .grain, .cursor-ring, .marquee, .hero-canvas { display: none !important; }
+  .site-head, .skip-link, .scroll-cue, .grain, .cursor-ring, .marquee, .hero-canvas { display: none !important; }
   body { background: #fff; color: #000; }
-  .hero, .is-dark, .is-void, .site-foot { background: #fff !important; color: #000 !important; }
+  /* .page-hero belongs in this list: it paints its own gradient and sets white
+     type, and browsers drop backgrounds when printing — so without the reset
+     every secondary page printed its own title white on white paper. */
+  .hero, .page-hero, .is-dark, .is-void, .site-foot { background: #fff !important; color: #000 !important; }
+  .page-hero::after { display: none !important; }
+  .page-hero :where(h1,h2,h3,h4), .page-hero .lede, .page-hero .eyebrow,
+  .page-hero .body-copy, .page-hero .breadcrumb, .page-hero .breadcrumb a,
+  .page-hero .breadcrumb span, .page-hero .fact dt, .page-hero .fact dd,
+  .page-hero .fact b, .page-hero .fact span { color: #000 !important; }
+  .page-hero .facts, .page-hero .fact { background: #fff !important; border-color: #999; }
   .is-dark :where(h1,h2,h3,h4), .hero :where(h1,h2,h3,h4) { color: #000 !important; }
+  /* Opt-in on pages meant to be printed as a document rather than as a web
+     page. The footer link columns and the booking band are navigation and
+     conversion chrome; on paper they are wasted sheets. */
+  .print-lean .site-foot, .print-lean .cta-band { display: none !important; }
   a::after { content: " (" attr(href) ")"; font-size: .8em; }
   .js [data-reveal] { opacity: 1 !important; transform: none !important; filter: none !important; }
   .js .line { overflow: visible; }

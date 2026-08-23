@@ -192,6 +192,87 @@ passing.**
 
 ---
 
+---
+
+## Second QA pass — 23 August 2026 · Scorecard capture & delivery
+
+Re-run after the Trust-First Content Scorecard was given a lead-capture flow
+and brought fully onto the design system. Same harness, same widths, plus the
+scorecard in **both** states (gated and open) as separate routes.
+
+### Two harness bugs, again
+
+Both produced confident false passes and both are now fixed. Recording them
+because the pattern is the point: *a QA tool that reports "0 issues" for a
+region it never looked at is worse than no tool.*
+
+3. **The scroll pass was fighting `scroll-behavior: smooth`.** The harness
+   scrolls the document to fire every `IntersectionObserver` reveal before
+   measuring. With smooth scrolling on `html`, a rapid `scrollTo` sequence
+   animates instead of jumping and never reaches the bottom — so reveals below
+   that point stayed at `opacity: 0`, and the contrast pass skips anything
+   under 0.15 opacity as mid-transition. Fixed by forcing
+   `scrollBehavior = 'auto'` for the duration of the pass.
+4. **Measurement started before the reveals landed.** A reveal runs 760ms plus
+   its stagger delay; the harness waited 400ms. `/work/` reported **17
+   unmeasured elements** at 1440px once the harness was made to say so. Fixed
+   with a settle loop that waits for every `[data-reveal]` to reach full
+   opacity, and the harness now prints a loud warning if any never do.
+
+### Issues found and fixed in this pass
+
+| # | Severity | Issue | Fix |
+| --- | --- | --- | --- |
+| 18 | **Critical** | **The scorecard's twenty statements were generated in JavaScript.** A scripting failure produced an empty container — the instrument simply was not there. | The statements are authored in HTML. Scripting off leaves twenty real `<fieldset>`s with working radios, printable and scoreable by hand, plus a `<noscript>` note explaining that only the live total is missing. |
+| 19 | **Critical** | **Access depended on a form round-trip.** The gate posted to Netlify and relied on the redirect to come back with `?access=1`. Any failure between the visitor and Netlify cost them the tool after they had handed over an address. | The reveal happens locally and first; the capture POST is fired afterwards and not awaited. A failed capture is reported as information, not as an obstacle. |
+| 20 | **High** | **The accessible names had regressed.** All twenty radio groups were labelled `aria-label="Score 0, 1, or 2"` — identical, and naming the control rather than the question. | Restored to `<fieldset>` + `<legend>`, one distinct legend per statement. |
+| 21 | **High** | **A ~9 KB page-specific `<style>` block** had grown on the scorecard, with hard-coded hexes outside the token system. | Reconciled into `sklarz.css` §16b as reusable components. The page now carries **zero** `<style>` blocks. |
+| 22 | **High** | **The consent sentence rendered in uppercase 11px letter-spaced caps.** `.consent` is a `<label>` and a direct child of `.field`, so the uppercase *field-name* treatment applied to it. Caught by reading a screenshot, not by any automated check. | `.field > label:not(.consent)`, plus explicit type on `.consent`. |
+| 23 | **Medium** | **`.page-hero` was never neutralised for print.** It paints its own gradient and sets white type, and browsers drop backgrounds when printing — so **every secondary page printed its own title white on white**. Pre-existing, not scorecard-specific. | Added to the print reset, along with its breadcrumb, lede and fact strip. |
+| 24 | **Medium** | The skip link printed as a gold button on every page. | Added to the print `display: none` list. |
+| 25 | **Medium** | The scorecard's footer had been replaced with a cut-down version using a `.foot-bottom` class that does not exist in the stylesheet, and the social row was gone. | Header and footer re-synced from the canonical markup. |
+| 26 | **Medium** | The consent checkbox's clickable label was **22px tall** — under the 24px target minimum at ≥834px. | `min-height` + vertical padding on `.consent`. |
+| 27 | **Medium** | The sticky result bar took **33% of a 390px viewport**. | The print button moved out of the bar (it does not need to follow the reader, and a button inside an `aria-live` region is re-announced on every score change) and the bar was tightened on phones. Now 24%. |
+| 28 | **Low** | Three facts in the page-hero side rail auto-fitted to two columns and left a dead cell. | `.facts--stack`. |
+
+### Verified locally ✅
+
+- **0 issues** across 14 routes at 1440 / 834 / 390px — contrast, alt text,
+  accessible names, heading order, duplicate ids, tap targets, horizontal
+  overflow. Both scorecard states included.
+- **Scoring, at every boundary:** all zeroes → 0; all twos → 40; each category
+  maxes at 8; the total always equals the sum of the five subtotals; the bands
+  flip at exactly 32 / 24 / 16 (tested at 40, 32, 31, 24, 23, 16, 15, 0); an
+  incomplete card reports "*n* of 20 answered" and claims neither a band nor a
+  weakest signal.
+- **Gate:** locked by default, opens on submit, opens on `?access=1`, remembers
+  a returning visitor, and stays open. Fails open on every error path.
+- **Validation:** empty name, empty email and malformed email each produce a
+  persistent on-page message, `aria-invalid`, and focus moved to the first bad
+  field. The scorecard does not open on an invalid submit.
+- **Keyboard only:** the whole form is reachable, the honeypot is not in the
+  tab order, arrow keys move within a score group, and every control has a
+  visible focus ring on both grounds.
+- **JavaScript disabled:** the page is 6,457px of complete content — all twenty
+  statements, all sixty radios, the band reference, and the gate.
+- **Print:** navigation, footer, CTA band, gate and the print button all drop;
+  the title, statements, subtotals and result print black; the chosen score
+  prints as a solid inked box (forced, because browsers drop backgrounds and a
+  gold fill dies on a mono printer); categories avoid page breaks.
+- **Links:** 14 internal targets resolve, no dead links, no unresolved
+  anchors, no 4xx.
+- **Mobile nav** on all three affected routes: opens, traps focus, locks body
+  scroll, closes on Escape, returns focus to the toggle.
+
+### Still requires the deployed domain ⚠️
+
+| Item | Why local testing cannot settle it |
+| --- | --- |
+| **Netlify form detection** | Netlify parses the deployed HTML at build time. The form is correctly marked (`name`, `data-netlify`, `netlify-honeypot`, hidden `form-name`, every field named), but only a real build can register `trust-first-scorecard`. |
+| **A real submission** | There is no Netlify in front of a local static server. The background POST fails locally and the page correctly reports that it failed — which is the behaviour worth testing here, not the capture. |
+| **The `action` redirect** (no-JavaScript path) | Netlify performs that redirect. Locally the native POST hits a static server. |
+| Everything in the first pass's live-domain table | Unchanged. |
+
 ## Known accepted trade-offs
 
 Deliberate decisions, not oversights:

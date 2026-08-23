@@ -15,6 +15,7 @@ record.
 | 05 | [Building It With Claude](./05-build-with-claude.md) | The staged prompts that produced this build, for extending it without writing code. |
 | 06 | [Making It Feel $20K+](./06-making-it-feel-premium.md) | Audit of what read as generic before, and the exact change made in each case. |
 | 07 | [Final Polish & Launch QA](./07-launch-qa.md) | Every issue found and fixed, what was verified locally, what needs the live domain, and the launch checklist. |
+| 08 | [Scorecard Capture & Delivery](./08-scorecard-capture.md) | How the Trust-First Content Scorecard captures a lead, why access never depends on it, and where an email provider connects later. |
 
 ## Update — 22 August 2026 · strategic positioning pass
 
@@ -33,6 +34,26 @@ positioning on top of it was sharpened after the first build:
 The reason the founder title changed: a six-item list of job titles reads as a
 skills inventory. Stating one senior role and then the disciplines underneath it
 reads as a level of practice.
+
+## Update — 23 August 2026 · Scorecard capture & delivery
+
+The Trust-First Content Scorecard became a lead-generation path as well as a
+piece of IP. What changed, and the rule it all follows:
+
+> **The visitor gets the tool. The capture is a courtesy.**
+
+| | Before | After |
+| --- | --- | --- |
+| Statements | Generated in JavaScript | Authored in HTML — scripting off leaves a complete, printable instrument |
+| Access | Depended on a form POST and a Netlify redirect | Revealed locally and first; the capture POST follows and is not awaited |
+| Capture | — | Netlify Forms `trust-first-scorecard`: first name, email, honeypot, and an **unchecked, optional** follow-up consent |
+| Email sequence | — | Not connected, and not pretended to be. The integration point is documented in [08](./08-scorecard-capture.md) |
+| Styling | A ~9 KB page-specific `<style>` block | Reconciled into `sklarz.css` §16b. The page carries no `<style>` block |
+| Radio groups | Twenty groups all named "Score 0, 1, or 2" | One `<fieldset>`/`<legend>` per statement |
+| Result | Total and band | Total, band, and **the weakest signal named** |
+
+Scoring is unchanged — five categories, twenty statements, 0/1/2, bands at
+32 / 24 / 16 — and is re-tested at every boundary.
 
 ## The one-paragraph version
 
