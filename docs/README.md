@@ -57,6 +57,24 @@ piece of IP. What changed, and the rule it all follows:
 Scoring is unchanged — five categories, twenty statements, 0/1/2, bands at
 32 / 24 / 16 — and is re-tested at every boundary.
 
+## Update — 23 August 2026 · measurement and consent
+
+Netlify retired; GitHub Pages is the sole host. Then the Scorecard was made
+measurable rather than merely usable:
+
+| | Before | After |
+| --- | --- | --- |
+| Capture | Netlify Forms | Off-host endpoint, one config line, ships switched off |
+| What is recorded | Name, email, consent | Plus the five category scores, the total, the band and **the weakest signal** — written onto the same row when the card is completed |
+| Attribution | — | `utm_*` parameters carried with the submission. No cookie, no tracker, no third-party script |
+| After completion | A total and a band | A named weakest signal and **one concrete next move for that signal**, then the discovery-call route |
+| Privacy | No notice | [`/privacy/`](../privacy/index.html), linked from every footer, describing the actual implementation |
+| Social cards | One 1254×1254 square, 1.5 MB, cropped by every platform | Purpose-built 1200×630 cards — one general, one Scorecard-specific — at ~318 KB |
+
+The reason the result is captured separately: the capture happens *before* anyone
+has scored anything, so a follow-up that promises advice on your weakest signal
+would have no idea which one it was.
+
 ## The one-paragraph version
 
 Sklarz Creative sells judgement, and judgement is bought on a single signal:

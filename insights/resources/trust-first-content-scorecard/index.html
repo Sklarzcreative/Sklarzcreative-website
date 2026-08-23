@@ -15,12 +15,14 @@
 <meta property="og:site_name" content="Sklarz Creative">
 <meta property="og:title" content="Trust-First Content Scorecard | Sklarz Creative">
 <meta property="og:description" content="A free 40-point diagnostic for clarity, consistency, credibility, connection, and conversion.">
-<meta property="og:image" content="https://sklarzcreative.com/social-share.png">
-<meta property="og:image:alt" content="Sklarz Creative &mdash; Building trust, telling stories, growing brands.">
+<meta property="og:image" content="https://sklarzcreative.com/social-share-scorecard.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Trust-First Content Scorecard &mdash; twenty statements, five trust signals, forty points.">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Trust-First Content Scorecard | Sklarz Creative">
 <meta name="twitter:description" content="Find the weakest trust signal in one real touchpoint and decide what to improve next.">
-<meta name="twitter:image" content="https://sklarzcreative.com/social-share.png">
+<meta name="twitter:image" content="https://sklarzcreative.com/social-share-scorecard.png">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -44,7 +46,12 @@
    key or private token here — this repository is public.
    See docs/09-lead-capture.md.
    ──────────────────────────────────────────────────────────────────────── */
-window.TFCS_CAPTURE = { endpoint: '', mode: 'opaque' };
+window.TFCS_CAPTURE = {
+  endpoint: '',              // paste the capture URL here to switch the ask on
+  mode: 'opaque',            // 'opaque' for Apps Script, 'cors' for a form service
+  reportResults: true,       // send the finished scores back against the same submission
+  reportAnonymous: false     // also report completions from visitors who never gave an email
+};
 
 (function () {
   var h = document.documentElement;
@@ -164,9 +171,15 @@ window.TFCS_CAPTURE = { endpoint: '', mode: 'opaque' };
       <h2 class="display-m">Two fields, then it opens.</h2>
       <p class="body-copy">
         The scorecard opens on this page the moment you submit &mdash; there is
-        nothing to wait for in your inbox. Your name and email are recorded so
-        Sklarz Creative can see whether the tool is being used and worth
-        developing further.
+        nothing to wait for in your inbox.
+      </p>
+      <p class="body-copy">
+        Your details are used to record that the scorecard was used and, only if
+        you opt in below, to send the short Trust-First follow-up series. If you
+        complete the twenty statements, your scores are recorded too &mdash; that
+        is what lets the follow-up talk about your weakest signal rather than a
+        generic one. <a href="/privacy/">What is collected and how to remove
+        it</a>.
       </p>
 
       <form id="capture" novalidate>
@@ -402,6 +415,33 @@ window.TFCS_CAPTURE = { endpoint: '', mode: 'opaque' };
   </div>
 </section>
 
+<!-- ================================================= YOUR RESULT ========= -->
+<!-- Empty until all twenty statements are answered. A next move derived from a
+     partial score would be a guess, and this page does not guess. -->
+<section class="section section--tight is-light score-shell" id="result" aria-live="polite">
+  <div class="shell">
+    <div class="result-card" id="resultBlock">
+      <div class="result-head">
+        <p class="eyebrow">Your weakest signal</p>
+        <h2 class="display-l" id="weakestName">&mdash;</h2>
+        <p class="score-tally" id="resultTotal"></p>
+      </div>
+      <div class="result-move">
+        <p class="eyebrow">Your next move</p>
+        <p class="body-copy" id="nextMove"></p>
+        <div class="btn-row">
+          <a class="btn" href="https://calendly.com/sklarzcreative/30min" target="_blank" rel="noopener noreferrer">
+            <span>Book a Discovery Call</span>
+          </a>
+          <a class="btn btn--ghost" href="mailto:sklarzcreative@gmail.com?subject=Trust-First%20Content%20Scorecard%20Result">
+            <span>Email me my result</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ================================================== THE DECISION ======= -->
 <section class="section is-light">
   <div class="shell split">
@@ -527,6 +567,7 @@ window.TFCS_CAPTURE = { endpoint: '', mode: 'opaque' };
         <ul>
           <li><a href="https://calendly.com/sklarzcreative/30min" target="_blank" rel="noopener noreferrer">Book a Call</a></li>
           <li><a href="mailto:sklarzcreative@gmail.com">Email</a></li>
+          <li><a href="/privacy/">Privacy</a></li>
         </ul>
         <ul class="social-row">
           <li><a href="https://www.linkedin.com/in/cassandra-sklarz" target="_blank" rel="noopener noreferrer" aria-label="Sklarz Creative on LinkedIn"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a></li>
@@ -556,13 +597,26 @@ window.TFCS_CAPTURE = { endpoint: '', mode: 'opaque' };
   var cats = document.querySelectorAll('#categories .score-cat');
   var STATEMENTS = 4;
 
+  /* One concrete first move per signal. These are method, not promises — each
+     names the smallest change that moves that specific score. */
+  var NEXT_MOVE = {
+    Clarity: 'Rewrite the first thing a stranger reads so it names what you do and who it is for, without a metaphor. If the opening line needs the second line to make sense, it is not the opening line.',
+    Consistency: 'Put this touchpoint next to the two others a buyer would see near it. Fix whichever one disagrees with the other two, rather than trying to align all three at once.',
+    Credibility: 'Take the strongest claim on the page and add the specific thing that makes it checkable — a number, a name, a date, a limit. If nothing can be added, soften the claim instead.',
+    Connection: 'Cut the first paragraph that talks about you and replace it with the question the reader arrived with. Value before the ask, in that order.',
+    Conversion: 'Follow your own primary call to action and read what the destination says. If it does not deliver what the button promised, fix the destination before rewriting the button.'
+  };
+
+  var LAST_RESULT = null;
+  var onResult = null;
+
   /* ---------------------------------------------------------------- scoring
      The twenty statements are authored in the HTML rather than generated
      here, so the instrument is complete and printable with scripting off.
      This function only reads them. Bands and thresholds are unchanged:
      32-40 / 24-31 / 16-23 / 0-15. */
   function update() {
-    var total = 0, answered = 0, low = [], lowVal = Infinity, ci, qi;
+    var total = 0, answered = 0, low = [], lowVal = Infinity, subs = [], ci, qi;
 
     for (ci = 0; ci < cats.length; ci++) {
       var sub = 0;
@@ -571,6 +625,7 @@ window.TFCS_CAPTURE = { endpoint: '', mode: 'opaque' };
         if (picked) { sub += Number(picked.value); answered++; }
       }
       document.getElementById('sub' + ci).textContent = sub;
+      subs.push(sub);
       total += sub;
 
       var name = cats[ci].getAttribute('data-name');
@@ -611,6 +666,30 @@ window.TFCS_CAPTURE = { endpoint: '', mode: 'opaque' };
     document.getElementById('bandTitle').textContent = title;
     document.getElementById('bandText').textContent = text;
     document.getElementById('lowest').textContent = weakest;
+
+    /* The result block below the instrument. It stays empty until the card is
+       complete, because a next move derived from a partial score is a guess. */
+    var move = document.getElementById('nextMove');
+    var moveWrap = document.getElementById('resultBlock');
+    if (answered === 20 && low.length === 1) {
+      move.textContent = NEXT_MOVE[low[0]] || '';
+      moveWrap.setAttribute('data-ready', '');
+      document.getElementById('weakestName').textContent = low[0];
+      document.getElementById('resultTotal').textContent = total + '/40';
+    } else {
+      moveWrap.removeAttribute('data-ready');
+    }
+
+    /* Hand the finished card to the capture layer, which decides whether to
+       report it. Scoring itself neither knows nor cares. */
+    LAST_RESULT = answered === 20 ? {
+      total: total,
+      clarity: subs[0], consistency: subs[1], credibility: subs[2],
+      connection: subs[3], conversion: subs[4],
+      weakest_signal: low.length === 1 ? low[0] : low.join(' / '),
+      band: title
+    } : null;
+    if (typeof onResult === 'function') onResult();
   }
 
   document.addEventListener('change', update);
@@ -632,6 +711,67 @@ window.TFCS_CAPTURE = { endpoint: '', mode: 'opaque' };
   var firstName = form.elements['first_name'];
   var email = form.elements['email'];
   var loadedAt = Date.now();
+
+  /* Campaign attribution, read from the link the visitor arrived through. No
+     cookie, no device identifier, no cross-site anything — just the parameters
+     already in the URL, carried through with the submission so a launch post
+     can be told apart from organic search. */
+  function utms() {
+    var out = {};
+    try {
+      var q = new URLSearchParams(location.search);
+      ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'].forEach(function (k) {
+        var v = q.get(k);
+        if (v) out[k] = String(v).slice(0, 120);
+      });
+    } catch (e) {}
+    return out;
+  }
+
+  /* One id per submission, so the finished scores can be written against the
+     same row rather than appended as an orphan. */
+  function newId() {
+    try { if (crypto && crypto.randomUUID) return crypto.randomUUID(); } catch (e) {}
+    return 'tfcs-' + Date.now().toString(36) + '-' + Math.floor(Math.random() * 1e9).toString(36);
+  }
+
+  function post(payload) {
+    if (cfg.mode === 'cors') {
+      return fetch(cfg.endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify(payload)
+      });
+    }
+    /* Apps Script sends no CORS headers, so this is fire-and-forget: text/plain
+       avoids a preflight the endpoint would fail, and the opaque response
+       cannot be inspected. Nothing is claimed about delivery. */
+    return fetch(cfg.endpoint, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload)
+    });
+  }
+
+  var FAILED = 'Your details did not reach the server, so nothing was saved. The scorecard is open regardless.';
+
+  var submissionId = null;
+  try { submissionId = localStorage.getItem('tfcs-id'); } catch (e) {}
+  var resultSent = false;
+
+  /* Called by the scoring function every time the card changes. It reports the
+     finished result once, and only once, and never blocks anything. */
+  onResult = function () {
+    if (!cfg.reportResults || resultSent || !LAST_RESULT) return;
+    if (!submissionId && !cfg.reportAnonymous) return;
+    resultSent = true;
+    var payload = LAST_RESULT;
+    payload.event = 'result';
+    payload.submission_id = submissionId || '';
+    payload.completed_at = new Date().toISOString();
+    try { post(payload)['catch'](function () {}); } catch (e) {}
+  };
 
   function field(el) { return el.parentNode; }
   function markInvalid(el, message) {
@@ -676,7 +816,12 @@ window.TFCS_CAPTURE = { endpoint: '', mode: 'opaque' };
       return;
     }
 
+    submissionId = newId();
+    try { localStorage.setItem('tfcs-id', submissionId); } catch (e) {}
+
     var payload = {
+      event: 'capture',
+      submission_id: submissionId,
       first_name: firstName.value.trim(),
       email: email.value.trim(),
       follow_up_opt_in: form.elements['follow_up_opt_in'].checked ? 'yes' : 'no',
@@ -687,32 +832,22 @@ window.TFCS_CAPTURE = { endpoint: '', mode: 'opaque' };
       dwell_ms: Date.now() - loadedAt,
       page: location.pathname
     };
+    var camp = utms();
+    for (var k in camp) { if (camp.hasOwnProperty(k)) payload[k] = camp[k]; }
 
+    var sending = post(payload);
     if (cfg.mode === 'cors') {
-      /* A service that answers with CORS headers, so delivery is knowable. */
-      fetch(cfg.endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify(payload)
-      }).then(function (r) {
-        status.textContent = r.ok ? '' : 'Your details did not reach the server, so nothing was saved. The scorecard is open regardless.';
-      })['catch'](function () {
-        status.textContent = 'Your details did not reach the server, so nothing was saved. The scorecard is open regardless.';
-      });
+      sending.then(function (r) {
+        status.textContent = r.ok ? '' : FAILED;
+      })['catch'](function () { status.textContent = FAILED; });
     } else {
-      /* Google Apps Script sends no CORS headers, so this is deliberately
-         fire-and-forget: text/plain avoids a preflight the endpoint would fail,
-         and the opaque response cannot be inspected. Nothing is claimed about
-         delivery here, because nothing can be known about it. */
-      fetch(cfg.endpoint, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify(payload)
-      })['catch'](function () {});
+      sending['catch'](function () {});
     }
 
     openScorecard();
+    /* If they had already finished scoring before submitting, the result is
+       waiting — send it now that there is an id to attach it to. */
+    onResult();
   });
 })();
 </script>

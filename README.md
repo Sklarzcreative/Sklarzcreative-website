@@ -26,6 +26,7 @@ assets/js/motion.js         The motion system
 assets/graphics/*.svg       Editorial diagrams
 assets/images/              Optimised imagery
 docs/                       Design and build documentation — start here
+privacy/                    What the site collects, in plain language
 integrations/               Off-host glue (the Scorecard capture endpoint)
 _original-design/           The complete pre-redesign site + rollback guide
 CNAME                       Custom domain for GitHub Pages
@@ -67,6 +68,12 @@ apex and the `www` CNAME exists.
 Optional, not required: GitHub also publishes `AAAA` records for IPv6
 (`2606:50c0:8000::153` through `…8003::153`). None are currently set, and the
 site works without them.
+
+### Privacy
+
+[`/privacy/`](./privacy/index.html) describes exactly what the site collects.
+**If the collection changes, that page changes in the same commit** — it is a
+factual description of the implementation, not boilerplate.
 
 ### Lead capture
 

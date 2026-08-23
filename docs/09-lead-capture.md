@@ -44,8 +44,12 @@ create a Google Sheet, paste that file into Apps Script, deploy as a web app,
 and paste the `/exec` URL into one line of the scorecard page:
 
 ```js
-window.TFCS_CAPTURE = { endpoint: '', mode: 'opaque' };
-//                                ^ paste the URL here
+window.TFCS_CAPTURE = {
+  endpoint: '',              // ← paste the URL here
+  mode: 'opaque',            // 'opaque' for Apps Script, 'cors' for a form service
+  reportResults: true,       // send the finished scores back against the same submission
+  reportAnonymous: false     // also report completions from visitors who never gave an email
+};
 ```
 
 Commit, push, and Pages redeploys. Nothing else changes. The gate appears on
@@ -82,6 +86,15 @@ If confirmation matters more than data ownership, switch to a CORS-capable
 service and set `mode: 'cors'` — the code path already exists and is tested,
 and it reports a real failure when one happens.
 
+## Privacy
+
+Everything above is described in plain language for visitors at
+[`/privacy/`](https://sklarzcreative.com/privacy/), which is linked from the
+footer of every page and from the Scorecard's own consent copy. **If what is
+collected changes, that page changes in the same commit.** It currently states,
+accurately: no analytics, no advertising, no cookies set by the site, opt-in
+unchecked by default, unsubscribe in every email, deletion on request.
+
 ## Spam protection
 
 Three signals, all checked server-side in the Apps Script:
@@ -97,16 +110,78 @@ than dropped, so a false positive is visible rather than invisible.
 
 ## What is captured
 
+Two messages, one row. The capture creates the row; the result fills in the
+score columns on that same row, matched by `submission_id`.
+
+### On submit — `event: 'capture'`
+
 | Field | Notes |
 | --- | --- |
+| `submission_id` | A UUID minted client-side, stored in `localStorage`, so the result can find its row. |
 | `first_name`, `email` | Required. |
 | `follow_up_opt_in` | `yes` only when the box is ticked. **Unchecked by default, and declining does not block access** — verified by test. |
 | `resource`, `page` | So a second resource later is distinguishable in one sheet. |
+| `utm_source` … `utm_term` | Read from the arriving URL, when present. See below. |
 | `dwell_ms`, `company_website` | Spam signals. |
 | `timestamp` | Added server-side. |
 
+### On completion — `event: 'result'`
+
+| Field | Notes |
+| --- | --- |
+| `total`, and the five category scores | `clarity`, `consistency`, `credibility`, `connection`, `conversion`. |
+| `weakest_signal` | The single lowest category. A tie is reported as a tie, never as a winner. |
+| `band` | The result band the total fell into. |
+| `completed_at` | ISO timestamp. |
+
+**This is what makes a personalised follow-up possible.** Advice about someone's
+weakest signal is only useful if it knows which one it is, and the capture
+happens before they have scored anything. Without the second message the sheet
+would hold twenty thousand email addresses and no idea what any of them scored.
+
+Three properties worth keeping if this is ever changed:
+
+1. **It reports once.** Changing a score after completing does not re-post.
+2. **It carries no name or email** — only the `submission_id`. The identity is
+   already on the row.
+3. **It is silent and never blocks.** Same fire-and-forget path as the capture.
+
+### Anonymous completions
+
+`reportAnonymous` is **off** by default. Someone who never submitted the form
+has not agreed to anything, so nothing about them is sent — even though their
+completion would be useful for a completion-rate figure.
+
+Turning it on sends the scores with an empty `submission_id` and **no name or
+email**; the Apps Script appends those as standalone rows flagged
+`anonymous_result`. That buys a real completion rate at the cost of collecting
+usage data from people who did not opt in. It is a judgement call, so it is a
+switch rather than a default.
+
+## Campaign attribution, without tracking
+
+If the arriving URL carries `utm_*` parameters they are stored with the
+submission:
+
+```
+/insights/resources/trust-first-content-scorecard/
+  ?utm_source=linkedin&utm_medium=organic
+  &utm_campaign=trust_first_scorecard&utm_content=launch_post
+```
+
+That gives per-channel attribution with **no cookie, no device identifier, no
+third-party script and nothing that follows anyone between sites** — the
+parameters were already in the link. It is deliberately the smallest thing that
+answers "which post produced this lead".
+
+It is not a substitute for analytics. It cannot tell you how many people
+visited and did not convert. Adding GA4 or a privacy-first analytics tool is a
+separate decision with its own consent implications, and the privacy notice
+would need updating first.
+
 No tracking, no analytics, no third-party scripts, no cookies. `localStorage`
-holds one flag (`tfcs-access`) so a returning visitor is not asked twice.
+holds two values — an access flag and the `submission_id` — neither of which is
+sent anywhere except with a submission the visitor initiated.
 
 ## The follow-up sequence
 
@@ -123,3 +198,35 @@ Two rules hold whatever the tool:
    enrolling someone who declined is the one outcome the checkbox exists to
    prevent.
 2. It must never gate access. It runs after the fact, off the visitor's path.
+
+### The Make.com scenario, concretely
+
+```
+Google Sheets · Watch New Rows          ← fires when a capture lands
+  └─ Filter: follow_up_opt_in = "yes"
+      └─ Email platform · Add subscriber
+          └─ Day 0  · sent immediately
+          └─ Day 2  · reads weakest_signal from the row
+          └─ Day 5
+```
+
+Two timing facts to design around:
+
+- **The row is created before the scores exist.** Day 0 can only be generic.
+  By Day 2 the score columns are usually filled, so that is the first message
+  that can name the weakest signal — read the row again rather than trusting
+  the values from the trigger.
+- **Some rows never get scores.** People capture and leave. Day 2 needs a
+  fallback for an empty `weakest_signal`, not a broken merge field.
+
+### One copy note for the Day 0 email
+
+The site delivers the Scorecard **immediately, on the page**. An email that
+opens by delivering it is describing a flow that no longer exists. Day 0 should
+acknowledge use and point back:
+
+> Thanks for using the Trust-First Content Scorecard. You can return to the
+> interactive version any time. Your next move: work on the lowest category
+> before trying to lift the total.
+
+The sequence copy itself lives outside this repository.

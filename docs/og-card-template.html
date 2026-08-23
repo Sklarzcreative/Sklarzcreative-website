@@ -1,0 +1,69 @@
+<!DOCTYPE html><html><head><meta charset="utf-8">
+<style>
+/* Real Playfair Display and Montserrat are not installed in this environment.
+   Instrument Serif is the nearest available high-contrast display serif and
+   Instrument Sans the nearest structural grotesque. Swap the two @font-face
+   blocks for the Google Fonts links to regenerate with the true brand faces. */
+@font-face { font-family: 'BrandDisplay'; src: url('file:///mnt/skills/examples/canvas-design/canvas-fonts/InstrumentSerif-Regular.ttf'); }
+@font-face { font-family: 'BrandDisplay'; font-style: italic; src: url('file:///mnt/skills/examples/canvas-design/canvas-fonts/InstrumentSerif-Italic.ttf'); }
+@font-face { font-family: 'BrandStruct'; font-weight: 700; src: url('file:///mnt/skills/examples/canvas-design/canvas-fonts/InstrumentSans-Bold.ttf'); }
+@font-face { font-family: 'BrandStruct'; font-weight: 400; src: url('file:///mnt/skills/examples/canvas-design/canvas-fonts/InstrumentSans-Regular.ttf'); }
+
+:root{
+  --void:#050B13; --abyss:#08111E; --navy:#1A2F4B;
+  --gold:#C9A84C; --champagne:#E1CA83; --bone:#F1E7CE;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1200px;height:630px;overflow:hidden}
+body{
+  background-color:var(--void);
+  background-image:
+    radial-gradient(90% 130% at 84% 6%, rgba(201,168,76,.20), transparent 56%),
+    linear-gradient(155deg, var(--abyss), var(--void) 68%);
+  color:var(--bone);
+  font-family:'BrandStruct',sans-serif;
+  position:relative;
+}
+/* the cropped orbital ring, echoing the hero object — geometry, no asset */
+.ring{
+  position:absolute; width:760px; height:760px; right:-210px; top:-190px;
+  border:1px solid rgba(201,168,76,.30); border-radius:50%;
+}
+.ring2{
+  position:absolute; width:520px; height:520px; right:-90px; top:-70px;
+  border:1px solid rgba(201,168,76,.16); border-radius:50%;
+}
+.pad{position:absolute; inset:0; padding:62px 72px; display:flex; flex-direction:column; justify-content:space-between}
+.mark{font-weight:700; font-size:21px; letter-spacing:.20em; text-transform:uppercase; color:#fff}
+.mark i{font-style:normal; font-weight:400; color:var(--champagne)}
+.rule{width:46px; height:1px; background:var(--gold); margin-bottom:20px}
+.eyebrow{font-weight:700; font-size:13px; letter-spacing:.24em; text-transform:uppercase; color:var(--champagne)}
+h1{
+  font-family:'BrandDisplay',serif; font-weight:400;
+  font-size:76px; line-height:1.02; letter-spacing:-.02em; color:#fff;
+  margin-top:16px;
+}
+h1 em{font-style:italic; color:var(--champagne)}
+.foot{display:flex; align-items:baseline; justify-content:space-between; gap:32px}
+.foot p{font-size:16px; letter-spacing:.02em; color:rgba(241,231,206,.72); max-width:60ch}
+.foot span{font-weight:700; font-size:14px; letter-spacing:.14em; text-transform:uppercase; color:var(--gold); white-space:nowrap}
+.meta{display:flex; gap:34px; margin-top:20px}
+.meta div{border-left:1px solid rgba(201,168,76,.34); padding-left:14px}
+.meta b{display:block; font-weight:700; font-size:11px; letter-spacing:.20em; text-transform:uppercase; color:var(--gold)}
+.meta span{font-family:'BrandDisplay',serif; font-size:23px; color:#fff}
+</style></head><body>
+<div class="ring"></div><div class="ring2"></div>
+<div class="pad">
+  <div class="mark"><b>SKLARZ</b> <i>CREATIVE</i></div>
+  <div>
+    <div class="rule"></div>
+    <p class="eyebrow" id="eyebrow">Strategic brand &amp; marketing consultancy</p>
+    <h1 id="headline">Clarity is<br>the first act<br><em>of trust.</em></h1>
+    <div class="meta" id="meta" style="display:none"></div>
+  </div>
+  <div class="foot">
+    <p id="sub">Brand strategy · Creative direction · Research &amp; intelligence · Growth &amp; partnerships</p>
+    <span>sklarzcreative.com</span>
+  </div>
+</div>
+</body></html>

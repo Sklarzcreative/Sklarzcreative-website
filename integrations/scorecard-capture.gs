@@ -22,15 +22,29 @@
  *      insights/resources/trust-first-content-scorecard/index.html
  *      and leave mode as 'opaque'. Commit and push.
  *
+ * WHAT LANDS IN THE SHEET
+ * One row per person. The capture creates it with name, email, consent and any
+ * campaign parameters; if they go on to finish the twenty statements, the five
+ * category scores, the total, the band and the weakest signal are written onto
+ * that same row. That is what lets a follow-up email name the weakest signal
+ * instead of guessing.
+ *
  * NOTHING ELSE IN THE REPOSITORY NEEDS TO CHANGE, and no key goes near the
  * front end.
  */
 
 /** Header row, in order. Edit here and delete the sheet's first row to reset. */
 var HEADERS = [
-  'timestamp', 'first_name', 'email', 'follow_up_opt_in',
-  'resource', 'page', 'dwell_ms', 'spam_reason'
+  'timestamp', 'submission_id', 'first_name', 'email', 'follow_up_opt_in',
+  'resource', 'page',
+  'utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term',
+  'total_score', 'clarity', 'consistency', 'credibility', 'connection',
+  'conversion', 'weakest_signal', 'band', 'completed_at',
+  'dwell_ms', 'spam_reason'
 ];
+
+/** Which column holds what, derived from HEADERS so the two cannot drift. */
+function col_(name) { return HEADERS.indexOf(name) + 1; }
 
 /** A submission faster than this is not a human filling in two fields. */
 var MIN_DWELL_MS = 1500;
@@ -42,14 +56,17 @@ function doPost(e) {
       body = JSON.parse(e.postData.contents);
     }
 
-    var reason = spamReason_(body);
-    if (reason) {
-      // Recorded rather than silently dropped, so a false positive is visible.
-      append_(body, reason);
+    /* Two kinds of message. A capture creates the row; a result fills in the
+       score columns on the row the capture created. Keeping one row per person
+       means the sheet is the export and Make.com has one thing to watch. */
+    if (body.event === 'result') {
+      recordResult_(body);
       return reply_({ ok: true });
     }
 
-    append_(body, '');
+    var reason = spamReason_(body);
+    // Recorded rather than silently dropped, so a false positive is visible.
+    append_(body, reason);
     return reply_({ ok: true });
   } catch (err) {
     // Never surface a stack trace to a public endpoint.
@@ -72,25 +89,87 @@ function spamReason_(body) {
   return '';
 }
 
-function append_(body, spamReason) {
+function sheet_() {
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheets()[0];
-
   if (sheet.getLastRow() === 0) {
     sheet.appendRow(HEADERS);
     sheet.getRange(1, 1, 1, HEADERS.length).setFontWeight('bold');
     sheet.setFrozenRows(1);
   }
+  return sheet;
+}
 
-  sheet.appendRow([
-    new Date(),
-    String(body.first_name || '').slice(0, 120),
-    String(body.email || '').slice(0, 240),
-    body.follow_up_opt_in === 'yes' ? 'yes' : 'no',
-    String(body.resource || '').slice(0, 120),
-    String(body.page || '').slice(0, 240),
-    Number(body.dwell_ms) || '',
-    spamReason
-  ]);
+function str_(v, n) { return String(v == null ? '' : v).slice(0, n); }
+
+function append_(body, spamReason) {
+  var sheet = sheet_();
+  var row = [];
+  row[col_('timestamp') - 1]        = new Date();
+  row[col_('submission_id') - 1]    = str_(body.submission_id, 80);
+  row[col_('first_name') - 1]       = str_(body.first_name, 120);
+  row[col_('email') - 1]            = str_(body.email, 240);
+  row[col_('follow_up_opt_in') - 1] = body.follow_up_opt_in === 'yes' ? 'yes' : 'no';
+  row[col_('resource') - 1]         = str_(body.resource, 120);
+  row[col_('page') - 1]             = str_(body.page, 240);
+  ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term']
+    .forEach(function (k) { row[col_(k) - 1] = str_(body[k], 120); });
+  row[col_('dwell_ms') - 1]         = Number(body.dwell_ms) || '';
+  row[col_('spam_reason') - 1]      = spamReason;
+
+  for (var i = 0; i < HEADERS.length; i++) if (row[i] === undefined) row[i] = '';
+  sheet.appendRow(row);
+}
+
+/**
+ * Write the finished scores onto the row its capture created.
+ *
+ * If no matching row exists — the visitor completed the card without ever
+ * submitting the form, and reportAnonymous is on — the result is appended as a
+ * standalone row with no name or email. That gives a completion rate without
+ * attaching it to a person.
+ */
+function recordResult_(body) {
+  var sheet = sheet_();
+  var id = str_(body.submission_id, 80);
+  var scores = {
+    total_score: Number(body.total),
+    clarity: Number(body.clarity),
+    consistency: Number(body.consistency),
+    credibility: Number(body.credibility),
+    connection: Number(body.connection),
+    conversion: Number(body.conversion),
+    weakest_signal: str_(body.weakest_signal, 60),
+    band: str_(body.band, 60),
+    completed_at: str_(body.completed_at, 40)
+  };
+
+  var rowIndex = id ? findRowById_(sheet, id) : 0;
+
+  if (!rowIndex) {
+    var row = [];
+    row[col_('timestamp') - 1]     = new Date();
+    row[col_('submission_id') - 1] = id;
+    row[col_('resource') - 1]      = 'Trust-First Content Scorecard';
+    row[col_('spam_reason') - 1]   = id ? 'result_without_capture' : 'anonymous_result';
+    Object.keys(scores).forEach(function (k) { row[col_(k) - 1] = scores[k]; });
+    for (var i = 0; i < HEADERS.length; i++) if (row[i] === undefined) row[i] = '';
+    sheet.appendRow(row);
+    return;
+  }
+
+  Object.keys(scores).forEach(function (k) {
+    sheet.getRange(rowIndex, col_(k)).setValue(scores[k]);
+  });
+}
+
+function findRowById_(sheet, id) {
+  var last = sheet.getLastRow();
+  if (last < 2) return 0;
+  var ids = sheet.getRange(2, col_('submission_id'), last - 1, 1).getValues();
+  for (var i = ids.length - 1; i >= 0; i--) {          // newest first
+    if (String(ids[i][0]) === id) return i + 2;
+  }
+  return 0;
 }
 
 function reply_(obj) {
