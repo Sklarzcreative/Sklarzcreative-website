@@ -27,20 +27,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat:wght@600;700;800&family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/css/sklarz.css">
 
-<script>
-(function () {
-  var h = document.documentElement;
-  h.classList.add('js');
-  /* Decide the gate before first paint, so the page never flashes the
-     diagnostic and then hides it. Everything unexpected fails OPEN: if the URL
-     or storage cannot be read, the visitor gets the tool. */
-  try {
-    var open = new URLSearchParams(location.search).get('access') === '1';
-    if (!open) { try { open = localStorage.getItem('tfcs-access') === '1'; } catch (e) {} }
-    if (open) h.classList.add('tfcs-open');
-  } catch (e) { h.classList.add('tfcs-open'); }
-})();
-</script>
+<script>document.documentElement.classList.add('js');</script>
 
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[
 {"@type":"WebPage","@id":"https://sklarzcreative.com/insights/resources/trust-first-content-scorecard/#webpage","url":"https://sklarzcreative.com/insights/resources/trust-first-content-scorecard/","name":"Trust-First Content Scorecard","description":"A free 40-point diagnostic for scoring one real customer-facing touchpoint across clarity, consistency, credibility, connection, and conversion.","inLanguage":"en","isPartOf":{"@type":"CollectionPage","name":"Sklarz Creative Resources","url":"https://sklarzcreative.com/insights/resources/"},"breadcrumb":{"@id":"https://sklarzcreative.com/insights/resources/trust-first-content-scorecard/#breadcrumb"},"mainEntity":{"@id":"https://sklarzcreative.com/insights/resources/trust-first-content-scorecard/#howto"},"publisher":{"@type":"Organization","name":"Sklarz Creative","url":"https://sklarzcreative.com/","founder":{"@type":"Person","name":"Cassandra Sklarz","jobTitle":"Founder & Strategic Marketing Consultant"}}},
@@ -114,101 +101,6 @@
   </div>
 </section>
 
-<!-- ======================================================== GATE ========= -->
-<section class="section section--tight is-light score-access" id="access">
-  <div class="shell">
-
-    <!-- Shown once the diagnostic is open. -->
-    <div class="score-open">
-      <div class="notice">
-        <b>Scorecard open</b>
-        <p>
-          It is below, and it stays available on this browser. Score what is
-          actually present on the touchpoint, not what the brand intended to
-          communicate.
-        </p>
-      </div>
-    </div>
-
-    <!-- The ask. Hidden once the diagnostic is open. -->
-    <div class="score-gate">
-      <p class="eyebrow">Before you start</p>
-      <h2 class="display-m">Two fields, then it opens.</h2>
-      <p class="body-copy">
-        The scorecard opens on this page the moment you submit &mdash; there is
-        nothing to wait for in your inbox. Your name and email are recorded so
-        Sklarz Creative can see whether the tool is being used and worth
-        developing further.
-      </p>
-
-      <form id="capture" name="trust-first-scorecard"
-            method="POST"
-            action="/insights/resources/trust-first-content-scorecard/?access=1"
-            data-netlify="true" netlify-honeypot="company-website">
-
-        <!-- Netlify needs the form name in the body for the scripted POST, and
-             ignores it in the plain-HTML path. -->
-        <input type="hidden" name="form-name" value="trust-first-scorecard">
-        <input type="hidden" name="resource" value="Trust-First Content Scorecard">
-
-        <p class="form-hp" aria-hidden="true">
-          <label>Company website<input name="company-website" tabindex="-1" autocomplete="off"></label>
-        </p>
-
-        <div class="form-grid">
-          <div class="field">
-            <label for="first-name">First name</label>
-            <input id="first-name" name="first-name" type="text"
-                   autocomplete="given-name" required
-                   aria-describedby="first-name-msg">
-            <span class="field-msg" id="first-name-msg" role="alert"></span>
-          </div>
-
-          <div class="field">
-            <label for="email">Email address</label>
-            <input id="email" name="email" type="email"
-                   autocomplete="email" required
-                   aria-describedby="email-msg">
-            <span class="field-msg" id="email-msg" role="alert"></span>
-          </div>
-
-          <div class="field form-wide">
-            <label class="consent" for="follow-up">
-              <input type="checkbox" id="follow-up" name="follow-up-opt-in" value="yes">
-              <span>
-                Send me the short Trust-First follow-up series with practical
-                ways to improve my lowest-scoring category.
-              </span>
-            </label>
-          </div>
-
-          <div class="form-wide">
-            <button class="btn" type="submit"><span>Open the scorecard</span></button>
-            <p class="form-note" id="capture-status" role="status" aria-live="polite"></p>
-            <p class="form-note">
-              Optional. Leaving the box unchecked still opens the scorecard
-              &mdash; it only declines the follow-up emails.
-            </p>
-          </div>
-        </div>
-      </form>
-    </div>
-
-    <noscript>
-      <div class="notice">
-        <b>Scoring by hand</b>
-        <p>
-          JavaScript is switched off, so the running total, the category
-          subtotals, and the result band are not being calculated. Nothing is
-          missing: every statement is below. Mark each one 0, 1, or 2, add the
-          five category subtotals for a score out of 40, and read the result
-          against the four bands listed under &ldquo;Turn the score into a
-          decision&rdquo;. The page prints as a worksheet.
-        </p>
-      </div>
-    </noscript>
-  </div>
-</section>
 
 <!-- =================================================== SCORECARD ========= -->
 <section class="section is-warm score-shell" id="scorecard">
@@ -230,9 +122,26 @@
           <li><b>1</b> = partial or inconsistent</li>
           <li><b>2</b> = clear and present</li>
         </ul>
+        <noscript>
+          <div class="notice" style="margin-top:1.75rem">
+            <b>Scoring by hand</b>
+            <p>
+              JavaScript is switched off, so the running total, the category
+              subtotals and the result band are not being calculated. Nothing is
+              missing: every statement is below. Mark each one 0, 1, or 2, add
+              the five category subtotals for a score out of 40, and read the
+              result against the four bands listed under &ldquo;Turn the score
+              into a decision&rdquo;. The page prints as a worksheet.
+            </p>
+          </div>
+        </noscript>
       </div>
     </div>
 
+    <!-- The running total sticks within this wrapper, not within the whole
+         section. Scoped to the section it would pin itself over the intro
+         heading before the reader has seen a single statement. -->
+    <div class="score-run">
     <div id="categories">
       <section class="score-cat" data-name="Clarity">
         <div class="score-cat-head">
@@ -371,6 +280,7 @@
         <span id="bandText">Answer the statements above to see your result.</span>
         <span class="score-low" id="lowest"></span>
       </div>
+    </div>
     </div>
 
     <div class="score-actions">
@@ -579,138 +489,6 @@
 
   var printBtn = document.querySelector('[data-print]');
   if (printBtn) printBtn.addEventListener('click', function () { window.print(); });
-
-  /* ---------------------------------------------------------------- capture
-     Netlify Forms. The plain-HTML path (no JavaScript) posts the form and lets
-     Netlify redirect back with ?access=1. This scripted path posts the same
-     body in the background and opens the diagnostic immediately.
-
-     The ordering below is deliberate and is the whole design: the scorecard
-     opens whether or not the POST succeeds. A capture failure costs Sklarz
-     Creative a lead record; it must never cost the visitor the tool. */
-  var form = document.getElementById('capture');
-  if (!form) return;
-
-  var status = document.getElementById('capture-status');
-  var firstName = form.elements['first-name'];
-  var email = form.elements['email'];
-  var FAILED = 'Your details did not reach the server, so nothing was saved. The scorecard is open regardless.';
-
-  /* Native validation bubbles vanish and are not reliably announced. These
-     messages stay on the page and are wired to their input with
-     aria-describedby + role="alert". */
-  form.setAttribute('novalidate', 'novalidate');
-
-  function field(el) { return el.parentNode; }
-
-  function markInvalid(el, message) {
-    field(el).classList.add('is-invalid');
-    el.setAttribute('aria-invalid', 'true');
-    document.getElementById(el.id + '-msg').textContent = message;
-  }
-
-  function markValid(el) {
-    field(el).classList.remove('is-invalid');
-    el.removeAttribute('aria-invalid');
-    document.getElementById(el.id + '-msg').textContent = '';
-  }
-
-  [firstName, email].forEach(function (el) {
-    el.addEventListener('input', function () { if (el.value.trim()) markValid(el); });
-  });
-
-  function validate() {
-    var ok = true;
-
-    if (!firstName.value.trim()) {
-      markInvalid(firstName, 'Enter a first name.');
-      ok = false;
-    } else { markValid(firstName); }
-
-    var value = email.value.trim();
-    if (!value) {
-      markInvalid(email, 'Enter an email address.');
-      ok = false;
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value)) {
-      markInvalid(email, 'That does not look like a complete email address.');
-      ok = false;
-    } else { markValid(email); }
-
-    return ok;
-  }
-
-  function openScorecard() {
-    root.classList.add('tfcs-open');
-    try { localStorage.setItem('tfcs-access', '1'); } catch (e) {}
-
-    var heading = document.getElementById('scorecard-heading');
-    if (heading) {
-      heading.focus({ preventScroll: true });
-      heading.scrollIntoView({ block: 'start' });
-    }
-  }
-
-  form.addEventListener('submit', function (event) {
-    event.preventDefault();
-
-    if (!validate()) {
-      var bad = form.querySelector('.field.is-invalid input');
-      if (bad) bad.focus();
-      return;
-    }
-
-    var body;
-    try {
-      body = new URLSearchParams(new FormData(form)).toString();
-    } catch (e) {
-      /* No FormData/URLSearchParams: fall through to the plain form POST,
-         which Netlify handles on its own. */
-      form.submit();
-      return;
-    }
-
-    status.textContent = 'Sending…';
-
-    /* ------------------------------------------------------------------
-       FUTURE EMAIL-PROVIDER INTEGRATION POINT
-
-       Today this POST does one thing: it records the lead in Netlify Forms.
-       Nothing subscribes anyone to anything, and no autoresponder exists.
-
-       When an authenticated email provider is connected, the enrolment must
-       happen SERVER-SIDE, not here. A provider form ID or API key placed in
-       this file would be published to every visitor of a public site.
-
-       The place to add it is a Netlify Function subscribed to the
-       `submission-created` event:
-
-           netlify/functions/submission-created.js
-
-       That function receives the submission payload, and should:
-         1. read `payload.data['follow-up-opt-in']`
-         2. if it is exactly 'yes', call the provider's subscribe endpoint
-            with `payload.data.email` and `payload.data['first-name']`
-         3. otherwise do nothing at all — the lead is already captured, and
-            enrolling someone who declined is the one outcome this consent
-            checkbox exists to prevent
-         4. read the provider credential from `process.env`, set in
-            Netlify → Site configuration → Environment variables. Never from
-            a file in this repository.
-
-       See docs/08-scorecard-capture.md for the full contract.
-       ------------------------------------------------------------------ */
-    fetch(location.pathname, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: body
-    }).then(function (response) {
-      status.textContent = response.ok ? '' : FAILED;
-    })['catch'](function () {
-      status.textContent = FAILED;
-    });
-
-    openScorecard();
-  });
 })();
 </script>
 </body>

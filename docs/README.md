@@ -45,9 +45,9 @@ piece of IP. What changed, and the rule it all follows:
 | | Before | After |
 | --- | --- | --- |
 | Statements | Generated in JavaScript | Authored in HTML — scripting off leaves a complete, printable instrument |
-| Access | Depended on a form POST and a Netlify redirect | Revealed locally and first; the capture POST follows and is not awaited |
-| Capture | — | Netlify Forms `trust-first-scorecard`: first name, email, honeypot, and an **unchecked, optional** follow-up consent |
-| Email sequence | — | Not connected, and not pretended to be. The integration point is documented in [08](./08-scorecard-capture.md) |
+| Access | Depended on a form POST and a Netlify redirect | Open. No gate, no ask, no stored access |
+| Capture | — | **Off.** `sklarzcreative.com` is served by GitHub Pages, which cannot process a form post. Netlify has skipped every production deploy since 9 August, so Netlify Forms was never available. See [08](./08-scorecard-capture.md) |
+| Email sequence | — | Not connected, and not pretended to be |
 | Styling | A ~9 KB page-specific `<style>` block | Reconciled into `sklarz.css` §16b. The page carries no `<style>` block |
 | Radio groups | Twenty groups all named "Score 0, 1, or 2" | One `<fieldset>`/`<legend>` per statement |
 | Result | Total and band | Total, band, and **the weakest signal named** |
@@ -76,8 +76,11 @@ argument. Restraint is the deliverable.
 | `index.html` | The homepage — the reference implementation of the system. |
 | `_original-design/` | The complete pre-redesign site, plus rollback instructions. |
 
-No build step, no framework, no npm. It is a static site on GitHub Pages, and
-editing a file is deploying.
+No build step, no framework, no npm. It is a static site on **GitHub Pages**,
+deploy-from-branch on `main` — so merging to `main` is deploying, and it is
+free and unmetered on a public repository. A Netlify project also exists but
+has skipped every production deploy since 9 August (credit ceiling) and does
+not serve the domain.
 
 ## Rolling back
 

@@ -239,23 +239,17 @@ region it never looked at is worse than no tool.*
 
 - **0 issues** across 14 routes at 1440 / 834 / 390px — contrast, alt text,
   accessible names, heading order, duplicate ids, tap targets, horizontal
-  overflow. Both scorecard states included.
+  overflow.
 - **Scoring, at every boundary:** all zeroes → 0; all twos → 40; each category
   maxes at 8; the total always equals the sum of the five subtotals; the bands
   flip at exactly 32 / 24 / 16 (tested at 40, 32, 31, 24, 23, 16, 15, 0); an
   incomplete card reports "*n* of 20 answered" and claims neither a band nor a
   weakest signal.
-- **Gate:** locked by default, opens on submit, opens on `?access=1`, remembers
-  a returning visitor, and stays open. Fails open on every error path.
-- **Validation:** empty name, empty email and malformed email each produce a
-  persistent on-page message, `aria-invalid`, and focus moved to the first bad
-  field. The scorecard does not open on an invalid submit.
-- **Keyboard only:** the whole form is reachable, the honeypot is not in the
-  tab order, arrow keys move within a score group, and every control has a
-  visible focus ring on both grounds.
-- **JavaScript disabled:** the page is 6,457px of complete content — all twenty
-  statements, all sixty radios, the band reference, and the gate.
-- **Print:** navigation, footer, CTA band, gate and the print button all drop;
+- **Keyboard only:** arrow keys move within a score group, and every control
+  has a visible focus ring on both grounds.
+- **JavaScript disabled:** the page is complete content — all twenty
+  statements, all sixty radios, and the band reference.
+- **Print:** navigation, footer, CTA band and the print button all drop;
   the title, statements, subtotals and result print black; the chosen score
   prints as a solid inked box (forced, because browsers drop backgrounds and a
   gold fill dies on a mono printer); categories avoid page breaks.
@@ -264,13 +258,53 @@ region it never looked at is worse than no tool.*
 - **Mobile nav** on all three affected routes: opens, traps focus, locks body
   scroll, closes on Escape, returns focus to the toggle.
 
+The gate that existed at the time of this pass was also fully tested and
+passed — locked by default, opening on submit and on `?access=1`, remembering a
+returning visitor, failing open on every error path, with accessible validation
+on all three fields and the honeypot kept out of the tab order. It is no longer
+on the page; see the correction immediately below. Those results are recorded
+because they are what makes commit `1aa56c8` a trustworthy restore point.
+
+### Correction — the host, and what it did to the capture
+
+The capture work above was built against Netlify Forms. That premise was
+wrong, and the evidence arrived after it was built:
+
+- **Netlify has skipped every production deploy since 9 August**, each marked
+  *"Skipped — account credit usage exceeded"* — including `e5aa3a6`,
+  `d81042b` and `f51403f`.
+- **The live site is serving `e5aa3a6`.** Its
+  `/insights/resources/trust-first-content-scorecard/` route only came into
+  existence in `f51403f` on 22 August, a commit Netlify skipped.
+- Therefore **GitHub Pages serves `sklarzcreative.com`**, consistent with
+  Pages run #49 succeeding on `main @ e5aa3a6`.
+
+GitHub Pages serves static files and nothing else — it cannot process a form
+post. So the gate was removed and the Scorecard ships **open**. Full reasoning
+and the restore path in [08](./08-scorecard-capture.md); the working
+implementation is preserved in commit `1aa56c8`.
+
+Issues 18–19 in the table above were fixed on their merits and still hold: the
+statements are authored in HTML rather than generated, so the instrument
+survives a scripting failure, and access was never allowed to depend on a
+network round-trip. That second decision is why removing the capture cost
+nothing — the reveal never waited on it.
+
+**Verified after removal:** no page errors, no surviving `tfcs-open` rule (the
+retired rules are inside a comment — confirmed by walking the parsed
+stylesheet, not by grep), the diagnostic unconditionally visible, 20
+fieldsets, 60 radios, no form element on the page, scoring still reaching
+40/40 with the correct band, and the now-meaningless `?access=1` link still
+landing on a working page.
+
 ### Still requires the deployed domain ⚠️
 
 | Item | Why local testing cannot settle it |
 | --- | --- |
-| **Netlify form detection** | Netlify parses the deployed HTML at build time. The form is correctly marked (`name`, `data-netlify`, `netlify-honeypot`, hidden `form-name`, every field named), but only a real build can register `trust-first-scorecard`. |
-| **A real submission** | There is no Netlify in front of a local static server. The background POST fails locally and the page correctly reports that it failed — which is the behaviour worth testing here, not the capture. |
-| **The `action` redirect** (no-JavaScript path) | Netlify performs that redirect. Locally the native POST hits a static server. |
+| Real LCP / CLS / INP, Lighthouse | Needs the live URL. |
+| **Playfair Display actually rendering** | Google Fonts is blocked by this environment's egress proxy, so display type has never been seen here. |
+| Social share cards | `social-share.png` is still 1254×1254 square while declared `summary_large_image`, so platforms will crop it. |
+| Safari / Firefox / iOS rendering | Real browsers vary on `backdrop-filter`, `text-wrap: balance`, `aspect-ratio` and WebGL precision. |
 | Everything in the first pass's live-domain table | Unchanged. |
 
 ## Known accepted trade-offs
