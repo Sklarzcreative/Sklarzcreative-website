@@ -15,7 +15,8 @@ record.
 | 05 | [Building It With Claude](./05-build-with-claude.md) | The staged prompts that produced this build, for extending it without writing code. |
 | 06 | [Making It Feel $20K+](./06-making-it-feel-premium.md) | Audit of what read as generic before, and the exact change made in each case. |
 | 07 | [Final Polish & Launch QA](./07-launch-qa.md) | Every issue found and fixed, what was verified locally, what needs the live domain, and the launch checklist. |
-| 08 | [Scorecard Capture & Delivery](./08-scorecard-capture.md) | How the Trust-First Content Scorecard captures a lead, why access never depends on it, and where an email provider connects later. |
+| 08 | [Printed Output](./08-scorecard-capture.md) | How the Scorecard behaves on paper: letterhead, signature block, inked scores, and the print rhythm. |
+| 09 | [Lead Capture](./09-lead-capture.md) | How the Scorecard captures a name and email on a static host, why the diagnostic never depends on it, and the one step that switches it on. |
 
 ## Update — 22 August 2026 · strategic positioning pass
 
@@ -46,7 +47,7 @@ piece of IP. What changed, and the rule it all follows:
 | --- | --- | --- |
 | Statements | Generated in JavaScript | Authored in HTML — scripting off leaves a complete, printable instrument |
 | Access | Depended on a form POST and a Netlify redirect | Open. No gate, no ask, no stored access |
-| Capture | — | **Off.** `sklarzcreative.com` is served by GitHub Pages, which cannot process a form post. Netlify has skipped every production deploy since 9 August, so Netlify Forms was never available. See [08](./08-scorecard-capture.md) |
+| Capture | — | Built, tested, and shipping **switched off** until an endpoint exists. GitHub Pages cannot process a form post, so capture happens off-host — see [09](./09-lead-capture.md) |
 | Email sequence | — | Not connected, and not pretended to be |
 | Styling | A ~9 KB page-specific `<style>` block | Reconciled into `sklarz.css` §16b. The page carries no `<style>` block |
 | Radio groups | Twenty groups all named "Score 0, 1, or 2" | One `<fieldset>`/`<legend>` per statement |
@@ -78,16 +79,16 @@ argument. Restraint is the deliverable.
 | `_original-design/` | The complete pre-redesign site, plus rollback instructions. |
 
 No build step, no framework, no npm. It is a static site on **GitHub Pages**,
-deploy-from-branch on `main` — so merging to `main` is deploying, and it is
-free and unmetered on a public repository. A Netlify project also exists but
-has skipped every production deploy since 9 August (credit ceiling) and does
-not serve the domain.
+deploy-from-branch on `main` — so pushing to `main` is deploying, and it is free
+and unmetered on a public repository. **GitHub Pages is the only host.** No
+workflow in the repository writes to it or deploys anywhere else.
 
 ## Rolling back
 
-If you don't like the redesign, [`_original-design/RESTORE.md`](../_original-design/RESTORE.md)
-documents three ways to undo it. The `main` branch is untouched and still holds
-the original site exactly as it shipped.
+`main` holds the redesign — it is what is live. The previous site is preserved
+on the permanent branch `pre-luxury-redesign-2026-08-22` (pinned to `e5aa3a6`)
+and, page by page, in [`_original-design/`](../_original-design/RESTORE.md).
+Rollback steps are in the [root README](../README.md#rolling-back-the-redesign).
 
 ## Rules that are load-bearing
 

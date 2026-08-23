@@ -1,5 +1,10 @@
 User-agent: *
 Allow: /
+
+# The archived pre-redesign site. Kept for rollback, not for indexing.
 Disallow: /_original-design/
+# Build and integration source, not content.
+Disallow: /docs/
+Disallow: /integrations/
 
 Sitemap: https://sklarzcreative.com/sitemap.xml

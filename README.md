@@ -26,8 +26,58 @@ assets/js/motion.js         The motion system
 assets/graphics/*.svg       Editorial diagrams
 assets/images/              Optimised imagery
 docs/                       Design and build documentation — start here
+integrations/               Off-host glue (the Scorecard capture endpoint)
 _original-design/           The complete pre-redesign site + rollback guide
+CNAME                       Custom domain for GitHub Pages
+.nojekyll                   Serve underscore-prefixed paths
 ```
+
+## Deployment
+
+| | |
+| --- | --- |
+| **Host** | **GitHub Pages — the only host.** Netlify is retired and serves nothing. |
+| **Publishing source** | Deploy from a branch: `main`, root (`/`). No Actions workflow, no build step. |
+| **Production branch** | `main`. Pushing to it *is* deploying — GitHub's built-in `pages build and deployment` runs and publishes in about 30 seconds. |
+| **Custom domain** | `sklarzcreative.com`, set by the `CNAME` file at the repository root. |
+| **Jekyll** | Disabled by `.nojekyll`, so paths beginning with `_` (such as `_original-design/`) are served rather than skipped. |
+| **Rollback** | `pre-luxury-redesign-2026-08-22` — a permanent branch pinned to `e5aa3a6`, the last pre-redesign commit. See below. |
+
+**There is exactly one deployment path.** No workflow in this repository writes
+to the repository or deploys anywhere. Deploy-from-branch was chosen over a
+GitHub Actions workflow because there is nothing to build: an Actions pipeline
+would add a YAML file, a runner, and a class of failure, in exchange for
+copying files that are already in their final form.
+
+### DNS
+
+Verified by live lookup, both already correct — **nothing points at any other
+host**:
+
+| Record | Name | Value |
+| --- | --- | --- |
+| `A` | `sklarzcreative.com` | `185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153` |
+| `CNAME` | `www` | `sklarzcreative.github.io` |
+
+The apex is canonical. Every `<link rel="canonical">`, every `og:url` and every
+`sitemap.xml` entry uses `https://sklarzcreative.com/`, and GitHub Pages
+redirects `www` to the apex on its own because the custom domain is set to the
+apex and the `www` CNAME exists.
+
+Optional, not required: GitHub also publishes `AAAA` records for IPv6
+(`2606:50c0:8000::153` through `…8003::153`). None are currently set, and the
+site works without them.
+
+### Lead capture
+
+The Trust-First Content Scorecard can capture a name and email, but ships with
+that **switched off** — GitHub Pages cannot process a form post, so capture
+happens off-host. One line in the scorecard page turns it on once an endpoint
+exists. See [`docs/09-lead-capture.md`](./docs/09-lead-capture.md) and
+[`integrations/scorecard-capture.gs`](./integrations/scorecard-capture.gs).
+
+No credential belongs in this repository. The capture endpoint is a public,
+write-only URL; any real key lives in the external service's own settings.
 
 ## Documentation
 
@@ -72,7 +122,20 @@ system is derived from those two — no new hue is introduced anywhere.
 
 ## Rolling back the redesign
 
-The previous site is preserved in full. See
-[`_original-design/RESTORE.md`](./_original-design/RESTORE.md) for three ways to
-undo it. The `main` branch is untouched and still holds the original exactly as
-it shipped.
+`main` now holds the redesign — it is what is live. The previous site is
+preserved two ways:
+
+1. **`pre-luxury-redesign-2026-08-22`**, a permanent branch pinned to `e5aa3a6`,
+   the exact commit that was serving before the redesign. Do not delete it.
+
+   ```bash
+   git checkout main
+   git reset --hard pre-luxury-redesign-2026-08-22
+   git push --force-with-lease origin main
+   ```
+
+   Pages rebuilds in about 30 seconds.
+
+2. **`_original-design/`**, a complete copy of every original page with its own
+   inline CSS, so any single page can be recovered without reverting anything.
+   See [`_original-design/RESTORE.md`](./_original-design/RESTORE.md).

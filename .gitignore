@@ -1,7 +1,7 @@
 # This repository is public. Nothing that could carry a credential belongs in
-# it — provider keys live in Netlify → Site configuration → Environment
-# variables. These patterns are here so an accidental `git add .` cannot
-# publish one.
+# it — the lead-capture endpoint is a public write-only URL, and any real key
+# lives in the external service's own settings, never here. These patterns are
+# so an accidental `git add .` cannot publish one.
 .env
 .env.*
 !.env.example

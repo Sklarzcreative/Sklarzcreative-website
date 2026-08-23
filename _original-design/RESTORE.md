@@ -58,21 +58,27 @@ The original pages carry their own inline CSS, so the site returns to its exact
 previous appearance immediately. The new `assets/css/` and `assets/js/` files
 become unused and can be deleted or simply left in place.
 
-### Option 2 — restore the whole repository from `main`
+### Option 2 — restore the whole repository from the backup branch
 
-The `main` branch has **not** been touched by this redesign. It still holds the
-original site exactly as it was. To throw away the redesign entirely:
+> **Updated after launch.** The redesign has shipped, so `main` now holds the
+> *redesign* — it is what is live. The original is preserved on a permanent
+> branch instead: **`pre-luxury-redesign-2026-08-22`**, pinned to `e5aa3a6`, the
+> exact commit that was serving before the redesign. Do not delete that branch.
+
+To put the original site back live:
 
 ```bash
+git fetch origin
 git checkout main
+git reset --hard pre-luxury-redesign-2026-08-22
+git push --force-with-lease origin main
 ```
 
-To reset the redesign branch back to the original state:
+GitHub Pages rebuilds automatically, in about 30 seconds. To inspect the
+original without changing what is live:
 
 ```bash
-git fetch origin main
-git checkout claude/sklarz-creative-redesign-8yd5he
-git reset --hard origin/main
+git checkout pre-luxury-redesign-2026-08-22
 ```
 
 ### Option 3 — recover a single original file from git history

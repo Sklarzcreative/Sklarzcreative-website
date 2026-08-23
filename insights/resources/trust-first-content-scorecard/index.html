@@ -27,7 +27,39 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat:wght@600;700;800&family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/css/sklarz.css">
 
-<script>document.documentElement.classList.add('js');</script>
+<script>
+/* ── LEAD CAPTURE ─────────────────────────────────────────────────────────
+   Paste the capture endpoint URL between the quotes to switch the ask on.
+   Until it is set, no ask is shown and the diagnostic opens immediately — so
+   the page is never broken and never collects into a void.
+
+   mode 'opaque'  Google Apps Script web app. Apps Script sends no CORS
+                  headers, so the POST is fire-and-forget: it lands, but the
+                  browser cannot read the response. That suits this design,
+                  which never waits on the capture anyway.
+   mode 'cors'    A form service that answers with CORS headers (Formspree,
+                  Basin, Getform). Delivery is then confirmable.
+
+   The URL is a public write-only endpoint, not a credential. Never put an API
+   key or private token here — this repository is public.
+   See docs/09-lead-capture.md.
+   ──────────────────────────────────────────────────────────────────────── */
+window.TFCS_CAPTURE = { endpoint: '', mode: 'opaque' };
+
+(function () {
+  var h = document.documentElement;
+  h.classList.add('js');
+  /* Decided before first paint so the page never flashes the diagnostic and
+     then hides it. Every unexpected path fails OPEN — the visitor gets the
+     tool. */
+  try {
+    if (!window.TFCS_CAPTURE.endpoint) { h.classList.add('tfcs-open', 'tfcs-nogate'); return; }
+    var open = new URLSearchParams(location.search).get('access') === '1';
+    if (!open) { try { open = localStorage.getItem('tfcs-access') === '1'; } catch (e) {} }
+    if (open) h.classList.add('tfcs-open');
+  } catch (e) { h.classList.add('tfcs-open', 'tfcs-nogate'); }
+})();
+</script>
 
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[
 {"@type":"WebPage","@id":"https://sklarzcreative.com/insights/resources/trust-first-content-scorecard/#webpage","url":"https://sklarzcreative.com/insights/resources/trust-first-content-scorecard/","name":"Trust-First Content Scorecard","description":"A free 40-point diagnostic for scoring one real customer-facing touchpoint across clarity, consistency, credibility, connection, and conversion.","inLanguage":"en","isPartOf":{"@type":"CollectionPage","name":"Sklarz Creative Resources","url":"https://sklarzcreative.com/insights/resources/"},"breadcrumb":{"@id":"https://sklarzcreative.com/insights/resources/trust-first-content-scorecard/#breadcrumb"},"mainEntity":{"@id":"https://sklarzcreative.com/insights/resources/trust-first-content-scorecard/#howto"},"publisher":{"@type":"Organization","name":"Sklarz Creative","url":"https://sklarzcreative.com/","founder":{"@type":"Person","name":"Cassandra Sklarz","jobTitle":"Founder & Strategic Marketing Consultant"}}},
@@ -108,6 +140,80 @@
   </div>
 </section>
 
+
+<!-- ======================================================== GATE ========= -->
+<!-- Shown only when a capture endpoint is configured (see the head script).
+     The whole block is display:none without JavaScript, because the submit
+     path needs it — a form that cannot be submitted should not be offered. -->
+<section class="section section--tight is-light score-access" id="access">
+  <div class="shell">
+
+    <div class="score-open">
+      <div class="notice">
+        <b>Scorecard open</b>
+        <p>
+          It is below, and it stays available on this browser. Score what is
+          actually present on the touchpoint, not what the brand intended to
+          communicate.
+        </p>
+      </div>
+    </div>
+
+    <div class="score-gate">
+      <p class="eyebrow">Before you start</p>
+      <h2 class="display-m">Two fields, then it opens.</h2>
+      <p class="body-copy">
+        The scorecard opens on this page the moment you submit &mdash; there is
+        nothing to wait for in your inbox. Your name and email are recorded so
+        Sklarz Creative can see whether the tool is being used and worth
+        developing further.
+      </p>
+
+      <form id="capture" novalidate>
+        <p class="form-hp" aria-hidden="true">
+          <label>Company website<input name="company_website" tabindex="-1" autocomplete="off"></label>
+        </p>
+
+        <div class="form-grid">
+          <div class="field">
+            <label for="first-name">First name</label>
+            <input id="first-name" name="first_name" type="text"
+                   autocomplete="given-name" required
+                   aria-describedby="first-name-msg">
+            <span class="field-msg" id="first-name-msg" role="alert"></span>
+          </div>
+
+          <div class="field">
+            <label for="email">Email address</label>
+            <input id="email" name="email" type="email"
+                   autocomplete="email" required
+                   aria-describedby="email-msg">
+            <span class="field-msg" id="email-msg" role="alert"></span>
+          </div>
+
+          <div class="field form-wide">
+            <label class="consent" for="follow-up">
+              <input type="checkbox" id="follow-up" name="follow_up_opt_in" value="yes">
+              <span>
+                Send me the short Trust-First follow-up series with practical
+                ways to improve my lowest-scoring category.
+              </span>
+            </label>
+          </div>
+
+          <div class="form-wide">
+            <button class="btn" type="submit"><span>Open the scorecard</span></button>
+            <p class="form-note" id="capture-status" role="status" aria-live="polite"></p>
+            <p class="form-note">
+              Optional. Leaving the box unchecked still opens the scorecard
+              &mdash; it only declines the follow-up emails.
+            </p>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
 
 <!-- =================================================== SCORECARD ========= -->
 <section class="section is-warm score-shell" id="scorecard">
@@ -512,6 +618,102 @@
 
   var printBtn = document.querySelector('[data-print]');
   if (printBtn) printBtn.addEventListener('click', function () { window.print(); });
+
+  /* ---------------------------------------------------------------- capture
+     Ordering is the whole design: validate locally, open the diagnostic, then
+     post. The POST is never awaited and never gates access. A capture that
+     fails costs Sklarz Creative a lead record; it must never cost the visitor
+     the tool. */
+  var cfg = window.TFCS_CAPTURE || { endpoint: '', mode: 'opaque' };
+  var form = document.getElementById('capture');
+  if (!form || !cfg.endpoint) return;
+
+  var status = document.getElementById('capture-status');
+  var firstName = form.elements['first_name'];
+  var email = form.elements['email'];
+  var loadedAt = Date.now();
+
+  function field(el) { return el.parentNode; }
+  function markInvalid(el, message) {
+    field(el).classList.add('is-invalid');
+    el.setAttribute('aria-invalid', 'true');
+    document.getElementById(el.id + '-msg').textContent = message;
+  }
+  function markValid(el) {
+    field(el).classList.remove('is-invalid');
+    el.removeAttribute('aria-invalid');
+    document.getElementById(el.id + '-msg').textContent = '';
+  }
+
+  [firstName, email].forEach(function (el) {
+    el.addEventListener('input', function () { if (el.value.trim()) markValid(el); });
+  });
+
+  function validate() {
+    var ok = true;
+    if (!firstName.value.trim()) { markInvalid(firstName, 'Enter a first name.'); ok = false; }
+    else { markValid(firstName); }
+    var value = email.value.trim();
+    if (!value) { markInvalid(email, 'Enter an email address.'); ok = false; }
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value)) {
+      markInvalid(email, 'That does not look like a complete email address.'); ok = false;
+    } else { markValid(email); }
+    return ok;
+  }
+
+  function openScorecard() {
+    document.documentElement.classList.add('tfcs-open');
+    try { localStorage.setItem('tfcs-access', '1'); } catch (e) {}
+    var heading = document.getElementById('scorecard-heading');
+    if (heading) { heading.focus({ preventScroll: true }); heading.scrollIntoView({ block: 'start' }); }
+  }
+
+  form.addEventListener('submit', function (event) {
+    event.preventDefault();
+    if (!validate()) {
+      var bad = form.querySelector('.field.is-invalid input');
+      if (bad) bad.focus();
+      return;
+    }
+
+    var payload = {
+      first_name: firstName.value.trim(),
+      email: email.value.trim(),
+      follow_up_opt_in: form.elements['follow_up_opt_in'].checked ? 'yes' : 'no',
+      resource: 'Trust-First Content Scorecard',
+      /* Spam signals, checked server-side. A bot fills hidden fields and
+         submits in well under a second. */
+      company_website: form.elements['company_website'].value,
+      dwell_ms: Date.now() - loadedAt,
+      page: location.pathname
+    };
+
+    if (cfg.mode === 'cors') {
+      /* A service that answers with CORS headers, so delivery is knowable. */
+      fetch(cfg.endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify(payload)
+      }).then(function (r) {
+        status.textContent = r.ok ? '' : 'Your details did not reach the server, so nothing was saved. The scorecard is open regardless.';
+      })['catch'](function () {
+        status.textContent = 'Your details did not reach the server, so nothing was saved. The scorecard is open regardless.';
+      });
+    } else {
+      /* Google Apps Script sends no CORS headers, so this is deliberately
+         fire-and-forget: text/plain avoids a preflight the endpoint would fail,
+         and the opaque response cannot be inspected. Nothing is claimed about
+         delivery here, because nothing can be known about it. */
+      fetch(cfg.endpoint, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload)
+      })['catch'](function () {});
+    }
+
+    openScorecard();
+  });
 })();
 </script>
 </body>

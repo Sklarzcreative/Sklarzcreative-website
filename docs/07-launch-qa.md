@@ -265,6 +265,13 @@ on all three fields and the honeypot kept out of the tab order. It is no longer
 on the page; see the correction immediately below. Those results are recorded
 because they are what makes commit `1aa56c8` a trustworthy restore point.
 
+> **Note, added later.** Netlify has since been retired entirely. It never
+> served the domain and no longer exists in this architecture. The Netlify
+> references below are kept because they are the record of how the hosting
+> question was actually resolved — they are history, not instructions. Current
+> hosting is documented in the [root README](../README.md#deployment) and
+> capture in [09](./09-lead-capture.md).
+
 ### Correction — the host, and what it did to the capture
 
 The capture work above was built against Netlify Forms. That premise was

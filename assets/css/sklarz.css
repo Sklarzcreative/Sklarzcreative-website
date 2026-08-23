@@ -1670,10 +1670,10 @@ html { scroll-padding-bottom: 8rem; }
 .form-note { margin: 1.1rem 0 0; font-size: .86rem; line-height: 1.6; color: var(--ink-faint); }
 .form-note a { text-decoration: underline; text-underline-offset: .18em; }
 
-/* Netlify's spam trap. Positioned off-screen rather than display:none, because
-   a bot that skips hidden inputs would skip the trap too. aria-hidden on the
-   wrapper and tabindex="-1" on the input keep it out of the keyboard order and
-   out of the accessibility tree. */
+/* Spam trap. Positioned off-screen rather than display:none, because a bot
+   that skips hidden inputs would skip the trap too. aria-hidden on the wrapper
+   and tabindex="-1" on the input keep it out of the keyboard order and out of
+   the accessibility tree. Anything typed here is rejected server-side. */
 .form-hp {
   position: absolute !important;
   left: -9999px !important;
@@ -1701,20 +1701,25 @@ html { scroll-padding-bottom: 8rem; }
 }
 .notice p { margin: 0; font-size: .93rem; line-height: 1.65; color: var(--ink-muted); }
 
-/* NOTE — the gate is not currently in use.
-   The Scorecard ships open: sklarzcreative.com is served from GitHub Pages,
-   which cannot process a form post, so an ask in front of the diagnostic would
-   collect nothing while costing a step. The components above are kept because
-   they are generic form components, and because restoring the gate is a paste
-   from commit 1aa56c8 plus a working endpoint. See docs/08-scorecard-capture.md.
+/* The gate and the diagnostic swap places.
 
-   If it is restored, these are the rules that drive it — all scoped to
-   `html.js` so a scripting failure hides nothing:
+   `.score-gate` is display:none by default and only revealed by `html.js`,
+   because submitting needs JavaScript — a form that cannot be submitted should
+   not be offered. `html.tfcs-nogate` suppresses it entirely, which is what the
+   head script sets when no capture endpoint is configured.
 
-     html.js .score-shell, html.js .score-open  { display: none; }
-     html.js.tfcs-open .score-shell             { display: block; }
-     html.js.tfcs-open .score-open              { display: block; }
-     html.js.tfcs-open .score-gate              { display: none; }
+   The reveal rules are scoped to `html.js` so that with scripting unavailable
+   none of them apply: no ask, and the full scorecard renders. Every statement
+   stays readable, scoreable on paper and printable; only the live total is
+   lost, and a <noscript> note says so. */
+.score-gate { display: none; }
+html.js .score-gate { display: block; }
+html.js .score-shell,
+html.js .score-open { display: none; }
+html.js.tfcs-open .score-shell { display: block; }
+html.js.tfcs-open .score-open { display: block; }
+html.js.tfcs-open .score-gate { display: none; }
+html.tfcs-nogate .score-access { display: none !important; }
 
 /* Write-in fields for the follow-up decisions, usable on screen and on paper. */
 .write-in {
