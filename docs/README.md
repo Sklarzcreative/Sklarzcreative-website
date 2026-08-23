@@ -16,6 +16,7 @@ record.
 | 06 | [Making It Feel $20K+](./06-making-it-feel-premium.md) | Audit of what read as generic before, and the exact change made in each case. |
 | 07 | [Final Polish & Launch QA](./07-launch-qa.md) | Every issue found and fixed, what was verified locally, what needs the live domain, and the launch checklist. |
 | 08 | [Scorecard Capture & Delivery](./08-scorecard-capture.md) | How the Trust-First Content Scorecard captures a lead, why access never depends on it, and where an email provider connects later. |
+| — | [Claude Code prompt memory](./ai-prompts/claude-code/) | The standing website workflow, the archive of the prompts that directed this work, and the index to it. `WEBSITE_WORKFLOW.md` loads into project memory via the root `CLAUDE.md`. |
 
 ## Update — 22 August 2026 · strategic positioning pass
 
