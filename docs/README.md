@@ -46,7 +46,7 @@ piece of IP. What changed, and the rule it all follows:
 | | Before | After |
 | --- | --- | --- |
 | Statements | Generated in JavaScript | Authored in HTML — scripting off leaves a complete, printable instrument |
-| Access | Depended on a form POST and a Netlify redirect | Open. No gate, no ask, no stored access |
+| Access | Depended on a form POST and a host-side redirect | Revealed locally and first; the capture POST follows and is never awaited |
 | Capture | — | Built, tested, and shipping **switched off** until an endpoint exists. GitHub Pages cannot process a form post, so capture happens off-host — see [09](./09-lead-capture.md) |
 | Email sequence | — | Not connected, and not pretended to be |
 | Styling | A ~9 KB page-specific `<style>` block | Reconciled into `sklarz.css` §16b. The page carries no `<style>` block |
