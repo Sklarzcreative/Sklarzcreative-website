@@ -120,7 +120,43 @@ today, and the site does not claim it does.**
 | --- | --- |
 | Normal | The full diagnostic, immediately, with a live total, category subtotals, result band and named weakest signal. |
 | **JavaScript off** | All twenty statements as real `<fieldset>`s with working radios, the four bands printed on the page, and a `<noscript>` note explaining that only the running total is missing. The page prints as a worksheet. |
-| Print / Save as PDF | Navigation, footer, CTA band and the print button drop. Statements, subtotals and the result print black, with the chosen score inked solid. |
+| Print / Save as PDF | Navigation, footer, CTA band and the print button drop. Statements, subtotals and the result print black, with the chosen score inked solid. The sheet carries its own letterhead and colophon — see below. |
+
+### The printed sheet is a document, not a screenshot
+
+A completed scorecard gets filed, forwarded, or handed to a client. It arrives
+with no header, no navigation and no address bar, so it has to say who produced
+it and where it came from on its own.
+
+Two print-only components in `sklarz.css` §17b do that:
+
+| Component | What it puts on paper |
+| --- | --- |
+| `.print-masthead` | Letterhead: the wordmark, the practice line, and a navy rule. First thing on page one. |
+| `.print-colophon` | A navy rule, then the signature block — *Cassandra Sklarz*, Founder & Strategic Marketing Consultant — with the document title, its URL, the discovery-call link and the copyright line opposite. `break-inside: avoid`, because a signature split across a page break is worse than a short last page. |
+
+Three decisions in there are print decisions rather than screen ones:
+
+1. **Structure is drawn with borders and type, never backgrounds.** Browsers
+   drop background colours when printing but honour border and text colour.
+2. **The wordmark's gold half uses `--gold-ink`, not `--gold`.** Brand gold sits
+   around 65% luminance and turns to pale grey on a monochrome printer.
+   `--gold-ink` is the token that exists for exactly this problem.
+3. **Site-relative links print their full host.** `a[href^="/"]::after`
+   prepends `sklarzcreative.com`, because `(/insights/…)` on paper has no
+   address bar to resolve against. Absolute hrefs already carry their host and
+   are left alone.
+
+The signature is **typographic** — the name set in italic Playfair, which is
+the signature voice the site already uses in the founder section. It is not a
+facsimile of a handwritten signature, and one should not be invented. If a real
+signature mark is wanted, supply it as a transparent PNG or SVG and it can
+replace the `<b>` in `.print-sign`.
+
+The vertical rhythm also collapses in print: `--space-section` drops from up to
+12.5rem to 2.25rem and `.page-hero` loses the padding that exists to clear the
+fixed header. On screen that generosity is the design; on paper it was blank
+sheets. It saves a page on the scorecard and costs nothing elsewhere.
 
 **The statements are authored in HTML, not generated in JavaScript.** That is
 what makes the no-JavaScript row above true. An earlier implementation built

@@ -20,6 +20,7 @@
    15  Footer
    16  Cursor
    17  Utilities
+   17b Print stationery
    18  Responsive
    19  Reduced motion & print
    ========================================================================== */
@@ -1905,6 +1906,89 @@ html { scroll-padding-bottom: 8rem; }
 .asset .link-arrow { margin-top: auto; }
 
 /* --------------------------------------------------------------------------
+   17b  PRINT STATIONERY
+   Letterhead and colophon for pages designed to be printed, filed, or handed
+   to a client. They do not exist on screen — paper is the only place a
+   document needs to carry its own identity, because it arrives with no header,
+   no navigation and no URL bar to say where it came from.
+
+   Colour choices are print choices, not screen ones. Browsers drop background
+   colours when printing but honour border and text colour, so all structure
+   here is drawn with borders and type. The wordmark keeps its two tones by
+   using --gold-ink rather than --gold: brand gold is ~65% luminance and turns
+   to pale grey on a monochrome printer, while --gold-ink (the token that
+   exists for exactly this — gold-adjacent ink on a light ground) stays legible.
+   -------------------------------------------------------------------------- */
+.print-masthead, .print-colophon { display: none; }
+
+@media print {
+  /* Real document margins. Chrome does not support @page margin boxes, so
+     there are no CSS-generated page numbers here — the browser's own print
+     dialog supplies those if the reader wants them. */
+  @page { margin: 14mm 14mm 16mm; }
+
+  .print-masthead {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .35rem 1.5rem;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 1.6rem;
+    padding-bottom: .6rem;
+    border-bottom: 1.5pt solid var(--navy);
+  }
+  .print-masthead .brandmark { font-size: 1.05rem; color: var(--navy) !important; }
+  .print-masthead .brandmark b { color: var(--navy) !important; }
+  .print-masthead .brandmark i { color: var(--gold-ink) !important; }
+  .print-masthead > span {
+    font: 600 .6rem/1.4 var(--struct);
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--gold-ink);
+  }
+
+  .print-colophon {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem 3rem;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-top: 2.25rem;
+    padding-top: .85rem;
+    border-top: 1.5pt solid var(--navy);
+    /* A signature split across a page break is worse than a short last page. */
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  .print-sign { flex: 1 1 18rem; }
+  .print-sign b {
+    display: block;
+    margin-bottom: .3rem;
+    font: italic 400 1.45rem/1.1 var(--display);
+    color: var(--navy);
+  }
+  .print-sign span {
+    display: block;
+    font: 700 .6rem/1.5 var(--struct);
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--gold-ink);
+  }
+  .print-meta {
+    flex: 0 1 20rem;
+    text-align: right;
+    font: 400 .68rem/1.75 var(--body);
+    color: var(--ink);
+  }
+  .print-meta b { display: block; font-weight: 700; color: var(--navy); }
+  /* The document travels without a browser, so the route back has to be
+     printed rather than linked. The global rule that appends every href after
+     its link text would double these up. */
+  .print-meta a { text-decoration: none; color: var(--ink); }
+  .print-meta a::after { content: none !important; }
+}
+
+/* --------------------------------------------------------------------------
    18  RESPONSIVE
    -------------------------------------------------------------------------- */
 @media (max-width: 1080px) {
@@ -2053,6 +2137,15 @@ html { scroll-padding-bottom: 8rem; }
 @media print {
   .site-head, .skip-link, .scroll-cue, .grain, .cursor-ring, .marquee, .hero-canvas { display: none !important; }
   body { background: #fff; color: #000; }
+  /* The screen rhythm is deliberately generous — 12.5rem between sections and
+     an 11rem page-hero opener that clears the fixed header. On paper the header
+     does not exist and that generosity becomes blank sheets, so the whole
+     vertical scale collapses to document spacing through the one token that
+     drives it. */
+  :root { --space-section: 2.25rem; }
+  .page-hero { padding-block: 0 1.5rem; }
+  .section--tight { padding-block: 1.75rem; }
+  .page-hero-grid { gap: 1.25rem; align-items: start; }
   /* .page-hero belongs in this list: it paints its own gradient and sets white
      type, and browsers drop backgrounds when printing — so without the reset
      every secondary page printed its own title white on white paper. */
@@ -2069,6 +2162,10 @@ html { scroll-padding-bottom: 8rem; }
      conversion chrome; on paper they are wasted sheets. */
   .print-lean .site-foot, .print-lean .cta-band { display: none !important; }
   a::after { content: " (" attr(href) ")"; font-size: .8em; }
+  /* A site-relative href printed as "(/insights/...)" is unusable on paper —
+     there is no address bar to resolve it against. Absolute hrefs already
+     carry their host, so only the relative ones get one prepended. */
+  a[href^="/"]::after { content: " (sklarzcreative.com" attr(href) ")"; }
   .js [data-reveal] { opacity: 1 !important; transform: none !important; filter: none !important; }
   .js .line { overflow: visible; }
   .js .line-i { transform: none !important; }

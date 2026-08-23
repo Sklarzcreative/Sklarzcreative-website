@@ -51,6 +51,7 @@ piece of IP. What changed, and the rule it all follows:
 | Styling | A ~9 KB page-specific `<style>` block | Reconciled into `sklarz.css` §16b. The page carries no `<style>` block |
 | Radio groups | Twenty groups all named "Score 0, 1, or 2" | One `<fieldset>`/`<legend>` per statement |
 | Result | Total and band | Total, band, and **the weakest signal named** |
+| Printout | A styled web page | A document — letterhead, signature block, source URL, and a vertical rhythm sized for paper rather than for a fixed header |
 
 Scoring is unchanged — five categories, twenty statements, 0/1/2, bands at
 32 / 24 / 16 — and is re-tested at every boundary.
