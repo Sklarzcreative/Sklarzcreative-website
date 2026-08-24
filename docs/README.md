@@ -18,6 +18,9 @@ record.
 | 08 | [Printed Output](./08-scorecard-capture.md) | How the Scorecard behaves on paper: letterhead, signature block, inked scores, and the print rhythm. |
 | 09 | [Lead Capture](./09-lead-capture.md) | How the Scorecard captures a name and email on a static host, why the diagnostic never depends on it, and the one step that switches it on. |
 | 10 | [Measurement](./10-measurement.md) | What the capture sheet already tells you, what it cannot, and the analytics decision — with a recommendation. |
+| 11 | [Turning it on](./11-turn-it-on.md) | **The runbook.** The five things left, each needing an account only the owner has, in the order that unblocks them. |
+| 12 | [The follow-up sequence](./12-email-sequence.md) | Day 0 / 2 / 5, written to paste in — including the five variants that name the reader's weakest signal. |
+| 13 | [Case studies](./13-case-studies.md) | The intake questions, the structure, and what happens once the material arrives. |
 
 ## Update — 22 August 2026 · strategic positioning pass
 

@@ -33,14 +33,22 @@
  * front end.
  */
 
-/** Header row, in order. Edit here and delete the sheet's first row to reset. */
+/**
+ * Header row, in order. Edit here and delete the sheet's first row to reset.
+ *
+ * `sequence_state` is the one column this script never writes. It belongs to
+ * Make.com, which stamps it once it has handed a row to the email platform.
+ * Without it a scheduled scenario has no way to tell a new lead from one it
+ * already processed, and it re-sends Day 0 on every run — so the column is
+ * cheaper than the alternative of Make guessing from timestamps.
+ */
 var HEADERS = [
   'timestamp', 'submission_id', 'first_name', 'email', 'follow_up_opt_in',
   'resource', 'page',
   'utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term',
   'total_score', 'clarity', 'consistency', 'credibility', 'connection',
   'conversion', 'weakest_signal', 'band', 'completed_at',
-  'dwell_ms', 'spam_reason'
+  'dwell_ms', 'spam_reason', 'sequence_state'
 ];
 
 /** Which column holds what, derived from HEADERS so the two cannot drift. */
