@@ -29,7 +29,8 @@ docs/                       Design and build documentation — start here
 privacy/                    What the site collects, in plain language
 integrations/               Off-host glue (the Scorecard capture endpoint)
 editorial/                  The Editorial Director — editorial standard,
-                            drafts, and reviews. Not part of the site.
+                            drafts, reviews, and the Curves Ahead
+                            publication source. Not part of the site.
 _original-design/           The complete pre-redesign site + rollback guide
 CNAME                       Custom domain for GitHub Pages
 .nojekyll                   Serve underscore-prefixed paths
@@ -102,6 +103,12 @@ a fixed gate: `draft → full editorial pass → author approval → final proof
 publish`. Originals and edited versions are kept separately, so an edit that
 flattened the voice can be seen and rejected. It never publishes and never
 touches a live page.
+
+**Curves Ahead** — the flagship publication (*emerging ideas in business,
+marketing, technology and media*) — has its source of truth at
+[`editorial/curves-ahead/`](./editorial/curves-ahead/README.md), migrated from
+Drive. It publishes to LinkedIn Newsletter and Substack first; the website is
+the permanent archive.
 
 ## Working on it locally
 

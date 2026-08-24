@@ -4,7 +4,7 @@ The final editorial gate before anything long-form is published — articles,
 newsletter editions, essays, thought-leadership pieces, and any substantial
 written asset.
 
-It reviews a draft to the standard of an award-winning author, magazine editor,
+It reviews a draft to the standard of a top professional author, magazine editor,
 developmental editor and copy editor, and it protects one thing above all: that
 the finished piece reads as though **a specific, intelligent person deliberately
 wrote it**, in Cassandra Sklarz's voice, with her ideas and her conclusions
@@ -105,9 +105,11 @@ the edits that flattened your voice.
 
 ```
 editorial/
-  drafts/     <slug>.md                      your original. Never modified.
-  reviews/    <slug>--<mode>-edited.md       the editor's version
-              <slug>--<mode>-review.md       verdict, scorecard, notes, summary
+  drafts/        <slug>.md                   your original. Never modified.
+  reviews/       <slug>--<mode>-edited.md    the editor's version
+                 <slug>--<mode>-review.md    verdict, scorecard, notes, summary
+  standards/                                 what "good" means
+  curves-ahead/                              the publication's source of truth
 ```
 
 A second pass on the same draft and mode is numbered (`--full-2-edited.md`)
@@ -152,6 +154,7 @@ left in the text. The full list is §13 of the standard.
 | [`standards/imprint-curves-ahead.md`](./standards/imprint-curves-ahead.md) | Curves Ahead's lens and gate |
 | [`standards/imprint-sklarz-insights.md`](./standards/imprint-sklarz-insights.md) | Sklarz Creative Insights |
 | [`standards/CHANGELOG.md`](./standards/CHANGELOG.md) | **How to revise the standards.** Read before changing any of the above. |
+| [`curves-ahead/`](./curves-ahead/README.md) | The Curves Ahead publication source of truth, migrated from Drive — handoff, launch pack, backlog, and the agent's origin brief |
 | `.claude/agents/editorial-director.md` | How the agent behaves mechanically |
 | `.claude/commands/editorial-director.md` | How it is invoked |
 

@@ -20,9 +20,14 @@ though nobody in particular wrote it. For a consultancy whose product is
 clarity, publishing prose that could have come from anywhere is the same
 category of error as a cluttered homepage: the work refutes its own argument.
 
-The Editorial Director is the gate against that. It reviews to the standard of
-an award-winning author, magazine editor, developmental editor and copy editor,
+The Editorial Director is the gate against that. It reviews to the standard of a
+top professional author, magazine editor, developmental editor and copy editor,
 and it protects the human voice rather than sanding it off.
+
+Those standards are the quality bar, not a credential the agent claims. The
+brief that commissioned it is explicit on the point, and the reason is the same
+one behind rule 6 of the root README: a system built to strip out unearned
+assertions cannot open by making one about itself.
 
 ## What it is, concretely
 

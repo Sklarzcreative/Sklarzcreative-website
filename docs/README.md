@@ -96,7 +96,7 @@ argument. Restraint is the deliverable.
 | `assets/js/motion.js` | The motion system. One observer, one rAF loop. |
 | `index.html` | The homepage — the reference implementation of the system. |
 | `_original-design/` | The complete pre-redesign site, plus rollback instructions. |
-| `editorial/` | The Editorial Director: the editorial standard, voice and imprint profiles, drafts, and reviews. Not part of the site. |
+| `editorial/` | The Editorial Director: the editorial standard, voice and imprint profiles, drafts, reviews, and the Curves Ahead publication source. Not part of the site. |
 
 No build step, no framework, no npm. It is a static site on **GitHub Pages**,
 deploy-from-branch on `main` — so pushing to `main` is deploying, and it is free
