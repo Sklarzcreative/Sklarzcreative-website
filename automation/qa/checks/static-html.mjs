@@ -8,6 +8,7 @@
  */
 import { join } from 'node:path';
 import { existsSync, readFileSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
 import {
   readPage, findHtmlFiles, routeForFile, title, meta, linkHref, headings, ids,
   images, anchors, assetRefs, jsonLdBlocks, visibleText, fileExistsExact, isDirectory, attr, tags,
@@ -29,6 +30,36 @@ const DESC_MAX = 165;
  */
 export function isRedirectStub(html) {
   return /http-equiv\s*=\s*["']refresh["']/i.test(html);
+}
+
+/**
+ * A shallow clone has no per-file history, so git's answer for "when did this
+ * file last change" is the checkout commit for every file. That would make the
+ * lastmod check fail on all thirteen entries at once, which is a false alarm —
+ * so the check reports `skipped` with the reason instead. CI sets
+ * fetch-depth: 0 so it can actually run there.
+ */
+function gitHistoryAvailable(root) {
+  try {
+    const shallow = execFileSync('git', ['rev-parse', '--is-shallow-repository'],
+      { cwd: root, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim();
+    if (shallow === 'true') return { ok: false, reason: 'the repository is a shallow clone, so git has no per-file history to compare lastmod against. CI sets fetch-depth: 0 for this reason.' };
+    execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, stdio: 'ignore' });
+    return { ok: true };
+  } catch {
+    return { ok: false, reason: 'git is not available or this is not a git working tree, so there is no history to compare lastmod against.' };
+  }
+}
+
+/** The date a file's content last changed, per git. null when unknown. */
+function lastCommitDate(root, file) {
+  try {
+    const out = execFileSync('git', ['log', '-1', '--format=%ad', '--date=short', 'HEAD', '--', file],
+      { cwd: root, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim();
+    return /^\d{4}-\d{2}-\d{2}$/.test(out) ? out : null;
+  } catch {
+    return null;
+  }
 }
 
 function resolveRef(root, route, ref) {
@@ -386,6 +417,10 @@ export function runSitemapRobotsChecks(root, findings, pages) {
 
   const byRoute = new Map(pages.map(p => [p.route, p]));
   const listed = new Set();
+  const history = gitHistoryAvailable(root);
+  if (!history.ok) {
+    findings.skip('static.sitemap-lastmod-accuracy', 'every sitemap lastmod must match the date its page last changed', history.reason, { ...at, file: 'sitemap.xml' });
+  }
 
   for (const entry of entries) {
     const file = { ...at, file: 'sitemap.xml' };
@@ -408,7 +443,31 @@ export function runSitemapRobotsChecks(root, findings, pages) {
 
     if (entry.lastmod && !/^\d{4}-\d{2}-\d{2}/.test(entry.lastmod)) {
       findings.warn('static.sitemap-lastmod', `lastmod "${entry.lastmod}" for ${route} is not a plain ISO date`, file);
+      continue;
     }
+
+    /* A lastmod is a claim about when the content changed. On a hand-maintained
+       sitemap it silently goes stale every time a page is edited and the sitemap
+       is not — and a date that is asserted rather than true is the one kind of
+       inaccuracy this site's own rules single out. git knows the answer, so the
+       claim is checkable. */
+    if (!entry.lastmod || !history.ok) continue;
+    const actual = lastCommitDate(root, page.file);
+    if (!actual) {
+      findings.info('static.sitemap-lastmod-accuracy', `${route}: no git history for this file, so its lastmod cannot be checked`, file);
+    } else if (entry.lastmod > actual) {
+      findings.error(
+        'static.sitemap-lastmod-accuracy',
+        `${route} claims lastmod ${entry.lastmod}, but the file last changed ${actual} — a date in the future relative to its own history is an assertion that never happened`,
+        { ...file, evidence: { route, claimed: entry.lastmod, actual } }
+      );
+    } else if (entry.lastmod < actual) {
+      findings.warn(
+        'static.sitemap-lastmod-accuracy',
+        `${route} claims lastmod ${entry.lastmod}, but the file last changed ${actual}. Stale rather than wrong — but the sitemap is telling crawlers not to bother re-reading a page that did change.`,
+        { ...file, evidence: { route, claimed: entry.lastmod, actual } }
+      );
+    } else findings.pass('static.sitemap-lastmod-accuracy', route);
   }
 
   for (const page of pages) {
