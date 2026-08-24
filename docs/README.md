@@ -17,6 +17,7 @@ record.
 | 07 | [Final Polish & Launch QA](./07-launch-qa.md) | Every issue found and fixed, what was verified locally, what needs the live domain, and the launch checklist. |
 | 08 | [Printed Output](./08-scorecard-capture.md) | How the Scorecard behaves on paper: letterhead, signature block, inked scores, and the print rhythm. |
 | 09 | [Lead Capture](./09-lead-capture.md) | How the Scorecard captures a name and email on a static host, why the diagnostic never depends on it, and the one step that switches it on. |
+| 10 | [The Editorial Director](./10-editorial-director.md) | The publication gate for long-form writing: the editorial standard, the agent that applies it, and the draft → full pass → approval → proof → publish workflow. |
 
 ## Update — 22 August 2026 · strategic positioning pass
 
@@ -95,6 +96,7 @@ argument. Restraint is the deliverable.
 | `assets/js/motion.js` | The motion system. One observer, one rAF loop. |
 | `index.html` | The homepage — the reference implementation of the system. |
 | `_original-design/` | The complete pre-redesign site, plus rollback instructions. |
+| `editorial/` | The Editorial Director: the editorial standard, voice and imprint profiles, drafts, and reviews. Not part of the site. |
 
 No build step, no framework, no npm. It is a static site on **GitHub Pages**,
 deploy-from-branch on `main` — so pushing to `main` is deploying, and it is free

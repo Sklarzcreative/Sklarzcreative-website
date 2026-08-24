@@ -28,6 +28,8 @@ assets/images/              Optimised imagery
 docs/                       Design and build documentation — start here
 privacy/                    What the site collects, in plain language
 integrations/               Off-host glue (the Scorecard capture endpoint)
+editorial/                  The Editorial Director — editorial standard,
+                            drafts, and reviews. Not part of the site.
 _original-design/           The complete pre-redesign site + rollback guide
 CNAME                       Custom domain for GitHub Pages
 .nojekyll                   Serve underscore-prefixed paths
@@ -91,6 +93,15 @@ write-only URL; any real key lives in the external service's own settings.
 Everything behind the 2026 redesign lives in **[`docs/`](./docs/README.md)** —
 creative direction, the full UX map, the 3D hero specification, the motion
 system, the premium audit, and the launch QA record.
+
+## Editorial
+
+Long-form writing passes the **[Editorial Director](./editorial/README.md)**
+before publication — a written editorial standard, an agent that applies it, and
+a fixed gate: `draft → full editorial pass → author approval → final proof →
+publish`. Originals and edited versions are kept separately, so an edit that
+flattened the voice can be seen and rejected. It never publishes and never
+touches a live page.
 
 ## Working on it locally
 
