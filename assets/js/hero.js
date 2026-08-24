@@ -134,7 +134,20 @@
        terms so the metal reflects them, which is what sells it as metal. */
     'vec3 env(vec3 d){',
     '  float h = d.y * 0.5 + 0.5;',
-    '  vec3 c = mix(vec3(0.085, 0.056, 0.030), NAVY * 0.88, smoothstep(0.12, 0.96, h));',
+    /* The upper hemisphere is near-neutral, and this is the single most
+       important line in the material.
+
+       Gold albedo multiplied into a saturated navy reflection lands on OLIVE.
+       That is arithmetic, not opinion: gold is (0.79, 0.66, 0.30), so the sky
+       needs skyR/skyG >= 0.66/0.79 = 0.84 or the green channel wins. Navy sits
+       at 0.55. Desaturating it 75% still comes out green.
+
+       So the environment the metal mirrors is decoupled from the backdrop the
+       eye sees. The visible ground stays navy — backdrop() is untouched — while
+       the reflected sky is a cool neutral. That is exactly how a gold object is
+       photographed: a neutral tent around the object, a dark set behind it. */
+    '  vec3 sky = vec3(0.118, 0.122, 0.142);',
+    '  vec3 c = mix(vec3(0.085, 0.056, 0.030), sky, smoothstep(0.12, 0.96, h));',
     '  float key = pow(max(dot(d, normalize(vec3(0.52, 0.60, -0.60))), 0.0), 15.0);',
     '  c += CHAMP * key * 3.4;',
     '  float bounce = pow(max(dot(d, normalize(vec3(-0.62, -0.34, 0.32))), 0.0), 5.0);',
@@ -252,7 +265,7 @@
     '      m += GOLD * 0.06 * occ;',
 
     '      vec3 hv = normalize(KEY + v);',
-    '      m += CHAMP * pow(max(dot(n, hv), 0.0), mix(230.0, 24.0, rough)) * 2.1;',
+    '      m += CHAMP * pow(max(dot(n, hv), 0.0), mix(230.0, 24.0, rough)) * 1.7;',
 
     '      float fd = max(dot(n, FILL), 0.0);',
     '      m += mix(NAVY, GOLD, 0.5) * fd * 0.26 * occ;',
@@ -263,6 +276,22 @@
 
     /* Fine sparkle along the facet seams. */
     '      m += CHAMP * pow(streak, 6.0) * 0.12;',
+
+    /* Hue-preserving highlight rolloff. Left alone, the brightest facets push
+       every channel past 1.0 and each one saturates independently in the
+       tonemap — so the highlight loses its colour and reads as a flat white
+       slab. Compressing the peak as a SCALAR keeps the r:g:b ratio intact, so
+       a bright facet stays recognisably gold instead of going white. Anything
+       below the knee is untouched, so the mid-tones do not dull. */
+    /* Gain on the metal alone. The backdrop's dark linear values encode to a
+       grey-blue after gamma, and the object was landing barely above it. */
+    '      m *= 1.16;',
+    '      float peak = max(m.r, max(m.g, m.b));',
+    '      float knee = 0.80;',
+    '      if (peak > knee) {',
+    '        float over = peak - knee;',
+    '        m *= (knee + over / (1.0 + over * 2.2)) / peak;',
+    '      }',
     '    }',
 
     /* Fog the far side into the void so the object has real depth. */

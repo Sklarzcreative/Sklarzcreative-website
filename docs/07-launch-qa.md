@@ -304,15 +304,62 @@ fieldsets, 60 radios, no form element on the page, scoring still reaching
 40/40 with the correct band, and the now-meaningless `?access=1` link still
 landing on a working page.
 
-### Still requires the deployed domain ⚠️
+### Post-launch status — 23 August 2026
 
-| Item | Why local testing cannot settle it |
+The site is **LIVE** on GitHub Pages at `sklarzcreative.com`. This section
+replaces the pre-launch "cannot be verified" list with what has actually been
+settled since.
+
+**Resolved:**
+
+| Item | Outcome |
 | --- | --- |
-| Real LCP / CLS / INP, Lighthouse | Needs the live URL. |
-| **Playfair Display actually rendering** | Google Fonts is blocked by this environment's egress proxy, so display type has never been seen here. |
-| Social share cards | `social-share.png` is still 1254×1254 square while declared `summary_large_image`, so platforms will crop it. |
-| Safari / Firefox / iOS rendering | Real browsers vary on `backdrop-filter`, `text-wrap: balance`, `aspect-ratio` and WebGL precision. |
-| Everything in the first pass's live-domain table | Unchanged. |
+| **Playfair Display rendering** | ✅ **Confirmed on a real device.** The one item that could never be checked in the build environment — Google Fonts is blocked by its egress proxy, so every local screenshot fell back to Georgia. Verified live from the owner's phone. |
+| **Deployment** | ✅ GitHub Pages, deploy-from-branch on `main`. Netlify retired entirely; it never served the domain. |
+| **DNS** | ✅ Verified by live lookup — apex on all four GitHub Pages addresses, `www` a CNAME to `sklarzcreative.github.io`. Nothing points anywhere else. |
+| **Social share cards** | ✅ Replaced. Purpose-built 1200×630 at ~318 KB, plus a Scorecard-specific card. `og:image:width`/`height` declared on every page. |
+| **Scorecard end to end** | ✅ Confirmed working live, including Print / Save as PDF. |
+| **3D hero on a real phone** | ✅ Renders. One material defect it surfaced — an olive cast on the broad upper facets — is fixed; see below. |
+
+**Still open, and genuinely so:**
+
+| Item | Why |
+| --- | --- |
+| Lighthouse / PageSpeed, real LCP / CLS / INP | Needs a run against the live URL. Nothing blocks it. |
+| Safari desktop, Firefox, iOS Safari | `backdrop-filter`, `text-wrap: balance`, `aspect-ratio` and WebGL precision all vary. Chromium is the only engine tested. |
+| Search Console / Bing verification, sitemap submission | Needs the owner's accounts. |
+| A real capture submission | Needs the Apps Script endpoint deployed. See [09](./09-lead-capture.md). |
+| The four remaining 1.5 MB PNG masters | Media Kit downloads only; no page paints them. Still worth compressing. |
+
+### The hero material, corrected after seeing it on a phone
+
+The device screenshot showed the broad upper facets reading **olive-green**, and
+the cause turned out to be arithmetic rather than taste. Gold albedo is
+`(0.79, 0.66, 0.30)`, so a reflected sky needs `R/G ≥ 0.84` or the green channel
+wins the product. Navy sits at `0.55`. **Desaturating the navy by 75% still came
+out green.**
+
+The fix decouples the environment the metal mirrors from the backdrop the eye
+sees: `backdrop()` stays navy, while `env()`'s upper hemisphere became a cool
+neutral. That is how a gold object is actually photographed — a neutral tent
+around the object, a dark set behind it.
+
+Two smaller changes went with it:
+
+- **Hue-preserving highlight rolloff.** The brightest facets pushed every
+  channel past 1.0, and each one then saturated *independently* in the tonemap —
+  which is why a bright facet lost its colour and read as a flat white slab.
+  Compressing the peak as a **scalar** keeps the r:g:b ratio, so a hot facet
+  stays recognisably gold. A soft knee at 0.80 leaves the mid-tones untouched.
+- The near-white Blinn lobe dropped from ×2.1 to ×1.7, and the metal gained a
+  ×1.16 exposure so it separates from a backdrop that gamma-encoding lifts to
+  grey-blue at the foot of the frame.
+
+**A caveat on how this was verified.** The build environment renders WebGL
+through SwiftShader, a software rasteriser, whose colour and banding do not
+exactly match a real GPU. The green was reproducible there and is gone there,
+and the arithmetic above is renderer-independent — but the final judgement
+belongs on a real device.
 
 ## Known accepted trade-offs
 
