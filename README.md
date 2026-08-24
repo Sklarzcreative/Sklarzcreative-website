@@ -14,6 +14,12 @@ direction.
 A static site served directly by GitHub Pages. **No build step, no framework,
 no npm, no dependencies.** Editing a file and pushing is deploying.
 
+That describes the site, and it stays true. `automation/` — the QA harness and
+its tooling — has one dependency (Playwright, because driving a real browser
+cannot be reimplemented) and is **not deployed**: nothing links to it, it is
+disallowed in `robots.txt`, and its `node_modules` is never committed. The
+shipped surface remains dependency-free.
+
 ```
 index.html                  Homepage — the reference implementation
 media-kit.html              Media kit
@@ -28,6 +34,9 @@ assets/images/              Optimised imagery
 docs/                       Design and build documentation — start here
 privacy/                    What the site collects, in plain language
 integrations/               Off-host glue (the Scorecard capture endpoint)
+automation/                 QA harness, schemas, agent specs, Make runbooks.
+                            Not deployed. Start at automation/README.md
+.github/workflows/          One workflow: read-only site QA. It deploys nothing
 _original-design/           The complete pre-redesign site + rollback guide
 CNAME                       Custom domain for GitHub Pages
 .nojekyll                   Serve underscore-prefixed paths
@@ -38,7 +47,7 @@ CNAME                       Custom domain for GitHub Pages
 | | |
 | --- | --- |
 | **Host** | **GitHub Pages — the only host.** Netlify is retired and serves nothing. |
-| **Publishing source** | Deploy from a branch: `main`, root (`/`). No Actions workflow, no build step. |
+| **Publishing source** | Deploy from a branch: `main`, root (`/`). No build step. The one Actions workflow is read-only QA and publishes nothing. |
 | **Production branch** | `main`. Pushing to it *is* deploying — GitHub's built-in `pages build and deployment` runs and publishes in about 30 seconds. |
 | **Custom domain** | `sklarzcreative.com`, set by the `CNAME` file at the repository root. |
 | **Jekyll** | Disabled by `.nojekyll`, so paths beginning with `_` (such as `_original-design/`) are served rather than skipped. |
@@ -49,6 +58,11 @@ to the repository or deploys anywhere. Deploy-from-branch was chosen over a
 GitHub Actions workflow because there is nothing to build: an Actions pipeline
 would add a YAML file, a runner, and a class of failure, in exchange for
 copying files that are already in their final form.
+
+The single workflow, [`site-qa.yml`](./.github/workflows/site-qa.yml), is not
+part of that path. It declares `permissions: contents: read` and nothing else —
+it **cannot** push, comment, or deploy, and it references no secret, so it can
+leak none. It reads the repository, runs the QA harness, and uploads a report.
 
 ### DNS
 
@@ -86,11 +100,39 @@ exists. See [`docs/09-lead-capture.md`](./docs/09-lead-capture.md) and
 No credential belongs in this repository. The capture endpoint is a public,
 write-only URL; any real key lives in the external service's own settings.
 
+## Checking it before you push
+
+The site has no build step, which means nothing catches a lost canonical tag, a
+second `<h1>`, a broken internal link, or a sitemap that has drifted from what
+is on disk. The QA harness is that catch:
+
+```bash
+cd automation
+npm ci && npx playwright install chromium   # once
+npm test                                    # 80 unit tests, ~1s
+npm run qa                                  # ~594 checks over every route, ~30s
+```
+
+It reads and reports; **it cannot change the website**. Two of its checks
+protect the commercial premise rather than a page: that the Trust-First Content
+Scorecard opens even when its capture endpoint is unreachable, and that its
+arithmetic matches the specification at every band boundary. Full detail in
+[`automation/qa/README.md`](./automation/qa/README.md).
+
+The same suite runs on every pull request, on pushes that touch public-site
+code, and nightly.
+
 ## Documentation
 
 Everything behind the 2026 redesign lives in **[`docs/`](./docs/README.md)** —
 creative direction, the full UX map, the 3D hero specification, the motion
 system, the premium audit, and the launch QA record.
+
+How the operation *around* the site works — the content pipeline, the agent
+architecture, the lead funnel, and the Make.com runbooks — lives in
+**[`automation/README.md`](./automation/README.md)**. Read that before changing
+anything in `automation/`, and before instructing any AI to act on this
+operation: it lists what must never be done autonomously.
 
 ## Working on it locally
 
