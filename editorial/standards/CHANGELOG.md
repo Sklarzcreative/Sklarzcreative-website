@@ -80,10 +80,29 @@ Things known to be unfinished, recorded so they are not mistaken for decisions:
   agent reads. Nothing keeps them in sync automatically. When a Drive document
   changes materially, re-export it and note it here — otherwise the agent will
   quietly be editing to a stale brief.
-- **No published Curves Ahead piece exists to calibrate scoring against.** The
-  scorecard in §11 is calibrated on the Sklarz Creative Insights corpus. Expect
-  the first two or three Curves Ahead reviews to need score-calibration
-  adjustment, and record it here when it happens.
+- **Scoring calibration — first three Curves Ahead reviews, recorded as
+  promised.** All three launch editions have now been through the agent, and the
+  scorecard held up without adjustment. Two observations worth keeping:
+
+  | | Words/paragraph | Words/sentence | Instances of "I" | AI-slop risk |
+  | --- | --- | --- | --- | --- |
+  | Edition 01 | 12.8 | 8.1 | 7 | 8 |
+  | Edition 02 | 19.8 | 11.1 | 0 | 3 |
+  | Edition 03 | 12.7 | 9.8 | several | 8 |
+
+  **The fragment-stack habit is a property of one production process, not of the
+  author.** Editions 01 and 03 share a paragraph length to within a tenth of a
+  word; Edition 02, written through a different process, does not have the habit
+  at all. This matters for how the agent frames the finding: rejoining those
+  paragraphs is closer to restoring the voice than constraining it, and the
+  reviews should keep saying so.
+
+  **Credibility can fall as specificity rises.** Edition 01 scored 8 on
+  credibility while making no factual claims; Edition 03 scored 6 while making
+  two concrete ones without sources. That is the scorecard working correctly —
+  unverified specifics cost more than honest abstraction — but it is
+  counter-intuitive enough that a review should explain it whenever the two
+  scores move in opposite directions.
 - **Edition 02 carries a contradiction that needs an author decision.** Its
   existing pack records "removed unnecessary first-person hedging such as 'I
   think'" as a completed improvement. The voice profile treats calibrated
