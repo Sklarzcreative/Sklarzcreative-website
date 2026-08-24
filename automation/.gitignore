@@ -1,0 +1,10 @@
+# Installed by `npm ci` in automation/. Never committed — the website itself
+# still has no dependencies; these belong to the QA harness only.
+node_modules/
+
+# Generated QA and health reports. The schema and the examples are committed;
+# the run output is not, because a report is a measurement of a moment.
+reports/*.json
+reports/*.md
+reports/*.png
+!reports/.gitkeep
