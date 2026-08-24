@@ -1,22 +1,20 @@
 # Website QA report
 
-**INCOMPLETE** — no errors, but 7 checks could not run — this is not a clean bill of health
+**PASS_WITH_WARNINGS** — 8 warnings
 
 | | |
 | --- | --- |
-| Generated | 2026-08-24T06:56:48.639Z |
-| Commit | `89df998cd55f7c98cf5577597ce0dd11f8f30d94` (working tree dirty) |
+| Generated | 2026-08-24T07:08:49.252Z |
+| Commit | `c64eb241384b714c6eed3f438b5a3418b1269cb3` (working tree dirty) |
 | Branch | claude/overnight-automation-2026-08-24 |
 | Harness | 1.0.0 |
-| Suites run | static, rendered, behaviour, live |
+| Suites run | static, rendered, behaviour |
 | Routes | 16 |
-| Checks | 585 |
-| Passed | 539 |
+| Checks | 594 |
+| Passed | 552 |
 | Errors | **0** |
 | Warnings | 8 |
-| Skipped | 7 |
-
-> **This run is incomplete.** 7 checks could not be performed. They are listed below with the reason, and none of them is reported as passing.
+| Skipped | 0 |
 
 ## WARN (8)
 
@@ -45,86 +43,68 @@
   description is 204 characters, so a search result will truncate it around 165. Not broken — but the sentence that gets cut is the one nobody reads.
   *Evidence:* `How Sklarz Creative engagements run — practice areas, engagement models, the Investigate, Clarify, Create, Learn method, and published work including The Trust Files and the Trust-First Content Scorecard.`
 
-## SKIP (7)
-
-- **`live.404-status`**
-  a nonexistent path must return a real 404, not a 200
-  *Reason:* a request to https://sklarzcreative.com/ returned HTTP 403 and did not contain the site's own markup, so this environment cannot see the live domain (an egress proxy or network policy is answering instead). No live check can be performed, and none is reported as passing.
-- **`live.headers`**
-  compression and cache headers
-  *Reason:* a request to https://sklarzcreative.com/ returned HTTP 403 and did not contain the site's own markup, so this environment cannot see the live domain (an egress proxy or network policy is answering instead). No live check can be performed, and none is reported as passing.
-- **`live.https-upgrade`**
-  http:// must upgrade to https://
-  *Reason:* a request to https://sklarzcreative.com/ returned HTTP 403 and did not contain the site's own markup, so this environment cannot see the live domain (an egress proxy or network policy is answering instead). No live check can be performed, and none is reported as passing.
-- **`live.og-image-fetch`**
-  the share images must be fetchable with an image content type
-  *Reason:* a request to https://sklarzcreative.com/ returned HTTP 403 and did not contain the site's own markup, so this environment cannot see the live domain (an egress proxy or network policy is answering instead). No live check can be performed, and none is reported as passing.
-- **`live.outbound`**
-  Calendly and the social destinations must answer
-  *Reason:* a request to https://sklarzcreative.com/ returned HTTP 403 and did not contain the site's own markup, so this environment cannot see the live domain (an egress proxy or network policy is answering instead). No live check can be performed, and none is reported as passing.
-- **`live.sitemap-urls`**
-  HTTP status of every sitemap URL
-  *Reason:* a request to https://sklarzcreative.com/ returned HTTP 403 and did not contain the site's own markup, so this environment cannot see the live domain (an egress proxy or network policy is answering instead). No live check can be performed, and none is reported as passing.
-- **`live.www-redirect`**
-  www.sklarzcreative.com must redirect to the apex
-  *Reason:* a request to https://sklarzcreative.com/ returned HTTP 403 and did not contain the site's own markup, so this environment cannot see the live domain (an egress proxy or network policy is answering instead). No live check can be performed, and none is reported as passing.
-
-## INFO (31)
+## INFO (34)
 
 - **`behaviour.js-off-display-none`** — /insights/resources/trust-first-content-scorecard/ · js-disabled
   display:none with scripting off, treated as deliberate state rather than a stuck reveal: p.body-copy.print-only
 - **`harness.fonts-blocked`**
   Google Fonts requests are aborted so that page loads are deterministic. Every rendered measurement was therefore taken with the fallback type stack, not with Playfair Display / Montserrat / Inter. Overflow and layout findings are real signals; a clean overflow result is not proof that the real typography does not overflow. Confirm typography on the live domain.
+- **`live.suite`**
+  live-domain checks were not requested; pass --live to run them
 - **`rendered.image-not-requested`** — / · desktop
-  http://127.0.0.1:45149/assets/graphics/trust-files-cover.svg is lazy and was never requested at this viewport
+  http://127.0.0.1:34523/assets/graphics/trust-files-cover.svg is lazy and was never requested at this viewport
 - **`rendered.image-not-requested`** — / · desktop
-  http://127.0.0.1:45149/assets/graphics/content-engine.svg is lazy and was never requested at this viewport
+  http://127.0.0.1:34523/assets/graphics/content-engine.svg is lazy and was never requested at this viewport
 - **`rendered.image-not-requested`** — / · desktop
-  http://127.0.0.1:45149/assets/images/cassandra-sklarz-headshot.webp is lazy and was never requested at this viewport
+  http://127.0.0.1:34523/assets/images/cassandra-sklarz-headshot.webp is lazy and was never requested at this viewport
 - **`rendered.image-not-requested`** — / · tablet
-  http://127.0.0.1:45149/assets/graphics/trust-files-cover.svg is lazy and was never requested at this viewport
+  http://127.0.0.1:34523/assets/graphics/trust-files-cover.svg is lazy and was never requested at this viewport
 - **`rendered.image-not-requested`** — / · tablet
-  http://127.0.0.1:45149/assets/graphics/content-engine.svg is lazy and was never requested at this viewport
+  http://127.0.0.1:34523/assets/graphics/content-engine.svg is lazy and was never requested at this viewport
 - **`rendered.image-not-requested`** — / · tablet
-  http://127.0.0.1:45149/assets/images/cassandra-sklarz-headshot.webp is lazy and was never requested at this viewport
+  http://127.0.0.1:34523/assets/images/cassandra-sklarz-headshot.webp is lazy and was never requested at this viewport
 - **`rendered.image-not-requested`** — / · mobile
-  http://127.0.0.1:45149/assets/graphics/trust-files-cover.svg is lazy and was never requested at this viewport
+  http://127.0.0.1:34523/assets/graphics/trust-files-cover.svg is lazy and was never requested at this viewport
 - **`rendered.image-not-requested`** — / · mobile
-  http://127.0.0.1:45149/assets/graphics/content-engine.svg is lazy and was never requested at this viewport
+  http://127.0.0.1:34523/assets/graphics/content-engine.svg is lazy and was never requested at this viewport
 - **`rendered.image-not-requested`** — / · mobile
-  http://127.0.0.1:45149/assets/images/cassandra-sklarz-headshot.webp is lazy and was never requested at this viewport
+  http://127.0.0.1:34523/assets/images/cassandra-sklarz-headshot.webp is lazy and was never requested at this viewport
 - **`rendered.image-not-requested`** — /Index.html · desktop
-  http://127.0.0.1:45149/assets/graphics/trust-files-cover.svg is lazy and was never requested at this viewport
+  http://127.0.0.1:34523/assets/graphics/trust-files-cover.svg is lazy and was never requested at this viewport
 - **`rendered.image-not-requested`** — /Index.html · desktop
-  http://127.0.0.1:45149/assets/graphics/content-engine.svg is lazy and was never requested at this viewport
+  http://127.0.0.1:34523/assets/graphics/content-engine.svg is lazy and was never requested at this viewport
 - **`rendered.image-not-requested`** — /Index.html · desktop
-  http://127.0.0.1:45149/assets/images/cassandra-sklarz-headshot.webp is lazy and was never requested at this viewport
+  http://127.0.0.1:34523/assets/images/cassandra-sklarz-headshot.webp is lazy and was never requested at this viewport
 - **`rendered.image-not-requested`** — /Index.html · tablet
-  http://127.0.0.1:45149/assets/graphics/trust-files-cover.svg is lazy and was never requested at this viewport
+  http://127.0.0.1:34523/assets/graphics/trust-files-cover.svg is lazy and was never requested at this viewport
 - **`rendered.image-not-requested`** — /Index.html · tablet
-  http://127.0.0.1:45149/assets/graphics/content-engine.svg is lazy and was never requested at this viewport
+  http://127.0.0.1:34523/assets/graphics/content-engine.svg is lazy and was never requested at this viewport
 - **`rendered.image-not-requested`** — /Index.html · tablet
-  http://127.0.0.1:45149/assets/images/cassandra-sklarz-headshot.webp is lazy and was never requested at this viewport
+  http://127.0.0.1:34523/assets/images/cassandra-sklarz-headshot.webp is lazy and was never requested at this viewport
 - **`rendered.image-not-requested`** — /Index.html · mobile
-  http://127.0.0.1:45149/assets/graphics/trust-files-cover.svg is lazy and was never requested at this viewport
+  http://127.0.0.1:34523/assets/graphics/trust-files-cover.svg is lazy and was never requested at this viewport
 - **`rendered.image-not-requested`** — /Index.html · mobile
-  http://127.0.0.1:45149/assets/graphics/content-engine.svg is lazy and was never requested at this viewport
+  http://127.0.0.1:34523/assets/graphics/content-engine.svg is lazy and was never requested at this viewport
 - **`rendered.image-not-requested`** — /Index.html · mobile
-  http://127.0.0.1:45149/assets/images/cassandra-sklarz-headshot.webp is lazy and was never requested at this viewport
+  http://127.0.0.1:34523/assets/images/cassandra-sklarz-headshot.webp is lazy and was never requested at this viewport
 - **`rendered.image-not-requested`** — /media-kit.html · desktop
-  http://127.0.0.1:45149/sklarz-creative-logo.png is lazy and was never requested at this viewport
+  http://127.0.0.1:34523/sklarz-creative-logo.png is lazy and was never requested at this viewport
+- **`rendered.image-not-requested`** — /media-kit.html · desktop
+  http://127.0.0.1:34523/assets/images/cassandra-sklarz-headshot.webp is lazy and was never requested at this viewport
 - **`rendered.image-not-requested`** — /media-kit.html · tablet
-  http://127.0.0.1:45149/assets/graphics/content-engine.svg is lazy and was never requested at this viewport
+  http://127.0.0.1:34523/assets/graphics/content-engine.svg is lazy and was never requested at this viewport
 - **`rendered.image-not-requested`** — /media-kit.html · tablet
-  http://127.0.0.1:45149/sklarz-creative-logo.png is lazy and was never requested at this viewport
+  http://127.0.0.1:34523/sklarz-creative-logo.png is lazy and was never requested at this viewport
+- **`rendered.image-not-requested`** — /media-kit.html · tablet
+  http://127.0.0.1:34523/assets/images/cassandra-sklarz-headshot.webp is lazy and was never requested at this viewport
 - **`rendered.image-not-requested`** — /media-kit.html · mobile
-  http://127.0.0.1:45149/assets/graphics/trust-framework.svg is lazy and was never requested at this viewport
+  http://127.0.0.1:34523/assets/graphics/trust-framework.svg is lazy and was never requested at this viewport
 - **`rendered.image-not-requested`** — /media-kit.html · mobile
-  http://127.0.0.1:45149/assets/graphics/content-engine.svg is lazy and was never requested at this viewport
+  http://127.0.0.1:34523/assets/graphics/content-engine.svg is lazy and was never requested at this viewport
 - **`rendered.image-not-requested`** — /media-kit.html · mobile
-  http://127.0.0.1:45149/sklarz-creative-logo.png is lazy and was never requested at this viewport
+  http://127.0.0.1:34523/sklarz-creative-logo.png is lazy and was never requested at this viewport
 - **`rendered.image-not-requested`** — /media-kit.html · mobile
-  http://127.0.0.1:45149/assets/images/cassandra-sklarz-headshot.webp is lazy and was never requested at this viewport
+  http://127.0.0.1:34523/assets/images/cassandra-sklarz-headshot.webp is lazy and was never requested at this viewport
 - **`static.canonical-stub`** — /Index.html · Index.html
   redirect stub canonicalises to https://sklarzcreative.com/
 - **`static.canonical-stub`** — /insights/the-trust-files/trust-is-not-a-vibe.html · insights/the-trust-files/trust-is-not-a-vibe.html

@@ -1,9 +1,9 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-08-24T06:56:48.639Z",
+  "generated_at": "2026-08-24T07:08:49.252Z",
   "harness_version": "1.0.0",
   "git": {
-    "sha": "89df998cd55f7c98cf5577597ce0dd11f8f30d94",
+    "sha": "c64eb241384b714c6eed3f438b5a3418b1269cb3",
     "branch": "claude/overnight-automation-2026-08-24",
     "dirty": true
   },
@@ -11,7 +11,7 @@
     "static": true,
     "rendered": true,
     "behaviour": true,
-    "live": true
+    "live": false
   },
   "environment": {
     "node": "v22.22.2",
@@ -33,7 +33,7 @@
         "height": 844
       }
     ],
-    "base_url": "http://127.0.0.1:45149"
+    "base_url": "http://127.0.0.1:34523"
   },
   "routes": [
     "/404.html",
@@ -54,12 +54,12 @@
     "/work/"
   ],
   "totals": {
-    "checks": 585,
-    "pass": 539,
+    "checks": 594,
+    "pass": 552,
     "error": 0,
     "warning": 8,
-    "info": 31,
-    "skipped": 7
+    "info": 34,
+    "skipped": 0
   },
   "findings": [
     {
@@ -151,76 +151,6 @@
       "reason": null
     },
     {
-      "check": "live.404-status",
-      "severity": "skipped",
-      "message": "a nonexistent path must return a real 404, not a 200",
-      "group": "live",
-      "reason": "a request to https://sklarzcreative.com/ returned HTTP 403 and did not contain the site's own markup, so this environment cannot see the live domain (an egress proxy or network policy is answering instead). No live check can be performed, and none is reported as passing.",
-      "route": null,
-      "file": null,
-      "viewport": null
-    },
-    {
-      "check": "live.headers",
-      "severity": "skipped",
-      "message": "compression and cache headers",
-      "group": "live",
-      "reason": "a request to https://sklarzcreative.com/ returned HTTP 403 and did not contain the site's own markup, so this environment cannot see the live domain (an egress proxy or network policy is answering instead). No live check can be performed, and none is reported as passing.",
-      "route": null,
-      "file": null,
-      "viewport": null
-    },
-    {
-      "check": "live.https-upgrade",
-      "severity": "skipped",
-      "message": "http:// must upgrade to https://",
-      "group": "live",
-      "reason": "a request to https://sklarzcreative.com/ returned HTTP 403 and did not contain the site's own markup, so this environment cannot see the live domain (an egress proxy or network policy is answering instead). No live check can be performed, and none is reported as passing.",
-      "route": null,
-      "file": null,
-      "viewport": null
-    },
-    {
-      "check": "live.og-image-fetch",
-      "severity": "skipped",
-      "message": "the share images must be fetchable with an image content type",
-      "group": "live",
-      "reason": "a request to https://sklarzcreative.com/ returned HTTP 403 and did not contain the site's own markup, so this environment cannot see the live domain (an egress proxy or network policy is answering instead). No live check can be performed, and none is reported as passing.",
-      "route": null,
-      "file": null,
-      "viewport": null
-    },
-    {
-      "check": "live.outbound",
-      "severity": "skipped",
-      "message": "Calendly and the social destinations must answer",
-      "group": "live",
-      "reason": "a request to https://sklarzcreative.com/ returned HTTP 403 and did not contain the site's own markup, so this environment cannot see the live domain (an egress proxy or network policy is answering instead). No live check can be performed, and none is reported as passing.",
-      "route": null,
-      "file": null,
-      "viewport": null
-    },
-    {
-      "check": "live.sitemap-urls",
-      "severity": "skipped",
-      "message": "HTTP status of every sitemap URL",
-      "group": "live",
-      "reason": "a request to https://sklarzcreative.com/ returned HTTP 403 and did not contain the site's own markup, so this environment cannot see the live domain (an egress proxy or network policy is answering instead). No live check can be performed, and none is reported as passing.",
-      "route": null,
-      "file": null,
-      "viewport": null
-    },
-    {
-      "check": "live.www-redirect",
-      "severity": "skipped",
-      "message": "www.sklarzcreative.com must redirect to the apex",
-      "group": "live",
-      "reason": "a request to https://sklarzcreative.com/ returned HTTP 403 and did not contain the site's own markup, so this environment cannot see the live domain (an egress proxy or network policy is answering instead). No live check can be performed, and none is reported as passing.",
-      "route": null,
-      "file": null,
-      "viewport": null
-    },
-    {
       "check": "behaviour.js-off-display-none",
       "severity": "info",
       "message": "display:none with scripting off, treated as deliberate state rather than a stuck reveal: p.body-copy.print-only",
@@ -241,9 +171,19 @@
       "reason": null
     },
     {
+      "check": "live.suite",
+      "severity": "info",
+      "message": "live-domain checks were not requested; pass --live to run them",
+      "group": "harness",
+      "route": null,
+      "file": null,
+      "viewport": null,
+      "reason": null
+    },
+    {
       "check": "rendered.image-not-requested",
       "severity": "info",
-      "message": "http://127.0.0.1:45149/assets/graphics/trust-files-cover.svg is lazy and was never requested at this viewport",
+      "message": "http://127.0.0.1:34523/assets/graphics/trust-files-cover.svg is lazy and was never requested at this viewport",
       "group": "rendered",
       "route": "/",
       "viewport": "desktop",
@@ -253,7 +193,7 @@
     {
       "check": "rendered.image-not-requested",
       "severity": "info",
-      "message": "http://127.0.0.1:45149/assets/graphics/content-engine.svg is lazy and was never requested at this viewport",
+      "message": "http://127.0.0.1:34523/assets/graphics/content-engine.svg is lazy and was never requested at this viewport",
       "group": "rendered",
       "route": "/",
       "viewport": "desktop",
@@ -263,7 +203,7 @@
     {
       "check": "rendered.image-not-requested",
       "severity": "info",
-      "message": "http://127.0.0.1:45149/assets/images/cassandra-sklarz-headshot.webp is lazy and was never requested at this viewport",
+      "message": "http://127.0.0.1:34523/assets/images/cassandra-sklarz-headshot.webp is lazy and was never requested at this viewport",
       "group": "rendered",
       "route": "/",
       "viewport": "desktop",
@@ -273,7 +213,7 @@
     {
       "check": "rendered.image-not-requested",
       "severity": "info",
-      "message": "http://127.0.0.1:45149/assets/graphics/trust-files-cover.svg is lazy and was never requested at this viewport",
+      "message": "http://127.0.0.1:34523/assets/graphics/trust-files-cover.svg is lazy and was never requested at this viewport",
       "group": "rendered",
       "route": "/",
       "viewport": "tablet",
@@ -283,7 +223,7 @@
     {
       "check": "rendered.image-not-requested",
       "severity": "info",
-      "message": "http://127.0.0.1:45149/assets/graphics/content-engine.svg is lazy and was never requested at this viewport",
+      "message": "http://127.0.0.1:34523/assets/graphics/content-engine.svg is lazy and was never requested at this viewport",
       "group": "rendered",
       "route": "/",
       "viewport": "tablet",
@@ -293,7 +233,7 @@
     {
       "check": "rendered.image-not-requested",
       "severity": "info",
-      "message": "http://127.0.0.1:45149/assets/images/cassandra-sklarz-headshot.webp is lazy and was never requested at this viewport",
+      "message": "http://127.0.0.1:34523/assets/images/cassandra-sklarz-headshot.webp is lazy and was never requested at this viewport",
       "group": "rendered",
       "route": "/",
       "viewport": "tablet",
@@ -303,7 +243,7 @@
     {
       "check": "rendered.image-not-requested",
       "severity": "info",
-      "message": "http://127.0.0.1:45149/assets/graphics/trust-files-cover.svg is lazy and was never requested at this viewport",
+      "message": "http://127.0.0.1:34523/assets/graphics/trust-files-cover.svg is lazy and was never requested at this viewport",
       "group": "rendered",
       "route": "/",
       "viewport": "mobile",
@@ -313,7 +253,7 @@
     {
       "check": "rendered.image-not-requested",
       "severity": "info",
-      "message": "http://127.0.0.1:45149/assets/graphics/content-engine.svg is lazy and was never requested at this viewport",
+      "message": "http://127.0.0.1:34523/assets/graphics/content-engine.svg is lazy and was never requested at this viewport",
       "group": "rendered",
       "route": "/",
       "viewport": "mobile",
@@ -323,7 +263,7 @@
     {
       "check": "rendered.image-not-requested",
       "severity": "info",
-      "message": "http://127.0.0.1:45149/assets/images/cassandra-sklarz-headshot.webp is lazy and was never requested at this viewport",
+      "message": "http://127.0.0.1:34523/assets/images/cassandra-sklarz-headshot.webp is lazy and was never requested at this viewport",
       "group": "rendered",
       "route": "/",
       "viewport": "mobile",
@@ -333,7 +273,7 @@
     {
       "check": "rendered.image-not-requested",
       "severity": "info",
-      "message": "http://127.0.0.1:45149/assets/graphics/trust-files-cover.svg is lazy and was never requested at this viewport",
+      "message": "http://127.0.0.1:34523/assets/graphics/trust-files-cover.svg is lazy and was never requested at this viewport",
       "group": "rendered",
       "route": "/Index.html",
       "viewport": "desktop",
@@ -343,7 +283,7 @@
     {
       "check": "rendered.image-not-requested",
       "severity": "info",
-      "message": "http://127.0.0.1:45149/assets/graphics/content-engine.svg is lazy and was never requested at this viewport",
+      "message": "http://127.0.0.1:34523/assets/graphics/content-engine.svg is lazy and was never requested at this viewport",
       "group": "rendered",
       "route": "/Index.html",
       "viewport": "desktop",
@@ -353,7 +293,7 @@
     {
       "check": "rendered.image-not-requested",
       "severity": "info",
-      "message": "http://127.0.0.1:45149/assets/images/cassandra-sklarz-headshot.webp is lazy and was never requested at this viewport",
+      "message": "http://127.0.0.1:34523/assets/images/cassandra-sklarz-headshot.webp is lazy and was never requested at this viewport",
       "group": "rendered",
       "route": "/Index.html",
       "viewport": "desktop",
@@ -363,7 +303,7 @@
     {
       "check": "rendered.image-not-requested",
       "severity": "info",
-      "message": "http://127.0.0.1:45149/assets/graphics/trust-files-cover.svg is lazy and was never requested at this viewport",
+      "message": "http://127.0.0.1:34523/assets/graphics/trust-files-cover.svg is lazy and was never requested at this viewport",
       "group": "rendered",
       "route": "/Index.html",
       "viewport": "tablet",
@@ -373,7 +313,7 @@
     {
       "check": "rendered.image-not-requested",
       "severity": "info",
-      "message": "http://127.0.0.1:45149/assets/graphics/content-engine.svg is lazy and was never requested at this viewport",
+      "message": "http://127.0.0.1:34523/assets/graphics/content-engine.svg is lazy and was never requested at this viewport",
       "group": "rendered",
       "route": "/Index.html",
       "viewport": "tablet",
@@ -383,7 +323,7 @@
     {
       "check": "rendered.image-not-requested",
       "severity": "info",
-      "message": "http://127.0.0.1:45149/assets/images/cassandra-sklarz-headshot.webp is lazy and was never requested at this viewport",
+      "message": "http://127.0.0.1:34523/assets/images/cassandra-sklarz-headshot.webp is lazy and was never requested at this viewport",
       "group": "rendered",
       "route": "/Index.html",
       "viewport": "tablet",
@@ -393,7 +333,7 @@
     {
       "check": "rendered.image-not-requested",
       "severity": "info",
-      "message": "http://127.0.0.1:45149/assets/graphics/trust-files-cover.svg is lazy and was never requested at this viewport",
+      "message": "http://127.0.0.1:34523/assets/graphics/trust-files-cover.svg is lazy and was never requested at this viewport",
       "group": "rendered",
       "route": "/Index.html",
       "viewport": "mobile",
@@ -403,7 +343,7 @@
     {
       "check": "rendered.image-not-requested",
       "severity": "info",
-      "message": "http://127.0.0.1:45149/assets/graphics/content-engine.svg is lazy and was never requested at this viewport",
+      "message": "http://127.0.0.1:34523/assets/graphics/content-engine.svg is lazy and was never requested at this viewport",
       "group": "rendered",
       "route": "/Index.html",
       "viewport": "mobile",
@@ -413,7 +353,7 @@
     {
       "check": "rendered.image-not-requested",
       "severity": "info",
-      "message": "http://127.0.0.1:45149/assets/images/cassandra-sklarz-headshot.webp is lazy and was never requested at this viewport",
+      "message": "http://127.0.0.1:34523/assets/images/cassandra-sklarz-headshot.webp is lazy and was never requested at this viewport",
       "group": "rendered",
       "route": "/Index.html",
       "viewport": "mobile",
@@ -423,7 +363,7 @@
     {
       "check": "rendered.image-not-requested",
       "severity": "info",
-      "message": "http://127.0.0.1:45149/sklarz-creative-logo.png is lazy and was never requested at this viewport",
+      "message": "http://127.0.0.1:34523/sklarz-creative-logo.png is lazy and was never requested at this viewport",
       "group": "rendered",
       "route": "/media-kit.html",
       "viewport": "desktop",
@@ -433,7 +373,17 @@
     {
       "check": "rendered.image-not-requested",
       "severity": "info",
-      "message": "http://127.0.0.1:45149/assets/graphics/content-engine.svg is lazy and was never requested at this viewport",
+      "message": "http://127.0.0.1:34523/assets/images/cassandra-sklarz-headshot.webp is lazy and was never requested at this viewport",
+      "group": "rendered",
+      "route": "/media-kit.html",
+      "viewport": "desktop",
+      "file": null,
+      "reason": null
+    },
+    {
+      "check": "rendered.image-not-requested",
+      "severity": "info",
+      "message": "http://127.0.0.1:34523/assets/graphics/content-engine.svg is lazy and was never requested at this viewport",
       "group": "rendered",
       "route": "/media-kit.html",
       "viewport": "tablet",
@@ -443,7 +393,7 @@
     {
       "check": "rendered.image-not-requested",
       "severity": "info",
-      "message": "http://127.0.0.1:45149/sklarz-creative-logo.png is lazy and was never requested at this viewport",
+      "message": "http://127.0.0.1:34523/sklarz-creative-logo.png is lazy and was never requested at this viewport",
       "group": "rendered",
       "route": "/media-kit.html",
       "viewport": "tablet",
@@ -453,7 +403,17 @@
     {
       "check": "rendered.image-not-requested",
       "severity": "info",
-      "message": "http://127.0.0.1:45149/assets/graphics/trust-framework.svg is lazy and was never requested at this viewport",
+      "message": "http://127.0.0.1:34523/assets/images/cassandra-sklarz-headshot.webp is lazy and was never requested at this viewport",
+      "group": "rendered",
+      "route": "/media-kit.html",
+      "viewport": "tablet",
+      "file": null,
+      "reason": null
+    },
+    {
+      "check": "rendered.image-not-requested",
+      "severity": "info",
+      "message": "http://127.0.0.1:34523/assets/graphics/trust-framework.svg is lazy and was never requested at this viewport",
       "group": "rendered",
       "route": "/media-kit.html",
       "viewport": "mobile",
@@ -463,7 +423,7 @@
     {
       "check": "rendered.image-not-requested",
       "severity": "info",
-      "message": "http://127.0.0.1:45149/assets/graphics/content-engine.svg is lazy and was never requested at this viewport",
+      "message": "http://127.0.0.1:34523/assets/graphics/content-engine.svg is lazy and was never requested at this viewport",
       "group": "rendered",
       "route": "/media-kit.html",
       "viewport": "mobile",
@@ -473,7 +433,7 @@
     {
       "check": "rendered.image-not-requested",
       "severity": "info",
-      "message": "http://127.0.0.1:45149/sklarz-creative-logo.png is lazy and was never requested at this viewport",
+      "message": "http://127.0.0.1:34523/sklarz-creative-logo.png is lazy and was never requested at this viewport",
       "group": "rendered",
       "route": "/media-kit.html",
       "viewport": "mobile",
@@ -483,7 +443,7 @@
     {
       "check": "rendered.image-not-requested",
       "severity": "info",
-      "message": "http://127.0.0.1:45149/assets/images/cassandra-sklarz-headshot.webp is lazy and was never requested at this viewport",
+      "message": "http://127.0.0.1:34523/assets/images/cassandra-sklarz-headshot.webp is lazy and was never requested at this viewport",
       "group": "rendered",
       "route": "/media-kit.html",
       "viewport": "mobile",
@@ -532,8 +492,8 @@
     }
   ],
   "verdict": {
-    "status": "incomplete",
+    "status": "pass_with_warnings",
     "exit_code": 0,
-    "summary": "no errors, but 7 checks could not run — this is not a clean bill of health"
+    "summary": "8 warnings"
   }
 }
