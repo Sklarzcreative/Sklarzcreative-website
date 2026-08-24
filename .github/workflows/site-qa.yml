@@ -1,0 +1,124 @@
+# Website QA — read-only.
+#
+# WHAT THIS IS NOT: a build or deploy pipeline. The site is hand-authored HTML
+# served by GitHub Pages deploy-from-branch. There is nothing to compile, and
+# adding a build step would trade a class of failure for no benefit. This
+# workflow reads the repository, measures it, and uploads a report.
+#
+# LEAST PRIVILEGE, DELIBERATELY:
+#   permissions: contents: read     — the only permission granted, and it is
+#                                     read. This job CANNOT write to the
+#                                     repository, cannot push, cannot comment,
+#                                     cannot deploy, and cannot touch main.
+#   no secrets are referenced       — nothing here needs one, so nothing here
+#                                     can leak one.
+#   pull_request, not
+#   pull_request_target             — a fork's code never runs with access to
+#                                     this repository's context.
+#
+# The harness itself is read-only by design (see automation/agents/website-qa.md),
+# so this is belt and braces. Both are worth having: the workflow permission is
+# enforced by GitHub, the harness behaviour is enforced by review.
+
+name: Site QA
+
+on:
+  pull_request:
+    paths:
+      - '**.html'
+      - 'assets/**'
+      - 'robots.txt'
+      - 'sitemap.xml'
+      - 'CNAME'
+      - '*.png'
+      - 'favicon.svg'
+      - 'automation/**'
+      - '.github/workflows/site-qa.yml'
+  push:
+    branches: [main]
+    paths:
+      - '**.html'
+      - 'assets/**'
+      - 'robots.txt'
+      - 'sitemap.xml'
+      - 'CNAME'
+      - '*.png'
+      - 'favicon.svg'
+      - 'automation/**'
+  schedule:
+    # 03:20 UTC nightly. Off the hour on purpose: a scheduled job at :00
+    # queues behind everyone else's.
+    - cron: '20 3 * * *'
+  workflow_dispatch:
+    inputs:
+      live:
+        description: 'Also run live-domain checks against sklarzcreative.com'
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: site-qa-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  qa:
+    name: QA
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false   # nothing in this job pushes anything
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: automation/package-lock.json
+
+      - name: Install the harness
+        working-directory: automation
+        run: npm ci
+
+      - name: Unit tests
+        working-directory: automation
+        # Consent, UTM, scorecard arithmetic, queue classification and every
+        # committed schema example. Fast, and it fails before a browser is
+        # started if a rule has been broken.
+        run: npm test
+
+      - name: Install Chromium
+        working-directory: automation
+        run: npx playwright install --with-deps chromium
+
+      - name: Run the QA suite
+        id: qa
+        working-directory: automation
+        run: |
+          node qa/run.mjs \
+            ${{ (github.event_name == 'schedule' || inputs.live) && '--live' || '' }} \
+            --out=reports/qa-report.json \
+            --summary=reports/qa-summary.md
+
+      - name: Publish the summary to the run page
+        # Runs even when the QA step failed — that is exactly when the summary
+        # is worth reading, and a report only visible on green is useless.
+        if: always()
+        run: cat automation/reports/qa-summary.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload the report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: qa-report-${{ github.run_id }}
+          path: |
+            automation/reports/qa-report.json
+            automation/reports/qa-summary.md
+          retention-days: 30
+          if-no-files-found: error

@@ -1,0 +1,539 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-08-24T06:56:48.639Z",
+  "harness_version": "1.0.0",
+  "git": {
+    "sha": "89df998cd55f7c98cf5577597ce0dd11f8f30d94",
+    "branch": "claude/overnight-automation-2026-08-24",
+    "dirty": true
+  },
+  "mode": {
+    "static": true,
+    "rendered": true,
+    "behaviour": true,
+    "live": true
+  },
+  "environment": {
+    "node": "v22.22.2",
+    "chromium": "141.0.7390.37",
+    "viewports": [
+      {
+        "name": "desktop",
+        "width": 1440,
+        "height": 900
+      },
+      {
+        "name": "tablet",
+        "width": 834,
+        "height": 1112
+      },
+      {
+        "name": "mobile",
+        "width": 390,
+        "height": 844
+      }
+    ],
+    "base_url": "http://127.0.0.1:45149"
+  },
+  "routes": [
+    "/404.html",
+    "/Index.html",
+    "/",
+    "/insights/articles/",
+    "/insights/clarity-before-content/",
+    "/insights/",
+    "/insights/podcast/",
+    "/insights/research-notes/",
+    "/insights/resources/",
+    "/insights/resources/trust-first-content-scorecard/",
+    "/insights/the-trust-files/",
+    "/insights/the-trust-files/trust-is-not-a-vibe.html",
+    "/insights/the-trust-files/trust-is-not-a-vibe/",
+    "/media-kit.html",
+    "/privacy/",
+    "/work/"
+  ],
+  "totals": {
+    "checks": 585,
+    "pass": 539,
+    "error": 0,
+    "warning": 8,
+    "info": 31,
+    "skipped": 7
+  },
+  "findings": [
+    {
+      "check": "static.description-length",
+      "severity": "warning",
+      "message": "description is 229 characters, so a search result will truncate it around 165. Not broken — but the sentence that gets cut is the one nobody reads.",
+      "group": "static",
+      "file": "index.html",
+      "route": "/",
+      "evidence": "Sklarz Creative is a strategic brand, marketing and creative consultancy. We help expert-led and innovative organisations become clearer, more credible, more discoverable, and better equipped to grow. Founded by Cassandra Sklarz.",
+      "viewport": null,
+      "reason": null
+    },
+    {
+      "check": "static.description-length",
+      "severity": "warning",
+      "message": "description is 197 characters, so a search result will truncate it around 165. Not broken — but the sentence that gets cut is the one nobody reads.",
+      "group": "static",
+      "file": "insights/index.html",
+      "route": "/insights/",
+      "evidence": "Explore Sklarz Creative Insights: The Trust Files, articles, podcast episodes, research notes, and practical resources on brand strategy, trust, storytelling, science communication, and innovation.",
+      "viewport": null,
+      "reason": null
+    },
+    {
+      "check": "static.description-length",
+      "severity": "warning",
+      "message": "description is 166 characters, so a search result will truncate it around 165. Not broken — but the sentence that gets cut is the one nobody reads.",
+      "group": "static",
+      "file": "insights/podcast/index.html",
+      "route": "/insights/podcast/",
+      "evidence": "The Sklarz Creative podcast hub, beginning with The Trust Files: long-form conversations and investigations about brand trust, storytelling, evidence, and innovation.",
+      "viewport": null,
+      "reason": null
+    },
+    {
+      "check": "static.description-length",
+      "severity": "warning",
+      "message": "description is 201 characters, so a search result will truncate it around 165. Not broken — but the sentence that gets cut is the one nobody reads.",
+      "group": "static",
+      "file": "insights/resources/index.html",
+      "route": "/insights/resources/",
+      "evidence": "Sklarz Creative tools, scorecards, checklists, frameworks, and practical resources for clearer strategy, stronger storytelling, and more trusted brands. Includes the free Trust-First Content Scorecard.",
+      "viewport": null,
+      "reason": null
+    },
+    {
+      "check": "static.description-length",
+      "severity": "warning",
+      "message": "description is 174 characters, so a search result will truncate it around 165. Not broken — but the sentence that gets cut is the one nobody reads.",
+      "group": "static",
+      "file": "insights/resources/trust-first-content-scorecard/index.html",
+      "route": "/insights/resources/trust-first-content-scorecard/",
+      "evidence": "A free 40-point diagnostic. Score one real customer-facing touchpoint across clarity, consistency, credibility, connection, and conversion, and find the weakest trust signal.",
+      "viewport": null,
+      "reason": null
+    },
+    {
+      "check": "static.description-length",
+      "severity": "warning",
+      "message": "description is 185 characters, so a search result will truncate it around 165. Not broken — but the sentence that gets cut is the one nobody reads.",
+      "group": "static",
+      "file": "insights/the-trust-files/index.html",
+      "route": "/insights/the-trust-files/",
+      "evidence": "The Trust Files is Sklarz Creative's signature series examining how brands earn, maintain, damage, and rebuild trust through clarity, credibility, consistency, connection, and behavior.",
+      "viewport": null,
+      "reason": null
+    },
+    {
+      "check": "static.description-length",
+      "severity": "warning",
+      "message": "description is 170 characters, so a search result will truncate it around 165. Not broken — but the sentence that gets cut is the one nobody reads.",
+      "group": "static",
+      "file": "insights/the-trust-files/trust-is-not-a-vibe/index.html",
+      "route": "/insights/the-trust-files/trust-is-not-a-vibe/",
+      "evidence": "File 001 of The Trust Files examines what actually makes a brand trustworthy through clarity, consistency, credibility, connection, and a practical five-touchpoint audit.",
+      "viewport": null,
+      "reason": null
+    },
+    {
+      "check": "static.description-length",
+      "severity": "warning",
+      "message": "description is 204 characters, so a search result will truncate it around 165. Not broken — but the sentence that gets cut is the one nobody reads.",
+      "group": "static",
+      "file": "work/index.html",
+      "route": "/work/",
+      "evidence": "How Sklarz Creative engagements run — practice areas, engagement models, the Investigate, Clarify, Create, Learn method, and published work including The Trust Files and the Trust-First Content Scorecard.",
+      "viewport": null,
+      "reason": null
+    },
+    {
+      "check": "live.404-status",
+      "severity": "skipped",
+      "message": "a nonexistent path must return a real 404, not a 200",
+      "group": "live",
+      "reason": "a request to https://sklarzcreative.com/ returned HTTP 403 and did not contain the site's own markup, so this environment cannot see the live domain (an egress proxy or network policy is answering instead). No live check can be performed, and none is reported as passing.",
+      "route": null,
+      "file": null,
+      "viewport": null
+    },
+    {
+      "check": "live.headers",
+      "severity": "skipped",
+      "message": "compression and cache headers",
+      "group": "live",
+      "reason": "a request to https://sklarzcreative.com/ returned HTTP 403 and did not contain the site's own markup, so this environment cannot see the live domain (an egress proxy or network policy is answering instead). No live check can be performed, and none is reported as passing.",
+      "route": null,
+      "file": null,
+      "viewport": null
+    },
+    {
+      "check": "live.https-upgrade",
+      "severity": "skipped",
+      "message": "http:// must upgrade to https://",
+      "group": "live",
+      "reason": "a request to https://sklarzcreative.com/ returned HTTP 403 and did not contain the site's own markup, so this environment cannot see the live domain (an egress proxy or network policy is answering instead). No live check can be performed, and none is reported as passing.",
+      "route": null,
+      "file": null,
+      "viewport": null
+    },
+    {
+      "check": "live.og-image-fetch",
+      "severity": "skipped",
+      "message": "the share images must be fetchable with an image content type",
+      "group": "live",
+      "reason": "a request to https://sklarzcreative.com/ returned HTTP 403 and did not contain the site's own markup, so this environment cannot see the live domain (an egress proxy or network policy is answering instead). No live check can be performed, and none is reported as passing.",
+      "route": null,
+      "file": null,
+      "viewport": null
+    },
+    {
+      "check": "live.outbound",
+      "severity": "skipped",
+      "message": "Calendly and the social destinations must answer",
+      "group": "live",
+      "reason": "a request to https://sklarzcreative.com/ returned HTTP 403 and did not contain the site's own markup, so this environment cannot see the live domain (an egress proxy or network policy is answering instead). No live check can be performed, and none is reported as passing.",
+      "route": null,
+      "file": null,
+      "viewport": null
+    },
+    {
+      "check": "live.sitemap-urls",
+      "severity": "skipped",
+      "message": "HTTP status of every sitemap URL",
+      "group": "live",
+      "reason": "a request to https://sklarzcreative.com/ returned HTTP 403 and did not contain the site's own markup, so this environment cannot see the live domain (an egress proxy or network policy is answering instead). No live check can be performed, and none is reported as passing.",
+      "route": null,
+      "file": null,
+      "viewport": null
+    },
+    {
+      "check": "live.www-redirect",
+      "severity": "skipped",
+      "message": "www.sklarzcreative.com must redirect to the apex",
+      "group": "live",
+      "reason": "a request to https://sklarzcreative.com/ returned HTTP 403 and did not contain the site's own markup, so this environment cannot see the live domain (an egress proxy or network policy is answering instead). No live check can be performed, and none is reported as passing.",
+      "route": null,
+      "file": null,
+      "viewport": null
+    },
+    {
+      "check": "behaviour.js-off-display-none",
+      "severity": "info",
+      "message": "display:none with scripting off, treated as deliberate state rather than a stuck reveal: p.body-copy.print-only",
+      "group": "behaviour",
+      "route": "/insights/resources/trust-first-content-scorecard/",
+      "viewport": "js-disabled",
+      "file": null,
+      "reason": null
+    },
+    {
+      "check": "harness.fonts-blocked",
+      "severity": "info",
+      "message": "Google Fonts requests are aborted so that page loads are deterministic. Every rendered measurement was therefore taken with the fallback type stack, not with Playfair Display / Montserrat / Inter. Overflow and layout findings are real signals; a clean overflow result is not proof that the real typography does not overflow. Confirm typography on the live domain.",
+      "group": "harness",
+      "route": null,
+      "file": null,
+      "viewport": null,
+      "reason": null
+    },
+    {
+      "check": "rendered.image-not-requested",
+      "severity": "info",
+      "message": "http://127.0.0.1:45149/assets/graphics/trust-files-cover.svg is lazy and was never requested at this viewport",
+      "group": "rendered",
+      "route": "/",
+      "viewport": "desktop",
+      "file": null,
+      "reason": null
+    },
+    {
+      "check": "rendered.image-not-requested",
+      "severity": "info",
+      "message": "http://127.0.0.1:45149/assets/graphics/content-engine.svg is lazy and was never requested at this viewport",
+      "group": "rendered",
+      "route": "/",
+      "viewport": "desktop",
+      "file": null,
+      "reason": null
+    },
+    {
+      "check": "rendered.image-not-requested",
+      "severity": "info",
+      "message": "http://127.0.0.1:45149/assets/images/cassandra-sklarz-headshot.webp is lazy and was never requested at this viewport",
+      "group": "rendered",
+      "route": "/",
+      "viewport": "desktop",
+      "file": null,
+      "reason": null
+    },
+    {
+      "check": "rendered.image-not-requested",
+      "severity": "info",
+      "message": "http://127.0.0.1:45149/assets/graphics/trust-files-cover.svg is lazy and was never requested at this viewport",
+      "group": "rendered",
+      "route": "/",
+      "viewport": "tablet",
+      "file": null,
+      "reason": null
+    },
+    {
+      "check": "rendered.image-not-requested",
+      "severity": "info",
+      "message": "http://127.0.0.1:45149/assets/graphics/content-engine.svg is lazy and was never requested at this viewport",
+      "group": "rendered",
+      "route": "/",
+      "viewport": "tablet",
+      "file": null,
+      "reason": null
+    },
+    {
+      "check": "rendered.image-not-requested",
+      "severity": "info",
+      "message": "http://127.0.0.1:45149/assets/images/cassandra-sklarz-headshot.webp is lazy and was never requested at this viewport",
+      "group": "rendered",
+      "route": "/",
+      "viewport": "tablet",
+      "file": null,
+      "reason": null
+    },
+    {
+      "check": "rendered.image-not-requested",
+      "severity": "info",
+      "message": "http://127.0.0.1:45149/assets/graphics/trust-files-cover.svg is lazy and was never requested at this viewport",
+      "group": "rendered",
+      "route": "/",
+      "viewport": "mobile",
+      "file": null,
+      "reason": null
+    },
+    {
+      "check": "rendered.image-not-requested",
+      "severity": "info",
+      "message": "http://127.0.0.1:45149/assets/graphics/content-engine.svg is lazy and was never requested at this viewport",
+      "group": "rendered",
+      "route": "/",
+      "viewport": "mobile",
+      "file": null,
+      "reason": null
+    },
+    {
+      "check": "rendered.image-not-requested",
+      "severity": "info",
+      "message": "http://127.0.0.1:45149/assets/images/cassandra-sklarz-headshot.webp is lazy and was never requested at this viewport",
+      "group": "rendered",
+      "route": "/",
+      "viewport": "mobile",
+      "file": null,
+      "reason": null
+    },
+    {
+      "check": "rendered.image-not-requested",
+      "severity": "info",
+      "message": "http://127.0.0.1:45149/assets/graphics/trust-files-cover.svg is lazy and was never requested at this viewport",
+      "group": "rendered",
+      "route": "/Index.html",
+      "viewport": "desktop",
+      "file": null,
+      "reason": null
+    },
+    {
+      "check": "rendered.image-not-requested",
+      "severity": "info",
+      "message": "http://127.0.0.1:45149/assets/graphics/content-engine.svg is lazy and was never requested at this viewport",
+      "group": "rendered",
+      "route": "/Index.html",
+      "viewport": "desktop",
+      "file": null,
+      "reason": null
+    },
+    {
+      "check": "rendered.image-not-requested",
+      "severity": "info",
+      "message": "http://127.0.0.1:45149/assets/images/cassandra-sklarz-headshot.webp is lazy and was never requested at this viewport",
+      "group": "rendered",
+      "route": "/Index.html",
+      "viewport": "desktop",
+      "file": null,
+      "reason": null
+    },
+    {
+      "check": "rendered.image-not-requested",
+      "severity": "info",
+      "message": "http://127.0.0.1:45149/assets/graphics/trust-files-cover.svg is lazy and was never requested at this viewport",
+      "group": "rendered",
+      "route": "/Index.html",
+      "viewport": "tablet",
+      "file": null,
+      "reason": null
+    },
+    {
+      "check": "rendered.image-not-requested",
+      "severity": "info",
+      "message": "http://127.0.0.1:45149/assets/graphics/content-engine.svg is lazy and was never requested at this viewport",
+      "group": "rendered",
+      "route": "/Index.html",
+      "viewport": "tablet",
+      "file": null,
+      "reason": null
+    },
+    {
+      "check": "rendered.image-not-requested",
+      "severity": "info",
+      "message": "http://127.0.0.1:45149/assets/images/cassandra-sklarz-headshot.webp is lazy and was never requested at this viewport",
+      "group": "rendered",
+      "route": "/Index.html",
+      "viewport": "tablet",
+      "file": null,
+      "reason": null
+    },
+    {
+      "check": "rendered.image-not-requested",
+      "severity": "info",
+      "message": "http://127.0.0.1:45149/assets/graphics/trust-files-cover.svg is lazy and was never requested at this viewport",
+      "group": "rendered",
+      "route": "/Index.html",
+      "viewport": "mobile",
+      "file": null,
+      "reason": null
+    },
+    {
+      "check": "rendered.image-not-requested",
+      "severity": "info",
+      "message": "http://127.0.0.1:45149/assets/graphics/content-engine.svg is lazy and was never requested at this viewport",
+      "group": "rendered",
+      "route": "/Index.html",
+      "viewport": "mobile",
+      "file": null,
+      "reason": null
+    },
+    {
+      "check": "rendered.image-not-requested",
+      "severity": "info",
+      "message": "http://127.0.0.1:45149/assets/images/cassandra-sklarz-headshot.webp is lazy and was never requested at this viewport",
+      "group": "rendered",
+      "route": "/Index.html",
+      "viewport": "mobile",
+      "file": null,
+      "reason": null
+    },
+    {
+      "check": "rendered.image-not-requested",
+      "severity": "info",
+      "message": "http://127.0.0.1:45149/sklarz-creative-logo.png is lazy and was never requested at this viewport",
+      "group": "rendered",
+      "route": "/media-kit.html",
+      "viewport": "desktop",
+      "file": null,
+      "reason": null
+    },
+    {
+      "check": "rendered.image-not-requested",
+      "severity": "info",
+      "message": "http://127.0.0.1:45149/assets/graphics/content-engine.svg is lazy and was never requested at this viewport",
+      "group": "rendered",
+      "route": "/media-kit.html",
+      "viewport": "tablet",
+      "file": null,
+      "reason": null
+    },
+    {
+      "check": "rendered.image-not-requested",
+      "severity": "info",
+      "message": "http://127.0.0.1:45149/sklarz-creative-logo.png is lazy and was never requested at this viewport",
+      "group": "rendered",
+      "route": "/media-kit.html",
+      "viewport": "tablet",
+      "file": null,
+      "reason": null
+    },
+    {
+      "check": "rendered.image-not-requested",
+      "severity": "info",
+      "message": "http://127.0.0.1:45149/assets/graphics/trust-framework.svg is lazy and was never requested at this viewport",
+      "group": "rendered",
+      "route": "/media-kit.html",
+      "viewport": "mobile",
+      "file": null,
+      "reason": null
+    },
+    {
+      "check": "rendered.image-not-requested",
+      "severity": "info",
+      "message": "http://127.0.0.1:45149/assets/graphics/content-engine.svg is lazy and was never requested at this viewport",
+      "group": "rendered",
+      "route": "/media-kit.html",
+      "viewport": "mobile",
+      "file": null,
+      "reason": null
+    },
+    {
+      "check": "rendered.image-not-requested",
+      "severity": "info",
+      "message": "http://127.0.0.1:45149/sklarz-creative-logo.png is lazy and was never requested at this viewport",
+      "group": "rendered",
+      "route": "/media-kit.html",
+      "viewport": "mobile",
+      "file": null,
+      "reason": null
+    },
+    {
+      "check": "rendered.image-not-requested",
+      "severity": "info",
+      "message": "http://127.0.0.1:45149/assets/images/cassandra-sklarz-headshot.webp is lazy and was never requested at this viewport",
+      "group": "rendered",
+      "route": "/media-kit.html",
+      "viewport": "mobile",
+      "file": null,
+      "reason": null
+    },
+    {
+      "check": "static.canonical-stub",
+      "severity": "info",
+      "message": "redirect stub canonicalises to https://sklarzcreative.com/",
+      "group": "static",
+      "file": "Index.html",
+      "route": "/Index.html",
+      "viewport": null,
+      "reason": null
+    },
+    {
+      "check": "static.canonical-stub",
+      "severity": "info",
+      "message": "redirect stub canonicalises to https://sklarzcreative.com/insights/the-trust-files/trust-is-not-a-vibe/",
+      "group": "static",
+      "file": "insights/the-trust-files/trust-is-not-a-vibe.html",
+      "route": "/insights/the-trust-files/trust-is-not-a-vibe.html",
+      "viewport": null,
+      "reason": null
+    },
+    {
+      "check": "static.description",
+      "severity": "info",
+      "message": "redirect stub, no description needed",
+      "group": "static",
+      "file": "Index.html",
+      "route": "/Index.html",
+      "viewport": null,
+      "reason": null
+    },
+    {
+      "check": "static.description",
+      "severity": "info",
+      "message": "redirect stub, no description needed",
+      "group": "static",
+      "file": "insights/the-trust-files/trust-is-not-a-vibe.html",
+      "route": "/insights/the-trust-files/trust-is-not-a-vibe.html",
+      "viewport": null,
+      "reason": null
+    }
+  ],
+  "verdict": {
+    "status": "incomplete",
+    "exit_code": 0,
+    "summary": "no errors, but 7 checks could not run — this is not a clean bill of health"
+  }
+}
