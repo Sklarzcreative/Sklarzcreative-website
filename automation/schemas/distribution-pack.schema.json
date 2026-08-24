@@ -1,0 +1,188 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sklarzcreative.com/schemas/distribution-pack.schema.json",
+  "title": "Distribution pack",
+  "description": "One approved source item turned into platform-specific derivatives. Produced by the Content Operations Agent at STAGE level. Nothing in this document is published by its existence.",
+  "type": "object",
+  "required": ["schema_version", "pack_id", "generated_at", "generated_by", "source", "canonical_url", "derivatives", "approval"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "pack_id": { "type": "string", "minLength": 1, "description": "Stable id. Reused if the pack is revised, with revision incremented." },
+    "revision": { "type": "integer", "minimum": 1, "default": 1 },
+    "generated_at": { "type": "string", "format": "date-time" },
+    "generated_by": { "type": "string", "description": "Agent name and model, e.g. 'content-operations / claude-opus-5'." },
+    "supersedes": { "type": ["string", "null"], "description": "pack_id this replaces. The superseded pack is flagged, never deleted, so both remain visible." },
+
+    "source": {
+      "type": "object",
+      "required": ["intake_id", "title", "approved", "approved_by", "approved_at"],
+      "additionalProperties": false,
+      "properties": {
+        "intake_id": { "type": "string", "minLength": 1 },
+        "title": { "type": "string", "minLength": 1 },
+        "format": { "type": "string", "enum": ["article", "essay", "research_note", "podcast_episode", "resource", "newsletter_issue", "case_study", "other"] },
+        "approved": { "const": true, "description": "A pack may only exist for an approved item. False is not a permitted value — the agent stops instead." },
+        "approved_by": { "type": "string", "minLength": 1, "description": "The human who approved it. Never an agent." },
+        "approved_at": { "type": "string", "format": "date-time" }
+      }
+    },
+
+    "canonical_url": { "type": "string", "format": "uri", "pattern": "^https://sklarzcreative\\.com/" },
+
+    "audience": {
+      "type": "object",
+      "required": ["who", "situation"],
+      "additionalProperties": false,
+      "properties": {
+        "who": { "type": "string", "minLength": 3, "description": "A kind of person, not a segment label." },
+        "situation": { "type": "string", "minLength": 3, "description": "The specific position they are in that makes this relevant now." }
+      }
+    },
+
+    "derivatives": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/derivative" } },
+
+    "omitted_platforms": {
+      "type": "array",
+      "description": "Every platform considered and not included, with the reason. Silence about an omission reads as a decision nobody made.",
+      "items": {
+        "type": "object",
+        "required": ["platform", "reason"],
+        "additionalProperties": false,
+        "properties": {
+          "platform": { "$ref": "#/$defs/platform" },
+          "reason": { "type": "string", "enum": ["route_not_onboarded", "duplicate_queue_row_exists", "no_suitable_asset", "unanswerable_four_questions", "content_unsuitable_for_format", "human_instruction"] },
+          "detail": { "type": ["string", "null"] }
+        }
+      }
+    },
+
+    "preserved_links": {
+      "type": "array",
+      "description": "Links found in the source that already carried tracking and were left untouched. Reported, never rewritten.",
+      "items": {
+        "type": "object",
+        "required": ["url", "existing_params"],
+        "additionalProperties": false,
+        "properties": {
+          "url": { "type": "string" },
+          "existing_params": { "type": "object", "additionalProperties": { "type": "string" } },
+          "note": { "type": ["string", "null"] }
+        }
+      }
+    },
+
+    "approval": {
+      "type": "object",
+      "description": "The gate. An agent may only ever write status 'awaiting_human_review'.",
+      "required": ["status"],
+      "additionalProperties": false,
+      "properties": {
+        "status": { "type": "string", "enum": ["awaiting_human_review", "changes_requested", "approved_for_queue"] },
+        "reviewed_by": { "type": ["string", "null"] },
+        "reviewed_at": { "type": ["string", "null"], "format": "date-time" },
+        "notes": { "type": ["string", "null"] }
+      }
+    },
+
+    "blocking_issues": {
+      "type": "array",
+      "description": "Anything that stops this pack being queued as-is. A pack with blocking issues is still useful: it is a precise list of what to fix.",
+      "items": {
+        "type": "object",
+        "required": ["derivative_id", "issue"],
+        "additionalProperties": false,
+        "properties": {
+          "derivative_id": { "type": "string" },
+          "issue": { "type": "string" }
+        }
+      }
+    }
+  },
+
+  "$defs": {
+    "platform": {
+      "type": "string",
+      "enum": ["linkedin", "linkedin_company", "instagram", "facebook", "threads", "x", "pinterest", "youtube", "tiktok", "bluesky", "newsletter"]
+    },
+    "primary_job": {
+      "type": "string",
+      "description": "Exactly one. A post doing two jobs does neither, and cannot be judged afterwards because no single measure would have told you whether it worked.",
+      "enum": ["awareness", "authority", "engagement", "traffic", "lead_generation", "community"]
+    },
+    "derivative": {
+      "type": "object",
+      "required": ["derivative_id", "platform", "primary_job", "four_questions", "copy", "link", "asset", "status"],
+      "additionalProperties": false,
+      "properties": {
+        "derivative_id": { "type": "string", "minLength": 1 },
+        "platform": { "$ref": "#/$defs/platform" },
+        "primary_job": { "$ref": "#/$defs/primary_job" },
+        "secondary_effects": {
+          "type": "array",
+          "description": "Noted, never promoted to a second primary job.",
+          "items": { "$ref": "#/$defs/primary_job" }
+        },
+        "four_questions": {
+          "type": "object",
+          "description": "All four answered, or the derivative is not drafted.",
+          "required": ["point", "audience", "outcome", "next_step"],
+          "additionalProperties": false,
+          "properties": {
+            "point": { "type": "string", "minLength": 10, "description": "One sentence. No metaphor. If it needs two, it is two posts." },
+            "audience": { "type": "string", "minLength": 10 },
+            "outcome": { "type": "string", "minLength": 10, "description": "What the reader should think or feel differently, stated as a change." },
+            "next_step": { "type": "string", "minLength": 3, "description": "Exactly one, reachable from the post." }
+          }
+        },
+        "copy": {
+          "type": "object",
+          "required": ["body", "character_count", "platform_limit", "within_limit"],
+          "additionalProperties": false,
+          "properties": {
+            "body": { "type": "string", "minLength": 1, "description": "Exactly what would post. Never abridged for review." },
+            "character_count": { "type": "integer", "minimum": 0 },
+            "platform_limit": { "type": ["integer", "null"] },
+            "within_limit": { "type": "boolean" },
+            "hashtags": { "type": "array", "items": { "type": "string" } },
+            "first_comment": { "type": ["string", "null"], "description": "Where the platform convention is to put the link in a comment." }
+          }
+        },
+        "link": {
+          "type": "object",
+          "required": ["url", "utm"],
+          "additionalProperties": false,
+          "properties": {
+            "url": { "type": "string", "format": "uri", "description": "Generated by automation/lib/utm.mjs. Never hand-composed." },
+            "utm": {
+              "type": "object",
+              "required": ["utm_source", "utm_medium", "utm_campaign"],
+              "additionalProperties": false,
+              "properties": {
+                "utm_source": { "type": "string", "pattern": "^[a-z0-9]+(?:_[a-z0-9]+)*$" },
+                "utm_medium": { "type": "string", "pattern": "^[a-z0-9]+(?:_[a-z0-9]+)*$" },
+                "utm_campaign": { "type": "string", "pattern": "^[a-z0-9]+(?:_[a-z0-9]+)*$" },
+                "utm_content": { "type": "string", "pattern": "^[a-z0-9]+(?:_[a-z0-9]+)*$" },
+                "utm_term": { "type": "string", "pattern": "^[a-z0-9]+(?:_[a-z0-9]+)*$" }
+              }
+            }
+          }
+        },
+        "asset": {
+          "type": "object",
+          "required": ["required", "status"],
+          "additionalProperties": false,
+          "properties": {
+            "required": { "type": "boolean" },
+            "status": { "type": "string", "enum": ["present", "missing", "not_required"], "description": "'missing' is reported, never substituted with another image." },
+            "ref": { "type": ["string", "null"], "description": "Drive path or filename. Never a credentialled URL." },
+            "spec": { "type": ["string", "null"], "description": "What is needed if it does not exist, e.g. '1200x630 PNG'." },
+            "alt_text": { "type": ["string", "null"], "description": "Required whenever an asset is present. Never left to the platform." }
+          }
+        },
+        "status": { "type": "string", "enum": ["staged", "blocked"], "description": "An agent may write no other value. Never 'approved', 'scheduled' or 'published'." },
+        "suggested_slot": { "type": ["string", "null"], "format": "date-time", "description": "A proposal for a human, not a schedule." }
+      }
+    }
+  }
+}

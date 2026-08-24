@@ -1,0 +1,45 @@
+{
+  "schema_version": "1.0",
+  "case_id": "EXAMPLE-000",
+  "created_at": "2026-08-24T05:20:00Z",
+  "updated_at": "2026-08-24T05:20:00Z",
+  "status": "missing_evidence",
+  "publishable": false,
+  "client": {
+    "named": false,
+    "name": null,
+    "descriptor": "A placeholder. THIS IS NOT A REAL ENGAGEMENT — it exists to show the shape of an honest incomplete record, so nobody can mistake the example for a claim about a real client.",
+    "sector": null
+  },
+  "permission": {
+    "client_named": false,
+    "quotes_permitted": false,
+    "metrics_permitted": false,
+    "granted_by": null,
+    "granted_at": null,
+    "record": null
+  },
+  "sections": {
+    "context": "MISSING EVIDENCE",
+    "problem": "MISSING EVIDENCE",
+    "constraints": "MISSING EVIDENCE",
+    "role": "MISSING EVIDENCE",
+    "research": "MISSING EVIDENCE",
+    "strategic_decision": "MISSING EVIDENCE",
+    "work_created": "MISSING EVIDENCE",
+    "why_those_decisions": "MISSING EVIDENCE",
+    "observable_outcome": "MISSING EVIDENCE",
+    "what_was_learned": "MISSING EVIDENCE",
+    "related_capabilities": "MISSING EVIDENCE",
+    "cta": "MISSING EVIDENCE"
+  },
+  "evidence_gaps": [
+    { "section": "context", "what_is_needed": "The situation the client was in when they came to Sklarz Creative, in two or three sentences", "who_can_supply": "Cassandra Sklarz, from the original brief or first call notes", "blocks_publication": true },
+    { "section": "problem", "what_is_needed": "The problem as the client themselves stated it — their words, not a diagnosis", "who_can_supply": "Cassandra Sklarz, from the brief", "blocks_publication": true },
+    { "section": "role", "what_is_needed": "What Sklarz Creative was responsible for AND what it was not. An unbounded role reads as an inflated one.", "who_can_supply": "Cassandra Sklarz, from the scope of work", "blocks_publication": true },
+    { "section": "strategic_decision", "what_is_needed": "The decision made, and the option deliberately not taken. The rejected alternative is where the credibility lives.", "who_can_supply": "Cassandra Sklarz", "blocks_publication": true },
+    { "section": "observable_outcome", "what_is_needed": "One thing a sceptical third party could verify — a launch date, a shipped artefact, a measured figure the client permits quoting. If nothing was measured, say so; that is a valid and common answer.", "who_can_supply": "Cassandra Sklarz, or the client if a metric needs permission", "blocks_publication": true },
+    { "section": "related_capabilities", "what_is_needed": "Which of the site's existing capability lines this engagement actually exercised", "who_can_supply": "Cassandra Sklarz", "blocks_publication": false }
+  ],
+  "nothing_inferred": true
+}

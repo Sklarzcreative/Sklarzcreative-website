@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sklarzcreative.com/schemas/publish-queue-row.schema.json",
+  "title": "Publish queue row",
+  "description": "The contract for one row of the 'MAKE - Publish Queue' tab. Agents may read every field. Make owns status, published_url, error and updated_at at publish time; nothing else may write them.",
+  "type": "object",
+  "required": ["row_id", "content_id", "platform", "status"],
+  "additionalProperties": true,
+  "properties": {
+    "row_id": { "type": ["string", "integer"], "description": "Stable row identity. Not the spreadsheet row number, which shifts when rows are inserted." },
+    "content_id": { "type": "string", "minLength": 1, "description": "The source item. Two rows sharing content_id and platform are a duplicate risk." },
+    "pack_id": { "type": ["string", "null"], "description": "The distribution pack this row came from, so a post can be traced back to the decision that made it." },
+    "derivative_id": { "type": ["string", "null"] },
+    "platform": {
+      "type": "string",
+      "enum": ["linkedin", "linkedin_company", "instagram", "facebook", "threads", "x", "pinterest", "youtube", "tiktok", "bluesky", "newsletter"]
+    },
+    "primary_job": { "type": ["string", "null"], "enum": ["awareness", "authority", "engagement", "traffic", "lead_generation", "community", null] },
+    "copy": { "type": ["string", "null"] },
+    "asset_ref": { "type": ["string", "null"], "description": "Empty on a media-required platform is a blocking defect, and detectable before the scheduled time." },
+    "alt_text": { "type": ["string", "null"] },
+    "target_url": { "type": ["string", "null"], "description": "The UTM-tagged link the post carries." },
+    "scheduled_at": { "type": ["string", "null"], "format": "date-time" },
+
+    "status": {
+      "type": "string",
+      "enum": ["DRAFT", "STAGED", "APPROVED", "HOLD", "PROCESSING", "SENDING", "RETRY", "PUBLISHED", "FAILED", "CANCELLED"],
+      "description": "HOLD is a human decision and is NOT a failure. PROCESSING, SENDING and RETRY are transient — one of them, aged, means a run died mid-flight."
+    },
+    "approved_by": { "type": ["string", "null"], "description": "The human who approved it. An agent name here is a defect." },
+    "approved_at": { "type": ["string", "null"], "format": "date-time" },
+
+    "published_url": { "type": ["string", "null"], "description": "Written by Make on success. PUBLISHED with this empty is unverifiable and is never counted as a success." },
+    "published_at": { "type": ["string", "null"], "format": "date-time" },
+    "error": { "type": ["string", "null"], "description": "Verbatim from the platform. Never summarised — the exact text is what identifies the cause." },
+    "attempt_count": { "type": ["integer", "null"], "minimum": 0 },
+    "idempotency_key": { "type": ["string", "null"], "description": "content_id + platform + scheduled_at. The single defence against a duplicate publish on retry." },
+    "updated_at": { "type": ["string", "null"], "format": "date-time" },
+    "requires_media": { "type": ["boolean", "null"], "description": "Override for a platform not in the media-required list. null means fall back to the platform default." },
+    "notes": { "type": ["string", "null"] }
+  }
+}

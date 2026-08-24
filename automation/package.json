@@ -1,0 +1,17 @@
+{
+  "name": "sklarzcreative-automation",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "QA harness, schemas and operational libraries for sklarzcreative.com. Deliberately separate from the website, which has no dependencies and no build step — nothing here is deployed.",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "qa": "node qa/run.mjs",
+    "qa:live": "node qa/run.mjs --live",
+    "qa:static": "node qa/run.mjs --static-only"
+  },
+  "devDependencies": {
+    "playwright": "1.56.1"
+  }
+}

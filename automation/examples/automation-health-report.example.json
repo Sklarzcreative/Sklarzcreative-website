@@ -1,0 +1,109 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-08-24T05:00:00Z",
+  "generated_by": "example — illustrative shape only. Every value here is invented FOR THE PURPOSE OF SHOWING THE SHAPE and must never be read as a measurement of the real system.",
+  "window": { "from": "2026-08-10T00:00:00Z", "to": "2026-08-24T05:00:00Z" },
+
+  "publishing": {
+    "queue_readable": false,
+    "queue_total": null,
+    "approved_waiting": null,
+    "hold_count": null,
+    "overdue_count": null,
+    "publishing_failures": null,
+    "missing_asset_count": null,
+    "missing_url_count": null,
+    "missing_published_url_count": null,
+    "duplicate_risk_count": null,
+    "counts_by_status": null,
+    "platform_route_health": {
+      "linkedin": { "status": "unknown", "verified_publishes": null, "failures": null, "overdue": null, "published_without_url": null, "last_verified_publish_at": null, "note": "queue not readable from this environment — no credentialled access to the spreadsheet, by design" },
+      "tiktok": { "status": "not_onboarded", "verified_publishes": null, "failures": null, "overdue": null, "published_without_url": null, "last_verified_publish_at": null, "note": "has not passed runbooks/route-onboarding.md" },
+      "youtube": { "status": "not_onboarded", "verified_publishes": null, "failures": null, "overdue": null, "published_without_url": null, "last_verified_publish_at": null, "note": "has not passed runbooks/route-onboarding.md" },
+      "bluesky": { "status": "not_onboarded", "verified_publishes": null, "failures": null, "overdue": null, "published_without_url": null, "last_verified_publish_at": null, "note": "has not passed runbooks/route-onboarding.md" }
+    }
+  },
+
+  "lead_capture_health": {
+    "status": "not_configured",
+    "capture_enabled": false,
+    "endpoint_configured": false,
+    "fails_open_verified": true,
+    "captures_in_window": null,
+    "completions_in_window": null,
+    "completion_rate": null,
+    "rows_failing_validation": null,
+    "consent_yes_count": null,
+    "consent_no_count": null,
+    "consent_unrecognised_count": null,
+    "note": "window.TFCS_CAPTURE.endpoint is empty, so no ask is shown and the diagnostic opens immediately. Counts are null rather than 0 because there is no sheet to count, not because nothing was captured. fails_open_verified is true because the QA harness drove the page with an unreachable endpoint and access was still granted."
+  },
+
+  "email_sequence_health": {
+    "status": "not_configured",
+    "connected": false,
+    "enrolled_count": null,
+    "sends_in_window": null,
+    "failures_in_window": null,
+    "consent_violations": 0,
+    "note": "No provider connected. consent_violations is 0 rather than null because nothing can have been sent — that is a measured zero, not an absence of data."
+  },
+
+  "site_qa_health": {
+    "status": "healthy",
+    "last_run_at": "2026-08-24T04:55:00Z",
+    "last_run_sha": "0000000000000000000000000000000000000000",
+    "errors": 0,
+    "warnings": 3,
+    "skipped": 9,
+    "report_path": "automation/reports/qa-report.json"
+  },
+
+  "seo_health": {
+    "status": "healthy",
+    "pages_in_sitemap": 13,
+    "pages_on_disk_indexable": 13,
+    "sitemap_disk_mismatches": 0,
+    "duplicate_titles": 0,
+    "duplicate_descriptions": 0,
+    "missing_canonical": 0,
+    "invalid_structured_data": 0,
+    "orphan_pages": 0,
+    "search_console_connected": false,
+    "impressions": { "value": "NOT AVAILABLE", "reason": "Search Console is not connected to this automation. Requires a signed-in human; see runbooks/seo-search-console.md." },
+    "clicks": { "value": "NOT AVAILABLE", "reason": "Search Console is not connected to this automation." },
+    "note": null
+  },
+
+  "critical_issues": [
+    {
+      "priority": "P1",
+      "area": "publishing",
+      "summary": "The publish queue cannot be read from any automated context in this repository.",
+      "detail": "Reading it requires a Google credential, and no credential belongs in a public repository. Until a Make scenario or an authorised local run supplies the snapshot, every publishing figure in this report is null — which is honest, and also means this report cannot detect a publishing failure on its own.",
+      "evidence": null,
+      "recommended_action": "Have the Make weekly-reporting scenario write a queue snapshot to a location an authorised run can read, or run the reliability audit locally against an export. See runbooks/make-d-weekly-reporting.md."
+    }
+  ],
+  "warnings": [
+    {
+      "priority": "P2",
+      "area": "seo",
+      "summary": "Search Console is not connected, so nothing is known about how the site is actually found.",
+      "detail": null,
+      "evidence": null,
+      "recommended_action": "One signed-in session: verify the property, submit the sitemap, check coverage. Checklist in runbooks/seo-search-console.md."
+    }
+  ],
+  "recommended_next_actions": [
+    "Nothing in publishing can be assessed until a queue snapshot is available. That is the first gap to close.",
+    "Site QA is green and automated; no action.",
+    "Scorecard capture is off by design. Switching it on is ChatGPT's live workstream — do not activate it from here."
+  ],
+  "unavailable_inputs": [
+    { "input": "MAKE - Publish Queue", "reason": "requires a Google credential, which is deliberately absent from this repository" },
+    { "input": "Make execution history", "reason": "requires Make API access" },
+    { "input": "Google Search Console", "reason": "not connected; requires an interactive sign-in" },
+    { "input": "Platform analytics (all platforms)", "reason": "no API connections configured" }
+  ]
+}

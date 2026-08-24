@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sklarzcreative.com/schemas/lead-record.schema.json",
+  "title": "Lead record",
+  "description": "One row of the lead sheet. Written by the Apps Script capture endpoint (integrations/scorecard-capture.gs) from the visitor's own submission; scores are written onto the same row when the card is completed. THE HEADERS ARRAY IN THAT SCRIPT IMPLEMENTS THIS CONTRACT — change the schema and the script together, in one commit, so the two cannot drift. null means unknown throughout; it never means zero.",
+  "type": "object",
+  "required": ["lead_id", "timestamp", "first_name", "email", "resource", "follow_up_opt_in"],
+  "additionalProperties": false,
+  "properties": {
+    "lead_id": { "type": "string", "minLength": 1, "description": "The submission_id minted client-side, which is what lets the result find its row." },
+    "timestamp": { "type": "string", "format": "date-time", "description": "Written server-side. A client-supplied time is never trusted." },
+    "first_name": { "type": "string", "minLength": 1, "maxLength": 120 },
+    "email": { "type": "string", "format": "email", "maxLength": 240 },
+    "resource": { "type": "string", "minLength": 1, "maxLength": 120, "description": "Which asset produced the lead. Needed the moment there are two." },
+    "page": { "type": ["string", "null"], "maxLength": 240, "description": "Path, not full URL." },
+
+    "follow_up_opt_in": {
+      "type": "string",
+      "enum": ["yes", "no"],
+      "description": "The ONLY consent signal in the system. Set from the visitor's own tick, never inferred, never defaulted, never derived from behaviour. Enforced by automation/lib/consent.mjs, where only the exact string 'yes' passes."
+    },
+
+    "utm_source":   { "type": ["string", "null"], "maxLength": 120 },
+    "utm_medium":   { "type": ["string", "null"], "maxLength": 120 },
+    "utm_campaign": { "type": ["string", "null"], "maxLength": 120 },
+    "utm_content":  { "type": ["string", "null"], "maxLength": 120 },
+    "utm_term":     { "type": ["string", "null"], "maxLength": 120 },
+
+    "total_score":       { "type": ["integer", "null"], "minimum": 0, "maximum": 40, "description": "null until the card is completed. 0 means someone scored zero on twenty statements — a different fact entirely." },
+    "clarity_score":     { "type": ["integer", "null"], "minimum": 0, "maximum": 8 },
+    "consistency_score": { "type": ["integer", "null"], "minimum": 0, "maximum": 8 },
+    "credibility_score": { "type": ["integer", "null"], "minimum": 0, "maximum": 8 },
+    "connection_score":  { "type": ["integer", "null"], "minimum": 0, "maximum": 8 },
+    "conversion_score":  { "type": ["integer", "null"], "minimum": 0, "maximum": 8 },
+    "weakest_signal":    { "type": ["string", "null"], "description": "One category, or a tie recorded as a tie. A tie is never resolved to a winner." },
+    "band":              { "type": ["string", "null"], "enum": ["Strong trust system", "Solid foundation", "Inconsistent signals", "Rebuild the basics", null] },
+    "completed_at":      { "type": ["string", "null"], "format": "date-time", "description": "null if the card was never completed, which is normal and common." },
+
+    "email_sequence_status": {
+      "type": ["string", "null"],
+      "enum": ["not_enrolled", "enrolled", "day0_sent", "day2_sent", "day5_sent", "completed", "unsubscribed", "bounced", "failed", null],
+      "description": "Mirrored from the email provider, which is authoritative. null means we do not know — not 'not sent'."
+    },
+    "discovery_call_clicked": {
+      "type": ["boolean", "null"],
+      "description": "null means not instrumented. false asserts we watched and they did not click. Those are different facts and must not be merged."
+    },
+    "lead_status": {
+      "type": ["string", "null"],
+      "enum": ["new", "nurturing", "engaged", "call_booked", "client", "not_a_fit", "unsubscribed", "deleted_on_request", null],
+      "description": "Human-owned. No agent writes this."
+    },
+    "notes": { "type": ["string", "null"], "description": "Human-owned." },
+
+    "dwell_ms": { "type": ["integer", "null"], "minimum": 0, "description": "Spam signal. A submission faster than 1500ms is not a human filling in two fields." },
+    "spam_reason": {
+      "type": ["string", "null"],
+      "enum": ["", "honeypot", "too_fast", "bad_email", "no_name", "result_without_capture", "anonymous_result", null],
+      "description": "Rejected submissions are written WITH a reason rather than dropped, so a false positive is visible rather than invisible."
+    }
+  }
+}

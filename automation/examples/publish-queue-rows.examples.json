@@ -1,0 +1,58 @@
+[
+  {
+    "_comment": "The healthy case: verified published, with a URL. This is the only shape that counts as a success.",
+    "row_id": "Q-1001", "content_id": "INTAKE-0007", "pack_id": "pack-2026-08-24-trust-is-not-a-vibe",
+    "derivative_id": "pack-2026-08-24-trust-is-not-a-vibe/li-1",
+    "platform": "linkedin", "primary_job": "authority",
+    "copy": "…", "asset_ref": null, "alt_text": null,
+    "target_url": "https://sklarzcreative.com/insights/the-trust-files/trust-is-not-a-vibe/?utm_campaign=the_trust_files&utm_content=not_a_vibe_systems_angle&utm_medium=organic_social&utm_source=linkedin",
+    "scheduled_at": "2026-08-20T08:30:00Z",
+    "status": "PUBLISHED", "approved_by": "Cassandra Sklarz", "approved_at": "2026-08-19T16:00:00Z",
+    "published_url": "https://www.linkedin.com/feed/update/urn:li:activity:0000000000000000000/",
+    "published_at": "2026-08-20T08:30:41Z", "error": null, "attempt_count": 1,
+    "idempotency_key": "INTAKE-0007::linkedin::2026-08-20T08:30:00Z",
+    "updated_at": "2026-08-20T08:30:41Z", "requires_media": false, "notes": null
+  },
+  {
+    "_comment": "THE SILENT FAILURE. Approved, its time long past, no published_url, and no error. The publisher either did not run or ran and said nothing. This is the shape that caused the previous incident, and the reliability agent's overdue_approved check exists for exactly this row.",
+    "row_id": "Q-1002", "content_id": "INTAKE-0008", "platform": "instagram", "primary_job": "awareness",
+    "asset_ref": "drive://sklarz-social/2026-08/consistency-carousel-01.png",
+    "target_url": "https://sklarzcreative.com/insights/",
+    "scheduled_at": "2026-08-21T09:00:00Z",
+    "status": "APPROVED", "approved_by": "Cassandra Sklarz", "approved_at": "2026-08-20T18:00:00Z",
+    "published_url": null, "published_at": null, "error": null, "attempt_count": 0,
+    "idempotency_key": "INTAKE-0008::instagram::2026-08-21T09:00:00Z",
+    "updated_at": "2026-08-20T18:00:00Z", "requires_media": true, "notes": null
+  },
+  {
+    "_comment": "A human decided this waits. HOLD IS NOT A FAILURE. It is counted and listed, never actioned, and never mixed into the overdue count.",
+    "row_id": "Q-1003", "content_id": "INTAKE-0009", "platform": "x", "primary_job": "engagement",
+    "target_url": "https://sklarzcreative.com/work/", "scheduled_at": "2026-08-22T12:00:00Z",
+    "status": "HOLD", "approved_by": null, "approved_at": null,
+    "published_url": null, "error": null, "attempt_count": 0,
+    "updated_at": "2026-08-21T10:00:00Z", "notes": "Held deliberately until the /work/ page has a second entry."
+  },
+  {
+    "_comment": "UNVERIFIABLE. Marked PUBLISHED with no published_url — either the route cannot return one or the status was stamped before the platform confirmed. Never counted as a success, and the fix is to the step that stamps the status.",
+    "row_id": "Q-1004", "content_id": "INTAKE-0010", "platform": "threads", "primary_job": "awareness",
+    "target_url": "https://sklarzcreative.com/", "scheduled_at": "2026-08-22T15:00:00Z",
+    "status": "PUBLISHED", "published_url": null, "published_at": "2026-08-22T15:00:12Z",
+    "error": null, "attempt_count": 1, "updated_at": "2026-08-22T15:00:12Z"
+  },
+  {
+    "_comment": "A LOUD failure — which is the less dangerous kind, because someone notices. The error text is kept verbatim: the exact wording is what identifies the cause, and summarising it discards the evidence.",
+    "row_id": "Q-1005", "content_id": "INTAKE-0011", "platform": "pinterest", "primary_job": "traffic",
+    "asset_ref": "drive://sklarz-social/2026-08/scorecard-pin-01.png",
+    "target_url": "https://sklarzcreative.com/insights/resources/trust-first-content-scorecard/",
+    "scheduled_at": "2026-08-23T07:00:00Z",
+    "status": "FAILED", "published_url": null, "error": "401 Unauthorized — the access token for this connection has expired",
+    "attempt_count": 3, "updated_at": "2026-08-23T07:04:55Z", "requires_media": true
+  },
+  {
+    "_comment": "A run that died mid-flight. A transient status this old is the trace it leaves.",
+    "row_id": "Q-1006", "content_id": "INTAKE-0012", "platform": "facebook", "primary_job": "community",
+    "target_url": "https://sklarzcreative.com/insights/", "scheduled_at": "2026-08-23T18:00:00Z",
+    "status": "SENDING", "published_url": null, "error": null, "attempt_count": 1,
+    "updated_at": "2026-08-23T18:00:03Z"
+  }
+]

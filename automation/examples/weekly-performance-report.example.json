@@ -1,0 +1,73 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-08-24T05:10:00Z",
+  "generated_by": "example — the honest shape of a report in the current state of the system, where most inputs are not connected. The numbers that are present are illustrative, not measurements.",
+  "window": { "from": "2026-08-17", "to": "2026-08-23", "posts_published": null },
+
+  "platforms": {
+    "linkedin":         { "availability": "manual_export", "reason": "LinkedIn analytics require a signed-in export; no API connection exists", "data_source": null, "retrieved_at": null, "posts": { "value": "NOT AVAILABLE", "reason": "no connection and no export supplied for this window" }, "impressions": { "value": "NOT AVAILABLE", "reason": "no connection and no export supplied for this window" }, "engagements": { "value": "NOT AVAILABLE", "reason": "no connection and no export supplied for this window" }, "link_clicks": { "value": "NOT AVAILABLE", "reason": "no connection and no export supplied for this window" }, "top_post": null },
+    "linkedin_company": { "availability": "manual_export", "reason": "as above; the company page is reported separately because averaging it with the personal profile hides the finding", "posts": { "value": "NOT AVAILABLE", "reason": "no export supplied" }, "top_post": null },
+    "instagram":        { "availability": "manual_export", "reason": "Instagram insights require the app or a Graph API connection", "posts": { "value": "NOT AVAILABLE", "reason": "no export supplied" }, "top_post": null },
+    "facebook":         { "availability": "manual_export", "reason": "Page insights require a signed-in export", "posts": { "value": "NOT AVAILABLE", "reason": "no export supplied" }, "top_post": null },
+    "threads":          { "availability": "not_available", "reason": "no analytics access configured", "posts": { "value": "NOT AVAILABLE", "reason": "no analytics access configured" }, "top_post": null },
+    "x":                { "availability": "not_available", "reason": "no analytics access configured", "posts": { "value": "NOT AVAILABLE", "reason": "no analytics access configured" }, "top_post": null },
+    "pinterest":        { "availability": "not_available", "reason": "no analytics access configured", "posts": { "value": "NOT AVAILABLE", "reason": "no analytics access configured" }, "top_post": null },
+    "youtube":          { "availability": "route_not_onboarded", "reason": "publishing route not onboarded, so there is nothing published to measure", "posts": { "value": "NOT AVAILABLE", "reason": "route not onboarded" }, "top_post": null },
+    "tiktok":           { "availability": "route_not_onboarded", "reason": "publishing route not onboarded", "posts": { "value": "NOT AVAILABLE", "reason": "route not onboarded" }, "top_post": null },
+    "bluesky":          { "availability": "route_not_onboarded", "reason": "publishing route not onboarded", "posts": { "value": "NOT AVAILABLE", "reason": "route not onboarded" }, "top_post": null },
+    "newsletter":       { "availability": "not_available", "reason": "no email provider connected", "posts": { "value": "NOT AVAILABLE", "reason": "no email provider connected" }, "top_post": null }
+  },
+
+  "funnel": {
+    "site_traffic": { "value": "NOT AVAILABLE", "reason": "The site carries no analytics, by design. /privacy/ states this and that statement is load-bearing. Adding analytics is a consent decision, not a technical convenience." },
+    "scorecard_starts": { "value": "NOT AVAILABLE", "reason": "capture is switched off, so there is no sheet to count" },
+    "scorecard_completions": { "value": "NOT AVAILABLE", "reason": "capture is switched off" },
+    "leads": { "value": "NOT AVAILABLE", "reason": "capture is switched off" },
+    "leads_by_source": null,
+    "unattributed_leads": null,
+    "discovery_calls": { "value": "NOT AVAILABLE", "reason": "Calendly bookings are matched by hand and none were supplied for this window" },
+    "consent_yes_rate": { "value": "NOT AVAILABLE", "reason": "no captures to compute a rate from" }
+  },
+
+  "answers": {
+    "earned_attention": { "status": "not_available", "finding": null, "limitation": "No platform analytics are connected. Nothing about attention is known for this window, and nothing should be inferred from the absence.", "evidence": null },
+    "generated_traffic": { "status": "not_available", "finding": null, "limitation": "UTM attribution only ever sees arrivals that converted — it cannot report visits. With capture off it sees nothing at all.", "evidence": null },
+    "generated_scorecard_activity": { "status": "not_available", "finding": null, "limitation": "Capture is off.", "evidence": null },
+    "generated_leads": { "status": "not_available", "finding": null, "limitation": "Capture is off.", "evidence": null },
+    "generated_calls": { "status": "not_available", "finding": null, "limitation": "Bookings are not instrumented; they are matched by hand.", "evidence": null },
+    "repeat": { "status": "insufficient_evidence", "finding": null, "limitation": "No measured outcome in this window supports repeating anything specific.", "evidence": null },
+    "stop": { "status": "insufficient_evidence", "finding": null, "limitation": "A stop needs at least medium confidence. Killing a channel on no data is how a working channel gets killed.", "evidence": null }
+  },
+
+  "recommendations": [
+    {
+      "action": "wait",
+      "subject": "channel-level decisions",
+      "confidence": "insufficient_evidence",
+      "evidence_count": 0,
+      "rationale": "No platform data and no lead data are available for this window. The correct action is to close the measurement gap, not to make a channel decision on nothing."
+    },
+    {
+      "action": "adjust",
+      "subject": "measurement",
+      "confidence": "high",
+      "evidence_count": 1,
+      "rationale": "Every question in this report is unanswerable for the same reason: no input is connected. One connected input — the lead sheet, once capture is live — would make four of the seven answerable. That is the highest-leverage change available and it needs no new tooling."
+    }
+  ],
+
+  "hypothesis": {
+    "statement": "If the Scorecard capture is switched on, then within two weeks the lead sheet will attribute at least one lead to a specific utm_content value, making per-post attribution real rather than theoretical.",
+    "measured_by": "count of lead rows with a non-empty utm_content in the lead sheet",
+    "decide_by": "2026-09-07",
+    "previous_hypothesis": null,
+    "previous_verdict": "not_run"
+  },
+
+  "unavailable_inputs": [
+    { "input": "All platform analytics", "reason": "no API connections configured; manual export required" },
+    { "input": "Lead sheet", "reason": "Scorecard capture is switched off" },
+    { "input": "Website traffic", "reason": "no analytics on the site, by design" },
+    { "input": "Calendly bookings", "reason": "not instrumented; matched by hand" }
+  ]
+}

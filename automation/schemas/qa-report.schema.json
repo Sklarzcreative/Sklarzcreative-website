@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sklarzcreative.com/schemas/qa-report.schema.json",
+  "title": "Website QA report",
+  "description": "Output of automation/qa/run.mjs. Immutable once written. 'skipped' is its own state and is never folded into 'pass' — a run that could not perform half its checks must not read as clean.",
+  "type": "object",
+  "required": ["schema_version", "generated_at", "harness_version", "git", "mode", "routes", "totals", "findings", "verdict"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "generated_at": { "type": "string", "format": "date-time" },
+    "harness_version": { "type": "string" },
+    "git": {
+      "type": "object",
+      "description": "Mandatory. A report with no SHA is not attributable to a state of the code, which makes it useless as evidence.",
+      "required": ["sha", "branch"],
+      "additionalProperties": false,
+      "properties": {
+        "sha": { "type": ["string", "null"] },
+        "branch": { "type": ["string", "null"] },
+        "dirty": { "type": ["boolean", "null"] }
+      }
+    },
+    "mode": {
+      "type": "object",
+      "required": ["static", "rendered", "behaviour", "live"],
+      "additionalProperties": false,
+      "properties": {
+        "static": { "type": "boolean" },
+        "rendered": { "type": "boolean" },
+        "behaviour": { "type": "boolean" },
+        "live": { "type": "boolean" }
+      }
+    },
+    "environment": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "node": { "type": ["string", "null"] },
+        "chromium": { "type": ["string", "null"], "description": "null when the browser suite did not run." },
+        "viewports": { "type": "array", "items": { "type": "object", "additionalProperties": true } },
+        "base_url": { "type": ["string", "null"] }
+      }
+    },
+    "routes": { "type": "array", "items": { "type": "string" } },
+    "totals": {
+      "type": "object",
+      "required": ["checks", "pass", "error", "warning", "info", "skipped"],
+      "additionalProperties": false,
+      "properties": {
+        "checks": { "type": "integer", "minimum": 0 },
+        "pass": { "type": "integer", "minimum": 0 },
+        "error": { "type": "integer", "minimum": 0 },
+        "warning": { "type": "integer", "minimum": 0 },
+        "info": { "type": "integer", "minimum": 0 },
+        "skipped": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["check", "severity", "message"],
+        "additionalProperties": false,
+        "properties": {
+          "check": { "type": "string", "description": "Stable identifier, so a finding can be tracked across runs." },
+          "group": { "type": ["string", "null"], "enum": ["static", "rendered", "behaviour", "live", "harness", null] },
+          "severity": { "type": "string", "enum": ["error", "warning", "info", "skipped"] },
+          "route": { "type": ["string", "null"] },
+          "file": { "type": ["string", "null"] },
+          "line": { "type": ["integer", "null"], "minimum": 1 },
+          "viewport": { "type": ["string", "null"] },
+          "message": { "type": "string", "minLength": 1 },
+          "evidence": { "description": "Whatever was actually measured. Present on every non-trivial finding, because a finding without evidence cannot be triaged." },
+          "reason": { "type": ["string", "null"], "description": "Required on every 'skipped' finding. Why the check could not run." }
+        }
+      }
+    },
+    "verdict": {
+      "type": "object",
+      "required": ["status", "exit_code"],
+      "additionalProperties": false,
+      "properties": {
+        "status": { "type": "string", "enum": ["pass", "pass_with_warnings", "fail", "incomplete"], "description": "'incomplete' when checks were skipped and nothing failed — deliberately not 'pass'." },
+        "exit_code": { "type": "integer", "minimum": 0 },
+        "summary": { "type": ["string", "null"] }
+      }
+    }
+  }
+}

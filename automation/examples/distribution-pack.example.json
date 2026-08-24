@@ -1,0 +1,122 @@
+{
+  "schema_version": "1.0",
+  "pack_id": "pack-2026-08-24-trust-is-not-a-vibe",
+  "revision": 1,
+  "generated_at": "2026-08-24T04:10:00Z",
+  "generated_by": "content-operations / example — NOT a real staged pack",
+  "supersedes": null,
+  "source": {
+    "intake_id": "INTAKE-0007",
+    "title": "Trust Is Not a Vibe",
+    "format": "essay",
+    "approved": true,
+    "approved_by": "Cassandra Sklarz",
+    "approved_at": "2026-08-23T17:00:00Z"
+  },
+  "canonical_url": "https://sklarzcreative.com/insights/the-trust-files/trust-is-not-a-vibe/",
+  "audience": {
+    "who": "A founder or marketing lead at an expert-led company",
+    "situation": "About to commission more content, when the problem is that the existing content does not agree with itself"
+  },
+  "derivatives": [
+    {
+      "derivative_id": "pack-2026-08-24-trust-is-not-a-vibe/li-1",
+      "platform": "linkedin",
+      "primary_job": "authority",
+      "secondary_effects": ["traffic"],
+      "four_questions": {
+        "point": "Trust is not a tone of voice; it is whether your touchpoints agree with each other.",
+        "audience": "A founder about to sign off a content plan that adds volume to an inconsistent system",
+        "outcome": "They stop treating trust as a styling decision and look at consistency across touchpoints instead",
+        "next_step": "Read the essay"
+      },
+      "copy": {
+        "body": "Most \"trust\" work is styling. A warmer tone, a friendlier photograph, a softer word for the price.\n\nBut a stranger deciding whether to believe you is not reading your tone. They are checking whether the things you say in three different places agree with each other.\n\nThat is a systems problem, not a copy problem — and it is the reason adding more content to an inconsistent system makes the inconsistency louder rather than quieter.\n\nThe essay is in the comments.",
+        "character_count": 505,
+        "platform_limit": 3000,
+        "within_limit": true,
+        "hashtags": [],
+        "first_comment": "https://sklarzcreative.com/insights/the-trust-files/trust-is-not-a-vibe/?utm_campaign=the_trust_files&utm_content=not_a_vibe_systems_angle&utm_medium=organic_social&utm_source=linkedin"
+      },
+      "link": {
+        "url": "https://sklarzcreative.com/insights/the-trust-files/trust-is-not-a-vibe/?utm_campaign=the_trust_files&utm_content=not_a_vibe_systems_angle&utm_medium=organic_social&utm_source=linkedin",
+        "utm": {
+          "utm_source": "linkedin",
+          "utm_medium": "organic_social",
+          "utm_campaign": "the_trust_files",
+          "utm_content": "not_a_vibe_systems_angle"
+        }
+      },
+      "asset": {
+        "required": false,
+        "status": "not_required",
+        "ref": null,
+        "spec": null,
+        "alt_text": null
+      },
+      "status": "staged",
+      "suggested_slot": "2026-08-26T08:30:00Z"
+    },
+    {
+      "derivative_id": "pack-2026-08-24-trust-is-not-a-vibe/ig-1",
+      "platform": "instagram",
+      "primary_job": "awareness",
+      "four_questions": {
+        "point": "Consistency across touchpoints is what a stranger actually checks.",
+        "audience": "A founder scrolling, who has an inconsistent set of touchpoints and has not framed it that way",
+        "outcome": "They recognise the pattern in their own material",
+        "next_step": "Save the post"
+      },
+      "copy": {
+        "body": "Trust is not a vibe. It is whether three touchpoints agree.",
+        "character_count": 58,
+        "platform_limit": 2200,
+        "within_limit": true,
+        "hashtags": []
+      },
+      "link": {
+        "url": "https://sklarzcreative.com/insights/the-trust-files/trust-is-not-a-vibe/?utm_campaign=the_trust_files&utm_content=not_a_vibe_carousel&utm_medium=organic_social&utm_source=instagram",
+        "utm": {
+          "utm_source": "instagram",
+          "utm_medium": "organic_social",
+          "utm_campaign": "the_trust_files",
+          "utm_content": "not_a_vibe_carousel"
+        }
+      },
+      "asset": {
+        "required": true,
+        "status": "missing",
+        "ref": null,
+        "spec": "1080x1350 carousel, 3 frames, navy/gold, Montserrat display",
+        "alt_text": "Three panels showing the same claim written three different ways across a site, a profile and a deck."
+      },
+      "status": "blocked",
+      "suggested_slot": null
+    }
+  ],
+  "omitted_platforms": [
+    { "platform": "tiktok", "reason": "route_not_onboarded", "detail": "See runbooks/route-onboarding.md. No authenticated route, no verified publish, no rollback path." },
+    { "platform": "youtube", "reason": "route_not_onboarded", "detail": "Same. Also: no video asset exists for this piece." },
+    { "platform": "bluesky", "reason": "route_not_onboarded", "detail": "Same." },
+    { "platform": "pinterest", "reason": "no_suitable_asset", "detail": "Pinterest needs a vertical asset that does not exist yet." }
+  ],
+  "preserved_links": [
+    {
+      "url": "https://example-partner.test/report?utm_source=partner&utm_campaign=q3_review",
+      "existing_params": { "utm_source": "partner", "utm_campaign": "q3_review" },
+      "note": "Already carried tracking when found in the source. Left untouched — someone set these deliberately and retagging would destroy their data. Confirm before changing."
+    }
+  ],
+  "approval": {
+    "status": "awaiting_human_review",
+    "reviewed_by": null,
+    "reviewed_at": null,
+    "notes": null
+  },
+  "blocking_issues": [
+    {
+      "derivative_id": "pack-2026-08-24-trust-is-not-a-vibe/ig-1",
+      "issue": "Carousel asset does not exist. Reported rather than substituted with another image — a derivative that silently posts without its intended asset is a published mistake."
+    }
+  ]
+}

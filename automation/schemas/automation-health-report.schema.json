@@ -1,0 +1,197 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sklarzcreative.com/schemas/automation-health-report.schema.json",
+  "title": "Automation health report",
+  "description": "The one-page operational state of the whole Sklarz Creative automation surface. EVERY numeric field is nullable, and null means 'not measured'. Reporting an unread value as 0 is the failure mode this schema exists to prevent: a zero is a measurement, and a report that renders absence as zero produces a confidently wrong decision.",
+  "type": "object",
+  "required": ["schema_version", "generated_at", "generated_by", "publishing", "lead_capture_health", "email_sequence_health", "site_qa_health", "seo_health", "critical_issues", "warnings", "recommended_next_actions"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "generated_at": { "type": "string", "format": "date-time" },
+    "generated_by": { "type": "string" },
+    "window": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "from": { "type": ["string", "null"], "format": "date-time" },
+        "to": { "type": ["string", "null"], "format": "date-time" }
+      }
+    },
+
+    "publishing": {
+      "type": "object",
+      "required": ["queue_readable", "queue_total", "approved_waiting", "hold_count", "overdue_count", "publishing_failures", "missing_asset_count", "missing_url_count", "missing_published_url_count", "duplicate_risk_count", "platform_route_health"],
+      "additionalProperties": false,
+      "properties": {
+        "queue_readable": { "type": "boolean", "description": "false makes every figure below null. An unreadable queue and an empty queue must never look alike." },
+        "queue_total": { "$ref": "#/$defs/count" },
+        "approved_waiting": { "$ref": "#/$defs/count" },
+        "hold_count": { "$ref": "#/$defs/count", "description": "HOLD is a human decision, not a failure. Counted separately so it is never mistaken for a backlog." },
+        "overdue_count": { "$ref": "#/$defs/count", "description": "APPROVED, past its time, no published_url, no error. The silent failure." },
+        "publishing_failures": { "$ref": "#/$defs/count" },
+        "missing_asset_count": { "$ref": "#/$defs/count" },
+        "missing_url_count": { "$ref": "#/$defs/count", "description": "Rows with no target_url — the post can earn attention but not traffic." },
+        "missing_published_url_count": { "$ref": "#/$defs/count", "description": "PUBLISHED with no URL. Unverifiable, so never counted as a success." },
+        "duplicate_risk_count": { "$ref": "#/$defs/count", "description": "Risk, not fault: a scheduled repost is legitimate." },
+        "counts_by_status": { "type": ["object", "null"], "additionalProperties": { "type": "integer", "minimum": 0 } },
+        "platform_route_health": {
+          "type": ["object", "null"],
+          "additionalProperties": { "$ref": "#/$defs/route_health" }
+        }
+      }
+    },
+
+    "lead_capture_health": {
+      "type": "object",
+      "required": ["status", "capture_enabled"],
+      "additionalProperties": false,
+      "properties": {
+        "status": { "$ref": "#/$defs/health_status" },
+        "capture_enabled": { "type": ["boolean", "null"], "description": "Whether window.TFCS_CAPTURE.endpoint is set on the live page. null if not checked." },
+        "endpoint_configured": { "type": ["boolean", "null"], "description": "Boolean only. THE URL ITSELF IS NEVER RECORDED IN A REPORT." },
+        "fails_open_verified": { "type": ["boolean", "null"], "description": "Whether the QA harness confirmed access is granted with the endpoint unreachable. The single most important assertion in the suite." },
+        "captures_in_window": { "$ref": "#/$defs/count" },
+        "completions_in_window": { "$ref": "#/$defs/count" },
+        "completion_rate": { "type": ["number", "null"], "minimum": 0, "maximum": 1, "description": "null when either numerator or denominator is unknown. Never computed from a guess." },
+        "rows_failing_validation": { "$ref": "#/$defs/count" },
+        "consent_yes_count": { "$ref": "#/$defs/count" },
+        "consent_no_count": { "$ref": "#/$defs/count" },
+        "consent_unrecognised_count": { "$ref": "#/$defs/count", "description": "Treated as no, and reported as a data-quality problem. Never resolved upward." },
+        "note": { "type": ["string", "null"] }
+      }
+    },
+
+    "email_sequence_health": {
+      "type": "object",
+      "required": ["status"],
+      "additionalProperties": false,
+      "properties": {
+        "status": { "$ref": "#/$defs/health_status" },
+        "connected": { "type": ["boolean", "null"] },
+        "enrolled_count": { "$ref": "#/$defs/count" },
+        "sends_in_window": { "$ref": "#/$defs/count" },
+        "failures_in_window": { "$ref": "#/$defs/count" },
+        "consent_violations": { "type": ["integer", "null"], "minimum": 0, "description": "Anyone enrolled whose follow_up_opt_in is not 'yes'. This number must be 0. Anything else is a P0 incident, not a warning." },
+        "note": { "type": ["string", "null"] }
+      }
+    },
+
+    "site_qa_health": {
+      "type": "object",
+      "required": ["status"],
+      "additionalProperties": false,
+      "properties": {
+        "status": { "$ref": "#/$defs/health_status" },
+        "last_run_at": { "type": ["string", "null"], "format": "date-time" },
+        "last_run_sha": { "type": ["string", "null"] },
+        "errors": { "$ref": "#/$defs/count" },
+        "warnings": { "$ref": "#/$defs/count" },
+        "skipped": { "$ref": "#/$defs/count" },
+        "report_path": { "type": ["string", "null"] }
+      }
+    },
+
+    "seo_health": {
+      "type": "object",
+      "required": ["status"],
+      "additionalProperties": false,
+      "properties": {
+        "status": { "$ref": "#/$defs/health_status" },
+        "pages_in_sitemap": { "$ref": "#/$defs/count" },
+        "pages_on_disk_indexable": { "$ref": "#/$defs/count" },
+        "sitemap_disk_mismatches": { "$ref": "#/$defs/count" },
+        "duplicate_titles": { "$ref": "#/$defs/count" },
+        "duplicate_descriptions": { "$ref": "#/$defs/count" },
+        "missing_canonical": { "$ref": "#/$defs/count" },
+        "invalid_structured_data": { "$ref": "#/$defs/count" },
+        "orphan_pages": { "$ref": "#/$defs/count" },
+        "search_console_connected": { "type": ["boolean", "null"] },
+        "impressions": { "$ref": "#/$defs/unavailable_metric" },
+        "clicks": { "$ref": "#/$defs/unavailable_metric" },
+        "note": { "type": ["string", "null"] }
+      }
+    },
+
+    "critical_issues": { "type": "array", "items": { "$ref": "#/$defs/issue" }, "description": "P0/P1. Something is broken, unsafe, or losing data." },
+    "warnings": { "type": "array", "items": { "$ref": "#/$defs/issue" } },
+    "recommended_next_actions": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Ordered, specific, and small enough to act on. A backlog recommendation must always be the controlled-release sequence — 'publish everything overdue' is never a permitted value."
+    },
+    "unavailable_inputs": {
+      "type": "array",
+      "description": "Everything the run could not read, named, with why. This list is what stops a partial run reading as a clean one.",
+      "items": {
+        "type": "object",
+        "required": ["input", "reason"],
+        "additionalProperties": false,
+        "properties": {
+          "input": { "type": "string" },
+          "reason": { "type": "string" }
+        }
+      }
+    }
+  },
+
+  "$defs": {
+    "count": { "type": ["integer", "null"], "minimum": 0, "description": "null means not measured. It never means zero." },
+    "health_status": {
+      "type": "string",
+      "enum": ["healthy", "degraded", "failing", "not_configured", "unknown"],
+      "description": "'unknown' when the data could not be read — never 'healthy' by default. A dead system that defaults to healthy stays invisible."
+    },
+    "route_health": {
+      "type": "object",
+      "required": ["status"],
+      "additionalProperties": false,
+      "properties": {
+        "status": { "type": "string", "enum": ["healthy", "degraded", "failing", "not_onboarded", "unknown"] },
+        "verified_publishes": { "$ref": "#/$defs/count" },
+        "failures": { "$ref": "#/$defs/count" },
+        "overdue": { "$ref": "#/$defs/count" },
+        "published_without_url": { "$ref": "#/$defs/count" },
+        "last_verified_publish_at": { "type": ["string", "null"], "format": "date-time" },
+        "note": { "type": ["string", "null"] }
+      }
+    },
+    "unavailable_metric": {
+      "description": "A metric that may not be retrievable. Either a number with a source, or the literal string NOT AVAILABLE with a reason.",
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["value", "data_source"],
+          "additionalProperties": false,
+          "properties": {
+            "value": { "type": "number" },
+            "data_source": { "type": "string", "minLength": 1 },
+            "retrieved_at": { "type": ["string", "null"], "format": "date-time" }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["value", "reason"],
+          "additionalProperties": false,
+          "properties": {
+            "value": { "const": "NOT AVAILABLE" },
+            "reason": { "type": "string", "minLength": 1 }
+          }
+        }
+      ]
+    },
+    "issue": {
+      "type": "object",
+      "required": ["priority", "area", "summary"],
+      "additionalProperties": false,
+      "properties": {
+        "priority": { "type": "string", "enum": ["P0", "P1", "P2", "P3"] },
+        "area": { "type": "string", "enum": ["publishing", "lead_capture", "email", "site_qa", "seo", "security", "data_quality", "harness"] },
+        "summary": { "type": "string", "minLength": 1 },
+        "detail": { "type": ["string", "null"] },
+        "evidence": {},
+        "recommended_action": { "type": ["string", "null"] }
+      }
+    }
+  }
+}

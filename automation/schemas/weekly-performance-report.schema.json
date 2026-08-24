@@ -1,0 +1,179 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sklarzcreative.com/schemas/weekly-performance-report.schema.json",
+  "title": "Weekly performance report",
+  "description": "Turns results into decisions rather than dashboards. The no-fabrication rule is enforced structurally, not trusted: a metric object is valid only as {value, data_source, retrieved_at} or as {value: 'NOT AVAILABLE', reason}. There is no third shape, so a made-up number cannot validate.",
+  "type": "object",
+  "required": ["schema_version", "generated_at", "generated_by", "window", "platforms", "funnel", "answers", "recommendations", "hypothesis"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "generated_at": { "type": "string", "format": "date-time" },
+    "generated_by": { "type": "string" },
+    "window": {
+      "type": "object",
+      "required": ["from", "to"],
+      "additionalProperties": false,
+      "properties": {
+        "from": { "type": "string", "format": "date" },
+        "to": { "type": "string", "format": "date" },
+        "posts_published": { "type": ["integer", "null"], "minimum": 0 }
+      }
+    },
+
+    "platforms": {
+      "type": "object",
+      "description": "One entry per platform, present even when there is no data — an omitted platform is indistinguishable from a forgotten one.",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["availability"],
+        "additionalProperties": false,
+        "properties": {
+          "availability": {
+            "type": "string",
+            "enum": ["available", "manual_export", "not_available", "route_not_onboarded"],
+            "description": "'not_available' and 'route_not_onboarded' are distinguished because the remedy differs: one is a connection to fix, the other is a decision not yet made."
+          },
+          "reason": { "type": ["string", "null"], "description": "Required whenever availability is not 'available'." },
+          "data_source": { "type": ["string", "null"] },
+          "retrieved_at": { "type": ["string", "null"], "format": "date-time" },
+          "posts": { "$ref": "#/$defs/metric" },
+          "impressions": { "$ref": "#/$defs/metric" },
+          "engagements": { "$ref": "#/$defs/metric" },
+          "link_clicks": { "$ref": "#/$defs/metric" },
+          "followers_change": { "$ref": "#/$defs/metric" },
+          "top_post": {
+            "type": ["object", "null"],
+            "required": ["published_url", "primary_job"],
+            "additionalProperties": false,
+            "properties": {
+              "published_url": { "type": "string" },
+              "primary_job": { "type": "string", "enum": ["awareness", "authority", "engagement", "traffic", "lead_generation", "community"] },
+              "why": { "type": ["string", "null"], "description": "Judged against its own declared job, not against a universal metric." },
+              "metric": { "$ref": "#/$defs/metric" }
+            }
+          }
+        }
+      }
+    },
+
+    "funnel": {
+      "type": "object",
+      "required": ["site_traffic", "scorecard_starts", "scorecard_completions", "leads", "discovery_calls"],
+      "additionalProperties": false,
+      "properties": {
+        "site_traffic": { "$ref": "#/$defs/metric", "description": "Expected to be NOT AVAILABLE: the site carries no analytics by design, and /privacy/ says so." },
+        "scorecard_starts": { "$ref": "#/$defs/metric" },
+        "scorecard_completions": { "$ref": "#/$defs/metric" },
+        "leads": { "$ref": "#/$defs/metric" },
+        "leads_by_source": { "type": ["object", "null"], "additionalProperties": { "type": "integer", "minimum": 0 } },
+        "unattributed_leads": { "type": ["integer", "null"], "minimum": 0, "description": "An unattributable lead is a useful fact. A guessed attribution is not." },
+        "discovery_calls": { "$ref": "#/$defs/metric" },
+        "consent_yes_rate": { "$ref": "#/$defs/metric" }
+      }
+    },
+
+    "answers": {
+      "type": "object",
+      "description": "The seven questions the report exists to answer. 'we cannot tell yet, and here is what would let us' is a valid answer.",
+      "required": ["earned_attention", "generated_traffic", "generated_scorecard_activity", "generated_leads", "generated_calls", "repeat", "stop"],
+      "additionalProperties": false,
+      "properties": {
+        "earned_attention": { "$ref": "#/$defs/answer" },
+        "generated_traffic": { "$ref": "#/$defs/answer" },
+        "generated_scorecard_activity": { "$ref": "#/$defs/answer" },
+        "generated_leads": { "$ref": "#/$defs/answer" },
+        "generated_calls": { "$ref": "#/$defs/answer" },
+        "repeat": { "$ref": "#/$defs/answer" },
+        "stop": { "$ref": "#/$defs/answer" }
+      }
+    },
+
+    "recommendations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["action", "confidence", "evidence_count", "rationale"],
+        "additionalProperties": false,
+        "properties": {
+          "action": { "type": "string", "enum": ["repeat", "stop", "adjust", "wait"] },
+          "subject": { "type": ["string", "null"] },
+          "confidence": {
+            "type": "string",
+            "enum": ["high", "medium", "low", "insufficient_evidence"],
+            "description": "insufficient_evidence is the default. A 'stop' needs at least medium — killing a channel on one bad week is how a working channel gets killed."
+          },
+          "evidence_count": { "type": "integer", "minimum": 0, "description": "How many comparable posts or outcomes this rests on." },
+          "rationale": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+
+    "hypothesis": {
+      "type": "object",
+      "description": "One, phrased so it can be wrong. A hypothesis that cannot fail is not a hypothesis.",
+      "required": ["statement", "measured_by", "decide_by"],
+      "additionalProperties": false,
+      "properties": {
+        "statement": { "type": "string", "minLength": 10, "description": "If X, then Y." },
+        "measured_by": { "type": "string", "minLength": 3 },
+        "decide_by": { "type": "string", "format": "date" },
+        "previous_hypothesis": { "type": ["string", "null"] },
+        "previous_verdict": {
+          "type": ["string", "null"],
+          "enum": ["supported", "not_supported", "inconclusive", "not_run", null],
+          "description": "A hypothesis nobody ever judges is a ritual, not a method."
+        }
+      }
+    },
+
+    "unavailable_inputs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["input", "reason"],
+        "additionalProperties": false,
+        "properties": { "input": { "type": "string" }, "reason": { "type": "string" } }
+      }
+    }
+  },
+
+  "$defs": {
+    "metric": {
+      "description": "Either a measured number WITH its source, or an explicit NOT AVAILABLE WITH a reason. No third shape exists, which is how the no-fabrication rule is enforced mechanically.",
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["value", "data_source"],
+          "additionalProperties": false,
+          "properties": {
+            "value": { "type": "number" },
+            "data_source": { "type": "string", "minLength": 1 },
+            "retrieved_at": { "type": ["string", "null"], "format": "date-time" },
+            "note": { "type": ["string", "null"] }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["value", "reason"],
+          "additionalProperties": false,
+          "properties": {
+            "value": { "const": "NOT AVAILABLE" },
+            "reason": { "type": "string", "minLength": 1 }
+          }
+        }
+      ]
+    },
+    "answer": {
+      "type": "object",
+      "required": ["status"],
+      "additionalProperties": false,
+      "properties": {
+        "status": { "type": "string", "enum": ["answered", "partially_answered", "not_available", "insufficient_evidence"] },
+        "finding": { "type": ["string", "null"] },
+        "limitation": { "type": ["string", "null"], "description": "Stated every time it applies. UTM attribution sees only arrivals that converted, and that limitation is repeated rather than assumed known." },
+        "evidence": {}
+      }
+    }
+  }
+}
