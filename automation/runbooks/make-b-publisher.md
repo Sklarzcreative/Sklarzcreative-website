@@ -32,7 +32,7 @@ larger incident. Every design choice below is downstream of that.
 | | |
 | --- | --- |
 | Module | **Google Sheets · Search Rows** |
-| Spreadsheet | `Sklarz_Creative_Make_Automation_Content_Engine` (`<SPREADSHEET_ID — not recorded in this public repository>`) |
+| Spreadsheet | `Sklarz_Creative_Make_Automation_Content_Engine` — select it by name in the module. The id is deliberately not recorded in this public repository; see [architecture.md](../architecture.md#why-the-spreadsheet-id-is-not-in-this-repository). |
 | Sheet | `MAKE - Publish Queue` |
 | Filter | `status` = `APPROVED` **AND** `scheduled_at` ≤ `{{now}}` **AND** `published_url` is empty |
 | Sort | `scheduled_at` ascending |

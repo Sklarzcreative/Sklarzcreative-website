@@ -149,12 +149,29 @@ rather than to reconcile them.
 | QA harness | this repo, `automation/qa/` | anyone; runs in CI with read-only permissions |
 | Agent specifications | this repo, `automation/agents/` | anyone; they are documents, not code |
 | Schemas and validators | this repo, `automation/schemas/`, `automation/lib/` | anyone |
-| Content engine spreadsheet | Google Sheets, ID `<SPREADSHEET_ID — not recorded in this public repository>` | Google account holder |
+| Content engine spreadsheet | Google Sheets, named `Sklarz_Creative_Make_Automation_Content_Engine`. **The spreadsheet id is deliberately not recorded here** — see [the note below](#why-the-spreadsheet-id-is-not-in-this-repository). | Google account holder |
 | Lead sheet | a separate Google Sheet, created at capture setup | Google account holder |
 | Capture endpoint | Apps Script web app bound to the lead sheet | Google account holder |
 | Publisher and follow-up scenarios | Make.com | Make account holder |
 | Email sequence copy | the email provider | provider account holder |
 | Every credential | Make connections / Google account / GitHub Actions secrets | **not this repository** |
+
+### Why the spreadsheet id is not in this repository
+
+A Google Sheets id is not a credential — access is governed by the sheet's
+sharing settings, not by knowing its id. But **this repository is public**, and
+an id published here is permanently discoverable: it tells a reader the sheet
+exists, lets them attempt access, and turns into an effective access token the
+moment anyone sets that sheet to "anyone with the link", which is a change made
+in a different UI by someone who will not remember this file.
+
+The operational cost of leaving it out is nil. Anyone who needs the sheet is
+signed into the account that owns it and finds it by name. So it is referenced
+by name throughout, and the id lives only where it is used: in the Make
+scenario's own module configuration.
+
+The same reasoning applies to the lead sheet's id and to the Apps Script
+deployment URL. Neither appears here.
 
 ---
 
