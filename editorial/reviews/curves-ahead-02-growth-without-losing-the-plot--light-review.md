@@ -106,12 +106,25 @@ judgment and is explicitly **not** a corporate bulletin. Read alongside the othe
 two editions, this one reads as the consultancy speaking rather than you
 thinking.
 
-**I have not restored it.** Reversing a deliberate editorial decision of yours
-without asking is precisely what the preservation rule forbids, and "the other
-editions do it differently" is not authority to overrule you. But this is the
-largest gap between Edition 02 and the rest of the publication, and it should be
-decided rather than inherited. Flagged in the text with the three natural
-locations.
+**Originally flagged, not restored** — reversing a deliberate editorial decision
+of yours without asking is what the preservation rule forbids, and "the other
+editions do it differently" is not authority to overrule you.
+
+**Since restored, on your instruction**, in a second pass kept as a separate
+file: [`--light-2-edited`](./curves-ahead-02-growth-without-losing-the-plot--light-2-edited.md).
+Four instances, taking it 0 → 4 against 6 in Edition 01, with everything else
+byte-identical (1,454 → 1,465 words).
+
+Deliberately modest, because the impersonal register does real work in a
+checklist piece — *protect the core promise* is stronger as an instruction than
+as an opinion. The four are only where you are plainly stating a view rather
+than describing a mechanism: the intro, the standards section, the
+museum-exhibit line, and the automation question.
+
+**All three versions are kept**: your draft, the voice-free light edit, and this.
+If the restoration reads as too much, the museum-exhibit instance is the one to
+drop first — it is the only place an opinion was put in front of a line that was
+already working impersonally.
 
 **2 · The voice profile and the old pack disagree, and one has to give.**
 Related but distinct. The pack treats hedging as weakness to remove; the voice
@@ -194,10 +207,18 @@ piece should look like.
 
 ## Gate status
 
-Fails on **point 11** only — three unresolved editorial notes, one of which (the
-first person) is a genuine decision rather than a task.
+*Updated after the voice restoration.*
 
-Points 1–10 pass. Once you have made the voice call, this edition is closer to
-publication than either of the other two.
+The first-person decision is made, so the only thing standing between this
+edition and the gate was point 11 — editorial notes remaining in the text. A
+Final Proof has been run and those are cleared:
+[`--proof`](./curves-ahead-02-growth-without-losing-the-plot--proof.md).
 
-Next step: your decision on first person, then Final Proof.
+**All eleven points pass on the proof version.** It is publication-ready, and it
+is the only one of the three editions that is. Editions 01 and 03 both still
+need material only you have — a concrete example each, and a concession each —
+so neither was proofed. Proofing them would have meant deleting notes that flag
+genuinely missing content, which would hide the problem rather than solve it.
+
+Nothing has been published. Curves Ahead publishes to LinkedIn Newsletter and
+Substack, and those need accounts this agent does not have.
