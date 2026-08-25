@@ -8,5 +8,7 @@ Disallow: /docs/
 Disallow: /integrations/
 # Editorial working material — drafts and reviews, not published content.
 Disallow: /editorial/
+# Repository maintenance scripts, not content.
+Disallow: /tools/
 
 Sitemap: https://sklarzcreative.com/sitemap.xml
