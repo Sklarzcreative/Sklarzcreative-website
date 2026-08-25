@@ -22,6 +22,7 @@ record.
 | 12 | [The follow-up sequence](./12-email-sequence.md) | Day 0 / 2 / 5, written to paste in — including the five variants that name the reader's weakest signal. |
 | 13 | [Case studies](./13-case-studies.md) | The intake questions, the structure, and what happens once the material arrives. |
 | 14 | [The Editorial Director](./14-editorial-director.md) | The publication gate for long-form writing: the editorial standard, the agent that applies it, and the draft → full pass → approval → proof → publish workflow. |
+| 15 | [Site audit — 25 Aug 2026](./15-audit-2026-08-25.md) | Full pass over all 14 pages: what passed, the one grey-cell defect fixed, and the two findings that turned out to be wrong. |
 
 ## Update — 22 August 2026 · strategic positioning pass
 
