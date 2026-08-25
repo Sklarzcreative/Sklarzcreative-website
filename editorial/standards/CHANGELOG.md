@@ -67,6 +67,7 @@ to a standard nobody can find.
 | --- | --- | --- | --- |
 | 1.0 | 2026-08-24 | Initial standard, voice profile, Curves Ahead and Sklarz Insights imprint profiles, three modes, eleven-point publication gate | First version of the system |
 | 1.1 | 2026-08-24 | **`editorial-standard.md`** — replaced "award-winning" with "top professional" as the quality bar, and added an explicit prohibition on the agent describing itself or its work as accredited, award-winning or certified | The commissioning brief ([`../curves-ahead/06-editorial-director-agent-prompt.md`](../curves-ahead/06-editorial-director-agent-prompt.md)) says plainly: "Do not falsely claim the agent is literally accredited or award-winning. Use those standards as the quality bar." v1.0 was drafted before that document was available and had taken the phrasing literally. A system built to strip out unearned assertions cannot open with one about itself. |
+| 1.2 | 2026-08-24 | **`editorial-standard.md` §7** — the humanization pass now points at `tools/cadence.py` for sentence and paragraph rhythm, and requires measuring first-person density before and after the pass | Running the first three Curves Ahead editions showed two things a rule could fix. Rhythm is the one editorial finding that can be counted rather than argued about, and counting it made the conversation concrete. And the Edition 01 pass cut first person from 7 to 4 as a side effect of removing the reframe-as-question device, because her "I think"s lived inside those constructions — a technically cleaner piece that was quietly less hers, which is the exact failure this system exists to catch. |
 | 1.1 | 2026-08-24 | **`imprint-curves-ahead.md`** — rebuilt from the publication's real source material: pillars, departments, the seven-step template, the content gate, the precise AI rule, the never-fabricate-a-premise rule, publication order, and the not-a-corporate-bulletin positioning | v1.0 was inferred from the brief because Curves Ahead had no content in the repo. The Drive material is now migrated to [`../curves-ahead/`](../curves-ahead/README.md) and supersedes the inference. |
 
 ---
@@ -84,11 +85,16 @@ Things known to be unfinished, recorded so they are not mistaken for decisions:
   promised.** All three launch editions have now been through the agent, and the
   scorecard held up without adjustment. Two observations worth keeping:
 
-  | | Words/paragraph | Words/sentence | Instances of "I" | AI-slop risk |
-  | --- | --- | --- | --- | --- |
-  | Edition 01 | 12.8 | 8.1 | 7 | 8 |
-  | Edition 02 | 19.8 | 11.1 | 0 | 3 |
-  | Edition 03 | 12.7 | 9.8 | several | 8 |
+  | | Words/paragraph | Spread (sd) | Words/sentence | "I" | Stacks | AI-slop risk |
+  | --- | --- | --- | --- | --- | --- | --- |
+  | Edition 01 | 12.1 | 8.9 | 8.4 | 7 | 3 | 8 |
+  | Edition 02 | 18.7 | 11.8 | 11.6 | 0 | 1 | 3 |
+  | Edition 03 | 12.3 | 8.8 | 10.1 | 7 | 7 | 8 |
+
+  Measured with [`../tools/cadence.py`](../tools/cadence.py), which is the
+  canonical source for these numbers. Earlier hand-counted figures in the first
+  round of reviews ran slightly higher because they included scaffolding the
+  tool now excludes; the reviews have been reconciled to the tool.
 
   **The fragment-stack habit is a property of one production process, not of the
   author.** Editions 01 and 03 share a paragraph length to within a tenth of a
@@ -103,6 +109,13 @@ Things known to be unfinished, recorded so they are not mistaken for decisions:
   unverified specifics cost more than honest abstraction — but it is
   counter-intuitive enough that a review should explain it whenever the two
   scores move in opposite directions.
+
+  **De-slopping can cost voice, and it did.** The first version of the Edition 01
+  edit reduced first person from 7 instances to 4, because most of her "I think"s
+  sat inside the reframe-as-question constructions the pass was removing. A
+  writer's tics and a writer's fingerprints are sometimes the same sentences.
+  Every pass should now measure first person before and after, not only paragraph
+  length — `cadence.py` reports it for this reason.
 - **Edition 02 carries a contradiction that needs an author decision.** Its
   existing pack records "removed unnecessary first-person hedging such as 'I
   think'" as a completed improvement. The voice profile treats calibrated

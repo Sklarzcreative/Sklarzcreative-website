@@ -42,18 +42,31 @@ someone is a low-friction act that doesn't guarantee you will see their next
 post. Subscribing is a more explicit decision. The reader is effectively saying:
 I want this to come back to me.
 
-LinkedIn's newsletter system makes the difference concrete. Subscribers can
-receive feed, push, in-app and email notifications when an edition publishes, and
-LinkedIn can invite an author's followers to subscribe — a recurring
-distribution mechanism, rather than every article having to win attention from
-zero.
+LinkedIn's newsletter system makes the difference concrete. Subscribers get the
+new edition in their feed, and receive a notification and email depending on
+their settings. More usefully, when an author publishes their first edition,
+LinkedIn invites their existing connections and followers to subscribe.[^1] That
+turns an audience you already have into a recurring distribution mechanism,
+rather than every article having to win attention from zero.
 
-> `[EDITORIAL NOTE — Cassandra: this is one of only two concrete factual claims`
-> `in the piece and it has no source. Your own source document flagged it. It`
-> `needs verifying against LinkedIn's current help documentation before`
-> `publication — the notification types and the follower-invite feature have`
-> `both changed before. I have not checked it and will not verify a live`
-> `platform mechanic from memory.]`
+> `[EDITORIAL NOTE — Cassandra: I checked this and tightened it, and you should`
+> `know exactly how far the check went. Searching LinkedIn's own help domain`
+> `returned their newsletter help pages, which support the claim — but direct`
+> `page fetches are blocked from this environment, so I read their content`
+> `through search results rather than opening the pages myself. Confirm the`
+> `footnoted pages before publication.`
+> ``
+> `Your draft said subscribers "can receive feed, push, in-app and email`
+> `notifications." LinkedIn's help pages describe a feed update plus a`
+> `notification and email "depending on your settings" — they do not enumerate`
+> `push and in-app as separate channels. A four-item list where the source`
+> `supports two-plus-a-condition is the draft being more definite than its`
+> `evidence, which is the thing §4.12 exists to catch. Softened to match.`
+> ``
+> `The trade is worth it anyway: the real mechanic — connections and followers`
+> `invited when the FIRST edition publishes — is more concrete and more useful`
+> `to a reader than a list of notification types, and your draft had it as a`
+> `vaguer "can invite."]`
 
 ## The ownership question, and what changed about it
 
@@ -66,10 +79,15 @@ organic distribution a creator receives.
 An email relationship is structurally different, and the strongest newsletter
 platforms now emphasise that directly. Substack has built its model around
 direct creator-subscriber relationships while adding its own recommendation,
-Notes and app discovery layers.
+Notes and app discovery layers.[^2]
 
-> `[EDITORIAL NOTE — Cassandra: same problem, same requirement. Verify against`
-> `official Substack materials before publication.]`
+> `[EDITORIAL NOTE — Cassandra: checked, and this one stands as you wrote it.`
+> `Substack's own materials describe recommendations, Notes and the app as`
+> `discovery layers on top of direct creator-subscriber relationships, and`
+> `Notes is now described as the primary discovery engine on the platform.`
+> `Same caveat as the LinkedIn note: read via search of their own domain, not a`
+> `direct page fetch. The claim is general enough to be durable, which is why`
+> `it needed no softening.]`
 
 Which is the genuinely new development, and the most interesting observation in
 this draft: newsletters no longer have to choose between ownership and discovery
@@ -196,3 +214,17 @@ permission to continue the conversation.
 > `a promotional announcement. One reference is disclosure and reads as honest;`
 > `two starts to read as house advertising. I kept the callback because it does`
 > `editorial work. If you restore the economics section, drop one of them.]`
+
+---
+
+[^1]: LinkedIn Help — [LinkedIn Newsletters](https://www.linkedin.com/help/linkedin/answer/a522525),
+    [Newsletters on LinkedIn FAQ](https://www.linkedin.com/help/linkedin/answer/a517914),
+    [Subscribe or unsubscribe to newsletters](https://www.linkedin.com/help/linkedin/answer/a1644939).
+    Verified 24 August 2026 via search of linkedin.com; direct page fetch was
+    blocked from the editing environment. Confirm before publication.
+
+[^2]: Substack — [Features](https://substack.com/features),
+    [Introducing Substack Notes](https://on.substack.com/p/introducing-notes),
+    [New discovery features](https://on.substack.com/p/new-discovery-features-chat-paywall).
+    Verified 24 August 2026 via search of substack.com; direct page fetch
+    blocked. Confirm before publication.

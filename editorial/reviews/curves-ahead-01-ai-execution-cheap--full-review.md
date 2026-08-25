@@ -27,10 +27,11 @@ words, and the hedging is calibrated rather than evasive.
 
 Two things hold it back, and both are structural.
 
-**The form fights the argument.** The draft is 93 paragraphs averaging 12.8
-words each. Fifteen separate passages are stacks of one-line fragments. That
-cadence is the most recognizable signature of machine-written prose, and it is
-doing nothing here that ordinary paragraphs would not do better.
+**The form fights the argument.** The draft is 92 paragraphs of body prose
+averaging 12.1 words each, with fifteen passages built as stacks of one-line
+fragments. That cadence is the most recognizable signature of machine-written
+prose, and it is doing nothing here that ordinary paragraphs would not do
+better.
 
 **Three sections make one section's argument.** "More output is not the same as
 more value," "Automation can make the wrong process faster," and "The businesses
@@ -58,11 +59,11 @@ reads as circling.
 
 **Human voice, 5 → 8.** The lowest score on the draft, and the one most likely
 to surprise you, because the stance is unmistakably yours. First person is
-present and earned. The scepticism is real. The hedges are honest. What drags
-it to 5 is purely rhythm: at 12.8 words per paragraph sustained across the whole
+present and earned. The scepticism is real. The hedges are honest. What drags it
+to 5 is purely rhythm: at 12.1 words per paragraph sustained across the whole
 piece, the prose has one speed, and one speed reads as generated no matter whose
-ideas are in it. The edit runs 30.5 words per paragraph with real variation
-around it.
+ideas are in it. The edit runs 30.0 words per paragraph with roughly double the
+spread.
 
 **Authority, 6 → 6. Unchanged, and this is the finding that matters most.**
 There is not one concrete instance anywhere in the draft — no case, no named
@@ -80,7 +81,7 @@ fast-moving subject and worth saying out loud.
 
 ## C · Key editorial notes
 
-**1 · Fifteen stacked lists in 1,186 words.**
+**1 · Fifteen stacked lists in 1,117 words of body prose.**
 Counting only passages of three or more one-line fragments: the friction list,
 the produce-more list, the never-answered questions, the positioning-problem
 list, the sometimes-AI triad, the three historical advantages, the
@@ -132,7 +133,7 @@ be the actual argument of Edition 06.
 **5 · Three sections, one argument.**
 Merged. "More output is not the same as more value" now absorbs the automation
 material and the organisational-redesign material, because all three were
-demonstrating the same claim. The merge is where most of the 1,186 → 916 word
+demonstrating the same claim. The merge is where most of the 1,117 → 901 word
 reduction came from, and no idea was dropped in it — check the *what should
 remain human / automated / eliminated* material, which now reads as one clause
 instead of a seven-line stack.
@@ -162,6 +163,29 @@ than lands. But it also gave the ending a slow, deliberate wind-down before
 harder. If it now feels abrupt, that cut is why, and putting one of those four
 questions back would fix it without reinstating the stack.
 
+**9 · My first edit cost you first person, and the measurement caught it.**
+Added after the fact, and worth recording because it is the system working on
+itself.
+
+Reducing the reframe-as-question device (note 2) had a side effect I did not
+intend: most of your instances of "I think" were *inside* those constructions —
+"I think the more useful question is…", "I don't think the competitive question
+will ultimately be…" — so removing the device removed the person with it. The
+first version of this edit dropped first person from 7 instances to 4, in a
+publication whose imprint profile says it is led by your judgment and is
+explicitly not a corporate bulletin.
+
+That is precisely the failure mode you built this system to catch: a technically
+cleaner piece that is quietly less yours. I restored two — "three shifts I'm
+particularly interested in," which is your original phrasing, and your view that
+the competitive question is not who adopted AI fastest, which had survived the
+section merge as an unattributed claim. Now at 6.
+
+The general lesson is worth keeping: **de-slopping and voice can pull against
+each other**, because a writer's tics and a writer's fingerprints are sometimes
+the same sentences. Any future pass should measure first person before and
+after, not just paragraph length.
+
 ---
 
 ## E · Change summary
@@ -180,9 +204,26 @@ questions back would fix it without reinstating the stack.
   the section's payoff instead of a list item.
 - **Tightened the conclusion** and cut its restated question stack, keeping
   "Execution is getting cheaper. Judgment isn't."
-- **1,186 → 916 words**, with nothing removed from the argument.
+- **1,117 → 901 words** of body prose, with nothing removed from the argument.
 - **Flagged two things rather than fixing them**: the absence of any concrete
   example, and the unanswered objection. Both need you.
+- **Restored two first-person instances** after measurement showed the de-slopping
+  pass had cut them from 7 to 4. See note 9.
+
+### Measured
+
+| | Words | Paragraphs | Words/para | Spread (sd) | Words/sentence | "I" | Fragment stacks |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| **Ed 01** draft | 1,117 | 92 | 12.1 | 8.9 | 8.4 | 7 | 3 |
+| **Ed 01** edited | 901 | 30 | 30.0 | 18.6 | 13.6 | 6 | 0 |
+| **Ed 02** draft | 1,493 | 80 | 18.7 | 11.8 | 11.6 | **0** | 1 |
+| **Ed 02** light-edited | 1,454 | 74 | 19.6 | 11.4 | 12.0 | **0** | 0 |
+| **Ed 03** draft | 1,399 | 114 | 12.3 | 8.8 | 10.1 | 7 | 7 |
+| **Ed 03** edited | 1,145 | 31 | 36.9 | 17.4 | 15.3 | 6 | 0 |
+
+Produced by `editorial/tools/cadence.py`, which excludes front matter, headings
+and editorial notes — so the word counts are body prose and run lower than a
+raw `wc -w`.
 
 ### Not changed
 

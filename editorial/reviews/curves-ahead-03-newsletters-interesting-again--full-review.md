@@ -16,7 +16,7 @@
 
 Two independent reasons, and the second is the harder one.
 
-**The structure circles.** Twelve sections for 1,465 words, with four of them
+**The structure circles.** Twelve sections for 1,399 words of body prose, with four of them
 (*social media is excellent at discovery*, *following is not the same as
 subscribing*, *there is also an ownership question*, *the problem is not
 distribution anymore*) working the same distribution-and-ownership ground, and
@@ -71,19 +71,19 @@ draft never asks what happens when it isn't.
 
 **1 · The cadence is systematic across the corpus, not a quirk of one draft.**
 
-| | Paragraphs | Words per paragraph |
-| --- | --- | --- |
-| Edition 01 draft | 93 | 12.8 |
-| Edition 03 draft | 115 | 12.7 |
+| | Paragraphs | Words per paragraph | Spread (sd) |
+| --- | --- | --- | --- |
+| Edition 01 draft | 92 | 12.1 | 8.9 |
+| Edition 03 draft | 114 | 12.3 | 8.8 |
 
 Two pieces written about different subjects arrive at the same paragraph length
-to within a tenth of a word. That is a house habit, and it is the single
+to within two-tenths of a word, with near-identical spread. That is a house habit, and it is the single
 highest-leverage thing to change about the writing, because it is what makes
-otherwise strong material read as machine-produced. The edit runs 37.1 words per
-paragraph with deliberate variation. Almost nothing was cut to get there —
+otherwise strong material read as machine-produced. The edit runs 36.9 words per
+paragraph with roughly double the spread. Almost nothing was cut to get there —
 paragraphs were rejoined.
 
-**2 · Eleven instances of "X is not Y."**
+**2 · Eleven instances of "X is not Y," and seven fragment stacks.**
 "That is not because email became exciting. It is because…" · "Following is not
 the same as subscribing" · "an entry point is not the same thing as
 understanding" · "The important question is not… It is…" · "the format is not the
@@ -140,11 +140,30 @@ objections to your argument, not positions you have taken, and writing them in
 your voice would invent a view you have not expressed. Same treatment as Edition
 01's unanswered objection, deliberately.
 
-**6 · Both factual claims flagged, neither verified.**
-See notes in the edited text. This is the gate blocker and it needs a live check
-against LinkedIn's and Substack's own documentation. Your source document says
-the argument should stand even if the figures change, which is right — and is
-also the reason to get them right rather than soften them into vagueness.
+**6 · Both factual claims now checked, and one was overstated.**
+Updated after the initial review. Searching LinkedIn's and Substack's own
+domains returned their help and product pages, and both claims are substantially
+supported — but **direct page fetches are blocked from this environment**, so
+their content was read through search results rather than by opening the pages.
+That is a real limitation and it is recorded in the footnotes and in the text
+notes rather than glossed. Confirm both before publication.
+
+The check found one genuine problem. Your draft said subscribers "can receive
+feed, push, in-app and email notifications." LinkedIn's help pages describe a
+feed update plus a notification and email *depending on your settings*; they do
+not enumerate push and in-app as separate channels. A four-item list where the
+source supports two-plus-a-condition is the draft being more definite than its
+evidence — §4.12 exactly, and the reason the rule is worth having even when the
+author is careful everywhere else.
+
+Softened to match, and the piece is better for it: the mechanic that actually
+matters — connections and followers invited when the **first** edition publishes
+— is more concrete and more useful than a list of notification types, and your
+draft had that as a vaguer "can invite." Both claims now carry footnoted
+sources.
+
+The Substack claim stands exactly as written. It is general enough to be
+durable, which is why it needed no softening.
 
 **7 · Promotional drift: two Curves Ahead references, one too many.**
 "Curves Ahead is not being built around that assumption" in the economics
@@ -184,7 +203,7 @@ back, it needs one verifiable fact to stand on.
   miss.
 - **Cut the restating two-thirds of "What I'm watching"** and the economics
   section.
-- **1,465 → 1,075 words.**
+- **1,399 → 1,145 words** of body prose.
 - **Flagged four things rather than fixing them**: both platform facts, the
   missing counter-argument, and the promotional double-reference.
 
@@ -200,14 +219,20 @@ throughout. The thesis and the order of your reasoning are unchanged.
 
 ## Gate status
 
-Fails on **two** of the eleven points:
+*Updated after the fact-check.*
 
-- **Point 5 — factual claims responsibly framed.** Two unsourced current
-  platform claims. This is the blocker, and it is fixed by verification, not by
-  editing.
-- **Point 11 — no unresolved editorial notes.** Four remain.
+- **Point 5 — factual claims responsibly framed. Now passes.** Both claims are
+  sourced and footnoted, and the overstated one has been brought back in line
+  with what its source supports. One caveat carried in the footnotes: sources
+  were read via search of the official domains, not direct page fetch, so a
+  human confirmation is still wanted before publication.
+- **Point 11 — no unresolved editorial notes.** Still fails. Four notes remain,
+  and they are the reason this is not `READY AFTER MINOR EDITS`.
 
 Points 1–4 and 6–10 pass on the edited version.
 
-Next step: verify the two platform claims, then your review and approval, then
-Final Proof.
+The verdict stays `NEEDS SUBSTANTIVE REVISION`, unchanged — the fact-check was
+never what held it there. The structure was, and the missing counter-argument
+still is.
+
+Next step: your review and approval, then Final Proof.

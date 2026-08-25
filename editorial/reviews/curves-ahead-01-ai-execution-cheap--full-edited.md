@@ -126,8 +126,10 @@ people always use when they cannot check everything themselves: who produced
 this, what do they know, what evidence are they using, do they have a reason to
 exaggerate, and have they been useful before.
 
-That makes trust more valuable. The next phase of digital competition may be less
-about who can produce the most and more about who becomes worth listening to.
+That makes trust more valuable. I don't think the competitive question ends up
+being who adopted AI fastest — capability is spreading too quickly for access
+alone to stay an advantage. The next phase may be less about who can produce the
+most and more about who becomes worth listening to.
 
 > `[EDITORIAL NOTE — Cassandra: the argument would be stronger for engaging the`
 > `obvious objection, which a sceptical reader will already have made: that`
@@ -141,7 +143,7 @@ about who can produce the most and more about who becomes worth listening to.
 
 ## What I'm watching
 
-Three shifts in particular.
+Three shifts I'm particularly interested in.
 
 The premium on taste. When almost anyone can generate ten plausible options,
 choosing the right one becomes more valuable.

@@ -110,6 +110,7 @@ editorial/
                  <slug>--<mode>-review.md    verdict, scorecard, notes, summary
   standards/                                 what "good" means
   curves-ahead/                              the publication's source of truth
+  tools/                                     measurement
 ```
 
 A second pass on the same draft and mode is numbered (`--full-2-edited.md`)
@@ -155,6 +156,7 @@ left in the text. The full list is §13 of the standard.
 | [`standards/imprint-sklarz-insights.md`](./standards/imprint-sklarz-insights.md) | Sklarz Creative Insights |
 | [`standards/CHANGELOG.md`](./standards/CHANGELOG.md) | **How to revise the standards.** Read before changing any of the above. |
 | [`curves-ahead/`](./curves-ahead/README.md) | The Curves Ahead publication source of truth, migrated from Drive — handoff, launch pack, backlog, and the agent's origin brief |
+| [`tools/cadence.py`](./tools/cadence.py) | Measures paragraph length, sentence length, first-person density and fragment stacks. Diagnostics, not a score. |
 | `.claude/agents/editorial-director.md` | How the agent behaves mechanically |
 | `.claude/commands/editorial-director.md` | How it is invoked |
 
@@ -167,6 +169,38 @@ A material change to a standard archives the previous version into
 changelog.
 
 ---
+
+## Measuring the rhythm
+
+```bash
+python3 editorial/tools/cadence.py editorial/drafts/*.md
+```
+
+Most editorial findings are arguments. This one is a number, and it turned out
+to be the most useful thing the first round of reviews produced:
+
+| | Words/para | Spread | "I" | Stacks |
+| --- | --- | --- | --- | --- |
+| Curves Ahead 01 | 12.1 | 8.9 | 7 | 3 |
+| Curves Ahead 02 | 18.7 | 11.8 | **0** | 1 |
+| Curves Ahead 03 | 12.3 | 8.8 | 7 | 7 |
+
+Editions 01 and 03 land within two-tenths of a word of each other across
+completely different subjects. Edition 02, written through a different process,
+does not share the habit — and contains no first person at all.
+
+That comparison is why the tool exists. It turns "this feels choppy" into
+something checkable, and it separates *how a piece was produced* from *how you
+write*. The fragment-stack cadence is the former.
+
+**Nothing here is a target.** Writing toward a paragraph-length number would
+produce exactly the mechanical prose the standard exists to remove. The numbers
+say where to look, not what to do.
+
+One reason first-person density is reported alongside the rest: reducing
+AI-associated constructions can strip voice as a side effect, because a writer's
+tics and a writer's fingerprints are sometimes the same sentences. That happened
+on the first Edition 01 pass and is recorded in the changelog.
 
 ## Editing the standard by argument, not by accretion
 

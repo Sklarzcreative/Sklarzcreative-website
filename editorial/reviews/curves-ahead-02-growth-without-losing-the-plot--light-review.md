@@ -74,16 +74,18 @@ gap is entirely down to concrete examples. This piece has them.
 prose is machine-like — it isn't — but because the person is absent. See note 1.
 
 **AI-slop risk 3, the lowest of the three drafts** (Editions 01 and 03 both
-scored 8). Whatever process produced this one avoided the fragment-stack habit
-almost entirely.
+scored 8). One fragment stack, against three and seven. Whatever process produced
+this one avoided the habit almost entirely.
 
 ### The corpus in one table
 
-| | Words/paragraph | Words/sentence | Instances of "I" | AI-slop risk |
-| --- | --- | --- | --- | --- |
-| Edition 01 | 12.8 | 8.1 | 7 | 8 |
-| Edition 02 | 19.8 | 11.1 | **0** | 3 |
-| Edition 03 | 12.7 | 9.8 | several | 8 |
+| | Words/paragraph | Spread (sd) | Words/sentence | Instances of "I" | Fragment stacks | AI-slop risk |
+| --- | --- | --- | --- | --- | --- | --- |
+| Edition 01 | 12.1 | 8.9 | 8.4 | 7 | 3 | 8 |
+| Edition 02 | 18.7 | 11.8 | 11.6 | **0** | 1 | 3 |
+| Edition 03 | 12.3 | 8.8 | 10.1 | 7 | 7 | 8 |
+
+Measured with `editorial/tools/cadence.py`.
 
 Two different writing processes are visible in that table, and each has the
 other's virtue. Editions 01 and 03 have the voice and not the rhythm. Edition 02

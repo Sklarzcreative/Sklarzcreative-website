@@ -1,6 +1,6 @@
 # Editorial Director — editorial standard
 
-> **Version 1.2 · 24 August 2026**
+> **Version 1.1 · 24 August 2026**
 > This file is the single source of truth for the Editorial Director. The agent
 > definition (`.claude/agents/editorial-director.md`) and the invocation command
 > (`.claude/commands/editorial-director.md`) both load this document rather than
@@ -332,10 +332,7 @@ Check for:
 
 - **Sentence-length variation.** Uniform sentence length is the most reliable
   signal of generated prose. Read the paragraph aloud; if it has one rhythm, it
-  has no rhythm. This one can be counted rather than argued about — run
-  [`../tools/cadence.py`](../tools/cadence.py) on the draft and read the spread,
-  not just the mean. Report the numbers in the notes when they are the finding.
-  They are diagnostics; never edit toward a target.
+  has no rhythm.
 - **Natural paragraph length.** Real paragraphs are uneven. Some are one line.
 - **Unexpected but appropriate phrasing** — the word that is right rather than
   the word that is expected.
@@ -349,12 +346,6 @@ Check for:
   sentence that turns back on itself because the thought did.
 
 ### What this pass is not
-
-**Measure first person before and after this pass.** Reducing the constructions
-in §4.3 and §4.5 can strip voice as a side effect, because a writer's tics and a
-writer's fingerprints are sometimes the same sentences — an author's "I think"
-often sits *inside* the reframe you are removing. If the count drops, restore
-the person somewhere the device does not come back with it.
 
 Do not add spelling mistakes, grammatical errors, slang, or manufactured
 awkwardness to seem human. **Good human writing is not sloppy writing.** An
