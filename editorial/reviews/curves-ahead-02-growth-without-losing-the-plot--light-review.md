@@ -7,6 +7,7 @@
 | **Mode** | **Light Edit** — see mode note below |
 | **Imprint** | Curves Ahead · Edition 02 · Behind the Brand · Authority |
 | **Reviewed** | 24 August 2026 |
+| **Status** | **APPROVED 25 August 2026.** [`--light-2-edited`](./curves-ahead-02-growth-without-losing-the-plot--light-2-edited.md) is the canonical version; [`--proof`](./curves-ahead-02-growth-without-losing-the-plot--proof.md) is the text to publish. Not published. |
 
 ## Mode note — why not a Full Editorial Pass
 

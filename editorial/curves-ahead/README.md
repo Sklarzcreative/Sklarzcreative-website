@@ -29,11 +29,16 @@ what the Editorial Director reads.
 Drafts live with every other draft, in [`../drafts/`](../drafts/README.md), and
 are never edited in place:
 
-| Edition | Draft |
-| --- | --- |
-| 01 · AI Is Making Execution Cheap. Judgment Is Becoming More Valuable. | [`curves-ahead-01-ai-execution-cheap.md`](../drafts/curves-ahead-01-ai-execution-cheap.md) |
-| 02 · Growth Without Losing the Plot | [`curves-ahead-02-growth-without-losing-the-plot.md`](../drafts/curves-ahead-02-growth-without-losing-the-plot.md) |
-| 03 · Why Newsletters Are Becoming Interesting Again | [`curves-ahead-03-newsletters-interesting-again.md`](../drafts/curves-ahead-03-newsletters-interesting-again.md) |
+| Edition | Draft | Status |
+| --- | --- | --- |
+| 01 · AI Is Making Execution Cheap. Judgment Is Becoming More Valuable. | [`draft`](../drafts/curves-ahead-01-ai-execution-cheap.md) | Full pass done. Held at [four questions](../author-questions-2026-08-25.md) Q1–Q2. Not proofed. |
+| 02 · Growth Without Losing the Plot | [`draft`](../drafts/curves-ahead-02-growth-without-losing-the-plot.md) | **Approved 25 Aug 2026.** Canonical: [`--light-2-edited`](../reviews/curves-ahead-02-growth-without-losing-the-plot--light-2-edited.md). Publish: [`--proof`](../reviews/curves-ahead-02-growth-without-losing-the-plot--proof.md). Not published. |
+| 03 · Why Newsletters Are Becoming Interesting Again | [`draft`](../drafts/curves-ahead-03-newsletters-interesting-again.md) | Full pass done, facts sourced. Held at [four questions](../author-questions-2026-08-25.md) Q3–Q4. Not proofed. |
+
+**Edition 02's three versions are all retained deliberately** — the draft, the
+voice-free light edit, and the approved restoration. The light edit is the
+rollback target if the first-person decision is ever reversed. Do not delete
+either of the superseded versions.
 
 Reviews are written to [`../reviews/`](../reviews/README.md).
 

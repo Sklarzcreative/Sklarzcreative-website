@@ -7,14 +7,22 @@ primary_job: Authority
 author: Cassandra Sklarz
 source_draft: editorial/drafts/curves-ahead-02-growth-without-losing-the-plot.md
 mode: Light Edit + voice restoration (pass 2)
-status: edited — not published, not approved
+status: APPROVED — canonical publication version. Not published.
+approved: 2026-08-25 by Cassandra Sklarz
 note: >
-  Pass 2. Identical to --light-edited except for four restored instances of
-  first person, on the author's instruction. Both earlier versions are kept:
-  the original draft in ../drafts/, and the voice-free light edit alongside this
-  file. Read all three if the restoration feels like too much or too little —
-  it is deliberately modest, because this is a checklist piece and heavy
-  hedging would weaken it.
+  THE CANONICAL VERSION OF EDITION 02. Approved 25 August 2026. Identical to
+  --light-edited except for four restored instances of first person.
+
+  The other two versions are retained for audit and rollback and must not be
+  deleted: the original draft at ../drafts/, and the voice-free light edit
+  alongside this file. If the voice restoration is ever reversed, --light-edited
+  is the rollback target.
+
+  --proof is the typeset output of THIS file, with editorial notes removed and
+  nothing else changed. Approved language lives here; the proof must never
+  diverge from it.
+
+  Approved does not mean published. Nothing has been sent anywhere.
 ---
 
 **CURVES AHEAD** · Edition 02 · Behind the Brand

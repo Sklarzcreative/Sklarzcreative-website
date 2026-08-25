@@ -7,11 +7,16 @@ primary_job: Authority
 author: Cassandra Sklarz
 source_draft: editorial/drafts/curves-ahead-02-growth-without-losing-the-plot.md
 mode: Final Proof
-status: publication-ready — not published
+status: publication-ready — APPROVED, not published
+derived_from: curves-ahead-02-growth-without-losing-the-plot--light-2-edited.md
+approved: 2026-08-25 by Cassandra Sklarz
 note: >
-  Final Proof of --light-2-edited. Grammar, punctuation, typos, formatting and
-  editorial-note removal only; no approved language was rewritten. Passes all
-  eleven points of the Curves Ahead publication gate.
+  Final Proof of --light-2-edited, which is the approved canonical version.
+  Editorial-note removal and formatting only; no approved language was
+  rewritten. Passes all eleven points of the Curves Ahead publication gate.
+
+  This is the text to publish. If the canonical file changes, re-run the proof
+  rather than editing this one — the two must not drift apart.
 
   Publishing is a separate, human act: LinkedIn Newsletter and Substack the same
   day, then the sklarzcreative.com archive. This file is the text to publish,
