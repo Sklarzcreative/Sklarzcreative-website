@@ -1764,6 +1764,15 @@ html.tfcs-nogate .score-access { display: none !important; }
   border: 1px solid var(--line-light);
 }
 .write-in > div { padding: clamp(1.25rem, 2.6vw, 1.75rem); background: var(--paper); }
+/* The rules above draw the grid lines by letting a grey container show through
+   1px gaps, which works only while every cell has a child to paint --paper over
+   it. An odd number of cards at the two-column breakpoint leaves the last cell
+   empty, and it renders as a solid grey block. Painting the container --paper
+   and giving each card its own 1px ring removes that failure mode: adjacent
+   rings meet inside the 1px gap and read as a single line, and an empty cell
+   simply stays paper. */
+.write-in { background: var(--paper); }
+.write-in > div { box-shadow: 0 0 0 1px var(--line-light); }
 .write-in b {
   display: block;
   margin-bottom: .9rem;
