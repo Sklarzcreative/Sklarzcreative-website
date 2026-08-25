@@ -49,6 +49,11 @@ when they see the draft first. It is worth sending before I write, not after.
 
 Fragments. Not prose.
 
+**If you would rather be interviewed than fill in a form**, there is a prompt
+that does exactly that: [`handoff/chatgpt-case-study-interview.md`](../handoff/chatgpt-case-study-interview.md).
+Paste it into ChatGPT, answer its questions, and send me the structured block it
+produces at the end. Same material, less staring at a blank page.
+
 **1. The situation you walked into**
 What was actually wrong? Not the brief you were given — the underlying problem.
 *"Four workstreams, three agencies, no one owning the publishing calendar."*

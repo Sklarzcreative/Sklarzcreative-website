@@ -66,10 +66,20 @@ is set to `Anyone`.
 
 ### Task 3 — Build the Make.com scenario
 
-First, in whichever email platform I choose (MailerLite, Kit, or Brevo — all have
-a suitable free tier), create four **custom fields**: `first_name` (text),
-`weakest_signal` (text), `total_score` (number), `band` (text). Without these the
-sequence cannot be personalised and there is no point building it.
+**The email platform is Kit** (formerly ConvertKit) — the account already
+exists, do not create a new one.
+
+In Kit, create three **custom fields**, named lowercase with underscores exactly
+as written: `weakest_signal` (text), `total_score` (number), `band` (text).
+`first_name` is built into Kit already — do not create a duplicate. Create these
+before anything else; Kit does not backfill a field that did not exist when a
+subscriber was added.
+
+Then create the tag `trust-first-scorecard`.
+
+Also check and report back whether **Sequences and Visual Automations** are
+available on my current Kit plan. Do not upgrade or purchase anything — just
+tell me.
 
 Then in Make.com:
 

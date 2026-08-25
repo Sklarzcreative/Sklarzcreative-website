@@ -117,18 +117,46 @@ deployment over making a second one.
 
 Do steps 1–3 first. There is nothing for Make to watch until rows exist.
 
-**Pick the email platform first.** Any of MailerLite, Kit (ConvertKit), or
-Brevo will do this on a free tier. The one requirement is **custom fields** —
-you need somewhere to store `weakest_signal` and `total_score`, or Email 2
-cannot be personalised and the whole sequence collapses into a generic
-newsletter. Create these fields before touching Make:
+**The email platform is Kit** (formerly ConvertKit). Set it up before touching
+Make — Make needs the fields to exist before it can map anything into them.
 
-| Field | Type |
-| --- | --- |
-| `first_name` | text |
-| `weakest_signal` | text |
-| `total_score` | number |
-| `band` | text |
+**In Kit, first:**
+
+1. **Create the custom fields.** *Subscribers → any subscriber → Add field*, or
+   *Settings → Custom Fields* depending on where Kit has moved it. Names must be
+   lowercase with underscores, matching exactly:
+
+   | Field | Holds |
+   | --- | --- |
+   | `weakest_signal` | `Credibility` |
+   | `total_score` | `28` |
+   | `band` | `Solid foundation` |
+
+   `first_name` already exists in Kit as a built-in — do not create a duplicate.
+
+   Create these **before** the first subscriber arrives. Kit will not backfill a
+   field that did not exist when the record was imported, so a missed field means
+   re-importing rather than editing.
+
+2. **Create the tag** `trust-first-scorecard`. This is what Make applies and what
+   the sequence triggers on.
+
+3. **Build the sequence** with the copy from [12](./12-email-sequence.md), then a
+   **Visual Automation**: *Trigger: tag added → `trust-first-scorecard`* → *Action:
+   subscribe to sequence*. Kit's sequence editor holds the day 0 / 2 / 5 delays.
+
+**Check this before building anything:** confirm **Sequences and Visual
+Automations are available on your Kit plan.** Kit has moved what sits behind the
+free tier more than once, and automated sequences have historically been a paid
+feature. Everything else here works regardless — but if automations are not
+included, the sequence cannot fire on a tag, and you would find that out after
+building it rather than before. If they are not available, tell me and I will
+rework this around Broadcasts to a segment, which is more manual but free.
+
+**Conditional content in Email 2.** Kit supports Liquid `{% if %}` blocks inside
+an email, so the five weakest-signal variants can live in one email rather than
+five. If that proves fiddly, build five sequences and branch the automation on
+the field — more clicks, same result.
 
 ### The scenario
 

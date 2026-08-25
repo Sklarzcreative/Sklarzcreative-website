@@ -33,12 +33,30 @@ Four custom fields, populated by Make from the sheet:
 | `total_score` | `28` |
 | `band` | `Solid foundation` |
 
-Merge-tag syntax differs by platform — `{{ first_name }}` in Kit,
-`{$first_name}` in MailerLite, `{{contact.FIRST_NAME}}` in Brevo. The tags below
-are written in the Kit style; swap them for whatever yours uses.
+**Platform: Kit (formerly ConvertKit).** Kit uses Liquid, and every subscriber
+field is namespaced under `subscriber`. A bare `{{ first_name }}`, without that
+prefix, renders as nothing at all rather than erroring — which is the worst way
+for this to fail, because the email still sends and simply loses the word.
+The tags below are Kit's:
 
-**Set a fallback on every merge tag.** A blank `weakest_signal` in Email 2 is a
-sentence with a hole in it.
+| Field | Merge tag |
+| --- | --- |
+| First name | `{{ subscriber.first_name }}` |
+| Weakest signal | `{{ subscriber.weakest_signal }}` |
+| Total score | `{{ subscriber.total_score }}` |
+| Band | `{{ subscriber.band }}` |
+
+**Put a fallback on every one of them.** A blank `weakest_signal` in Email 2
+leaves a sentence with a hole in it:
+
+```liquid
+{{ subscriber.weakest_signal | default: "your lowest signal" }}
+{{ subscriber.first_name | default: "there" }}
+```
+
+Custom field names in Kit are lowercase with underscores, and the tag has to
+match the field name exactly. Create the fields **before** importing anyone —
+Kit will not retroactively populate a field that did not exist at import time.
 
 ---
 
@@ -47,11 +65,11 @@ sentence with a hole in it.
 **Subject:** Your Trust-First score, and the one part worth acting on
 **Preview text:** Your lowest signal is the only number that matters this week.
 
-> Hi {{ first_name }},
+> Hi {{ subscriber.first_name | default: "there" }},
 >
-> You scored **{{ total_score }} out of 40** — {{ band }}.
+> You scored **{{ subscriber.total_score }} out of 40** — {{ subscriber.band }}.
 >
-> Your lowest signal was **{{ weakest_signal }}**.
+> Your lowest signal was **{{ subscriber.weakest_signal | default: "your lowest signal" }}**.
 >
 > That is the number to act on, and the other four are a distraction for now.
 > Trust does not average out. A reader does not experience a total; they hit the
@@ -64,7 +82,7 @@ sentence with a hole in it.
 > **[Re-open the Scorecard →](https://sklarzcreative.com/insights/resources/trust-first-content-scorecard/)**
 >
 > In two days I will send you the specific first move for
-> {{ weakest_signal }}. Nothing to do until then.
+> {{ subscriber.weakest_signal | default: "your lowest signal" }}. Nothing to do until then.
 >
 > — Cassandra
 >
@@ -80,12 +98,12 @@ the next email specifically, so Day 2 arrives as something they were expecting.
 
 ## Email 2 — Day 2 · the personalised one
 
-**Subject:** {{ weakest_signal }} — where I would start
+**Subject:** {{ subscriber.weakest_signal | default: "your lowest signal" }} — where I would start
 **Preview text:** One move, not a checklist.
 
-> Hi {{ first_name }},
+> Hi {{ subscriber.first_name | default: "there" }},
 >
-> Your weakest signal was **{{ weakest_signal }}**. Here is the first place I
+> Your weakest signal was **{{ subscriber.weakest_signal | default: "your lowest signal" }}**. Here is the first place I
 > would look.
 
 Then **one** of the five blocks below, selected by `weakest_signal`. Most
@@ -168,7 +186,7 @@ Then close every variant the same way:
 **Subject:** The trust signal most people score lowest
 **Preview text:** And what it says about how content actually gets judged.
 
-> Hi {{ first_name }},
+> Hi {{ subscriber.first_name | default: "there" }},
 >
 > One thing I will say about the Scorecard: the five signals are not equally
 > difficult. Credibility and Connection are consistently the hardest, and the
@@ -192,7 +210,7 @@ Then close every variant the same way:
 > **[Clarity Before Content →](https://sklarzcreative.com/insights/clarity-before-content/)**
 > The argument underneath the Scorecard.
 >
-> And if the {{ weakest_signal }} work turns out to be bigger than an afternoon
+> And if the {{ subscriber.weakest_signal | default: "your lowest signal" }} work turns out to be bigger than an afternoon
 > — which it often does — that is worth a conversation.
 >
 > **[Book a discovery call →](https://calendly.com/sklarzcreative/30min)**

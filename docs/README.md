@@ -22,6 +22,16 @@ record.
 | 12 | [The follow-up sequence](./12-email-sequence.md) | Day 0 / 2 / 5, written to paste in — including the five variants that name the reader's weakest signal. |
 | 13 | [Case studies](./13-case-studies.md) | The intake questions, the structure, and what happens once the material arrives. |
 
+### Handoff prompts
+
+Work that needs an account or material this repository cannot reach, written to
+be pasted into an assistant that has them.
+
+| File | For |
+| --- | --- |
+| [`handoff/chatgpt-prompt.md`](../handoff/chatgpt-prompt.md) | Deploying the capture endpoint, Kit, Make.com, Search Console. |
+| [`handoff/chatgpt-case-study-interview.md`](../handoff/chatgpt-case-study-interview.md) | Interviewing the owner for case study material. |
+
 ## Update — 22 August 2026 · strategic positioning pass
 
 The documents above describe the design system, which is unchanged. The
