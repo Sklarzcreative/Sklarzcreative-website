@@ -50,7 +50,7 @@ window.TFCS_CAPTURE = {
   endpoint: '',              // paste the capture URL here to switch the ask on
   mode: 'opaque',            // 'opaque' for Apps Script, 'cors' for a form service
   reportResults: true,       // send the finished scores back against the same submission
-  reportAnonymous: false     // also report completions from visitors who never gave an email
+  reportAnonymous: true      // also report completions from visitors who never gave an email
 };
 
 (function () {
@@ -609,6 +609,7 @@ window.TFCS_CAPTURE = {
 
   var LAST_RESULT = null;
   var onResult = null;
+  var scorecardAnalyticsSent = false;
 
   /* ---------------------------------------------------------------- scoring
      The twenty statements are authored in the HTML rather than generated
@@ -690,6 +691,24 @@ window.TFCS_CAPTURE = {
       band: title
     } : null;
     if (typeof onResult === 'function') onResult();
+
+    if (LAST_RESULT && !scorecardAnalyticsSent) {
+      scorecardAnalyticsSent = true;
+      var analyticsEvent = {
+        name: 'scorecard_complete',
+        details: {
+          score_total: LAST_RESULT.total,
+          score_band: LAST_RESULT.band,
+          weakest_signal: LAST_RESULT.weakest_signal
+        }
+      };
+      if (typeof window.scTrack === 'function') {
+        window.scTrack(analyticsEvent.name, analyticsEvent.details);
+      } else {
+        window.scPendingEvents = window.scPendingEvents || [];
+        window.scPendingEvents.push(analyticsEvent);
+      }
+    }
   }
 
   document.addEventListener('change', update);

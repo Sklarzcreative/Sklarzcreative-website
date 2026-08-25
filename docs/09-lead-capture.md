@@ -199,34 +199,40 @@ Two rules hold whatever the tool:
    prevent.
 2. It must never gate access. It runs after the fact, off the visitor's path.
 
-### The Make.com scenario, concretely
+### The Make.com scenario
 
-```
-Google Sheets · Watch New Rows          ← fires when a capture lands
-  └─ Filter: follow_up_opt_in = "yes"
-      └─ Email platform · Add subscriber
-          └─ Day 0  · sent immediately
-          └─ Day 2  · reads weakest_signal from the row
-          └─ Day 5
-```
+**Build it from step 4 of [11 · Turning it on](./11-turn-it-on.md).**
+That is the authority; this section is why it is shaped the way it is.
 
-Two timing facts to design around:
+An earlier draft of this document proposed a **Watch New Rows** trigger. That is
+wrong, and the reason is worth recording so nobody rebuilds it:
 
-- **The row is created before the scores exist.** Day 0 can only be generic.
-  By Day 2 the score columns are usually filled, so that is the first message
-  that can name the weakest signal — read the row again rather than trusting
-  the values from the trigger.
-- **Some rows never get scores.** People capture and leave. Day 2 needs a
-  fallback for an empty `weakest_signal`, not a broken merge field.
+- **The row is created before the scores exist.** Watching new rows fires the
+  moment someone gives their email — with every score column still empty. Day 0
+  could then only be generic, which throws away the one thing that makes this
+  sequence worth sending.
+- **Watch New Rows has no memory of a row it has already handled.** A row that
+  gains scores later is not "new" again, so there is no clean way to come back
+  to it.
 
-### One copy note for the Day 0 email
+So the trigger is a **scheduled Search Rows every fifteen minutes**, filtered on
+`total_score` being filled — it waits for the person to actually finish — and
+Make stamps a `sequence_state` column so the same row is never processed twice.
+That column is in `HEADERS` and this script never writes to it; it exists solely
+so Make has somewhere to record what it has done.
 
-The site delivers the Scorecard **immediately, on the page**. An email that
-opens by delivering it is describing a flow that no longer exists. Day 0 should
-acknowledge use and point back:
+The cost of that design is that people who capture and never finish are excluded.
+That is the right default — there is nothing personalised to say to them — and
+[11](./11-turn-it-on.md) describes the optional second scenario for reaching them
+later.
 
-> Thanks for using the Trust-First Content Scorecard. You can return to the
-> interactive version any time. Your next move: work on the lowest category
-> before trying to lift the total.
+### The Day 0 email
 
-The sequence copy itself lives outside this repository.
+The site delivers the Scorecard **immediately, on the page**. An email that opens
+by delivering it describes a flow that no longer exists, so Day 0 is not a
+delivery email — it hands back the score and says which four fifths of it to
+ignore.
+
+**The copy for all three emails now lives in
+[12 · The follow-up sequence](./12-email-sequence.md)**, including the five
+variants that name the reader's weakest signal.
