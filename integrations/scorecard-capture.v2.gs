@@ -494,10 +494,6 @@ function handleCapture_(body) {
     return { ok: true };
   }
 
-  if (!underDailyCap_('lead', MAX_LEAD_WRITES_PER_DAY)) {
-    return { ok: false, error: 'busy' };
-  }
-
   var ss = book_();
   var leads = tab_(ss, TAB_LEADS);
   var id = validId_(body.submission_id);
@@ -505,6 +501,13 @@ function handleCapture_(body) {
   if (findRow_(leads, LEADS_HEADERS, id)) {
     console.error('capture_duplicate');
     return { ok: true };                        /* idempotent, not an error */
+  }
+
+  /* Count writes, not retries. If the counter ran before duplicate detection,
+     repeated delivery of one legitimate request could consume the whole daily
+     allowance and block every new lead for the rest of the day. */
+  if (!underDailyCap_('lead', MAX_LEAD_WRITES_PER_DAY)) {
+    return { ok: false, error: 'busy' };
   }
 
   var now = new Date();
@@ -561,15 +564,37 @@ function handleResult_(body) {
     }
   }
 
-  /* No matching lead. Never fabricate one - record the completion anonymously. */
-  writeAnalytics_(ss, id, body, scores.row);
-  return { ok: true };
+  /* No matching lead. Never fabricate one - record the completion anonymously.
+     Return the actual write outcome so a cap or conflict is not described as
+     success in server logs or in a future CORS-capable transport. */
+  return writeAnalytics_(ss, id, body, scores.row);
 }
 
 /** Anonymous completions. No name, no email, by construction. */
 function writeAnalytics_(ss, id, body, scoreRow) {
-  if (!underDailyCap_('analytics', MAX_ANALYTICS_WRITES_PER_DAY)) return false;
   var sheet = tab_(ss, TAB_ANALYTICS);
+
+  /* A result can arrive more than once before its capture. Keep one pending
+     row per submission id, accept an identical retry without rewriting, and
+     reject a conflicting retry while preserving the first result. Anonymous
+     results have no id and therefore cannot be deduplicated. */
+  if (id) {
+    var pendingRow = findPendingAnalyticsRow_(sheet, id);
+    if (pendingRow) {
+      var pendingStart = colOf_(ANALYTICS_HEADERS, SCORE_BLOCK[0]);
+      var existing = sheet.getRange(pendingRow, pendingStart, 1, SCORE_BLOCK.length).getValues()[0];
+      if (sameScores_(existing, scoreRow)) {
+        return { ok: true, note: 'already_recorded' };
+      }
+      console.error('analytics_result_conflict rowIndex=%s', pendingRow);
+      return { ok: false, error: 'already_completed' };
+    }
+  }
+
+  if (!underDailyCap_('analytics', MAX_ANALYTICS_WRITES_PER_DAY)) {
+    return { ok: false, error: 'busy' };
+  }
+
   var f = {
     timestamp:      new Date(),
     submission_id:  id,
@@ -584,7 +609,24 @@ function writeAnalytics_(ss, id, body, scoreRow) {
   };
   for (var i = 0; i < SCORE_BLOCK.length; i++) f[SCORE_BLOCK[i]] = scoreRow[i];
   sheet.appendRow(rowFrom_(ANALYTICS_HEADERS, f));
-  return true;
+  return { ok: true };
+}
+
+function findPendingAnalyticsRow_(sheet, id) {
+  if (!id) return 0;
+  var last = sheet.getLastRow();
+  if (last < 2) return 0;
+  var idCol = colOf_(ANALYTICS_HEADERS, 'submission_id');
+  var mergedCol = colOf_(ANALYTICS_HEADERS, 'merged_to_lead');
+  var firstCol = Math.min(idCol, mergedCol);
+  var width = Math.max(idCol, mergedCol) - firstCol + 1;
+  var rows = sheet.getRange(2, firstCol, last - 1, width).getValues();
+  for (var i = rows.length - 1; i >= 0; i--) {
+    var rowId = rows[i][idCol - firstCol];
+    var merged = rows[i][mergedCol - firstCol];
+    if (String(rowId) === id && !String(merged)) return i + 2;
+  }
+  return 0;
 }
 
 /**
