@@ -151,21 +151,26 @@ record, never the visitor's access. **Preserve that ordering.**
 
 **v2** is preserved, unapproved, undeployed.
 
-> ### Unresolved technical claim — must not be treated as established
+> ### CONFIRMED deployment blocker — v1 must not be deployed
 >
-> The v2 documentation asserts that `SpreadsheetApp.getActiveSpreadsheet()`
-> returns `null` in a deployed web-app context, making v1 fail silently.
+> Google's official documentation on container-bound scripts confirms that the
+> active-document methods resolve only where a container document is open and
+> bound. A web app has no open container, so `getActiveSpreadsheet()` does not
+> return the bound spreadsheet inside `doGet`/`doPost`.
 >
-> **This claim is UNVERIFIED in this repository and cannot be tested outside
-> Apps Script.** The v2 test suite reports 23/23 passing, but against *mocks*
-> that were written to model the claimed behaviour — that is not independent
-> confirmation.
+> **Source:** <https://developers.google.com/apps-script/guides/bound>
 >
-> **Do not authorise deployment of v1 or v2 on this claim alone.** Resolve it by
-> deploying a throwaway test script in Apps Script and observing the result.
+> v1 calls it on line 101 and then dereferences the result. It throws, `doPost`
+> catches, and because the front end posts in `mode: 'opaque'` the browser
+> cannot read the reply — **silent, total data loss behind a success-looking
+> UI**.
 >
-> If the claim holds, **`docs/11` step 1 does not work as written** and must be
-> treated as suspended.
+> **The documentation is the proof. The test suite is not.** Its mocks return
+> `null` *because they were written to model the documented behaviour*; they
+> reproduce the failure for regression testing rather than establishing it.
+>
+> **`docs/11` step 1 is suspended.** Executed as written it produces an endpoint
+> that accepts every submission and stores none.
 
 v2 additionally proposes formula-injection escaping, `LockService`, a body-size
 cap, daily write caps, strict validation, and separate `Leads`/`Spam`/`Analytics`
@@ -419,15 +424,16 @@ credential, token or private URL in code, docs or commits.
    defect fix. Keep all three `robots.txt` disallows and both `README.md` sections.
 5. **PR the redesign branch** (docs only), then the prompt-archive branch.
 6. **Resolve the schema/`HEADERS` drift** and delete one Make.com specification.
-7. **Resolve Finding 8 empirically** before touching the endpoint.
+7. ~~Resolve Finding 8~~ — **confirmed**; `docs/11` step 1 stays suspended until v2 is approved.
 8. **Extract** the three preserved files from the backup branch — never merge it.
 9. **Only then** consider enabling capture, with Cassandra's approval.
 
 ## 19 · Decisions required from Cassandra
 
 1. **Canonical offer page** — keep both, redirect one, or remove one?
-3. **Approve or reject the v2 patch** — and authorise an empirical test of
-   Finding 8 before any endpoint deployment.
+3. **Approve or reject the v2 patch.** Finding 8 no longer needs an empirical
+   test — it is confirmed by Google's documentation. `docs/11` step 1 is
+   suspended until v2 or an equivalent `openById` fix is approved.
 4. **The four editorial questions** — unblocks Editions 01 and 03.
 5. **Publish Edition 02?** LinkedIn + Substack same day, then the site archive.
 6. **Enable lead capture?** Requires `docs/11` step 1 and her Google account.
@@ -441,7 +447,6 @@ credential, token or private URL in code, docs or commits.
 
 ## 20 · Unknowns and verification limits
 
-- **Finding 8 is unresolved** and decides whether `docs/11` step 1 is usable.
 - **The live site has never been observed from this environment.** The proxy
   returns 403 for `sklarzcreative.com`. Every "live" claim here means "present on
   `origin/main`", not served bytes.
