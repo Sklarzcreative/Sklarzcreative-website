@@ -26,6 +26,8 @@
 | **Nothing publishes without Cassandra's approval.** | Applies to editions, offers, capture activation and any live page. |
 | **Protected:** `insights/`, the approved logo, the approved headshots, `_original-design/` rollback material. | No branch in the repository modifies any of them. Verified. |
 | **Cannabiology is a separate project.** | `claude/cannabiology-image-pipeline-bf9500` is a Python figure pipeline. Never merge it into this workstream. |
+| **PR #4 is closed** (28 Aug, verified). | It was a 1-file, +1/−1 draft. An earlier claim in this document that it deleted `.gitignore` and `_original-design/` was **wrong** — see §15. |
+| **Content-engine Sheet is not shared.** | Verified 28 Aug: owner access only, `sklarzcreative@gmail.com`. |
 
 ---
 
@@ -54,6 +56,7 @@ push to `main` deploys unverified.
 | 25 Aug | Mini Audit offer pages ship via PR #6 and follow-up commits |
 | 27 Aug | Systems-engineering reconciliation written |
 | 28 Aug | `backup/scorecard-hardening-2026-08-28` (`fd6e138`) created. Luxury-redesign memory written *after* it, with corrected chronology. This document written |
+| 28 Aug | **PR #4 closed** (`16:20:06Z`), verified against live GitHub metadata. Content-engine Sheet verified unshared. `/audit/` approved as canonical. This document corrected |
 
 **Chronology correction, recorded deliberately.** The systems-engineering and
 prompt-archive memories both state that no Apps Script security patch existed on
@@ -76,7 +79,7 @@ wrong, and must not be characterised as defective.
 | `codex/ga4-consent-events-20260824` | `523f290` | — | GA4 — squashed into `main` (PR #5 closed) | Safe to close |
 | `launch/trust-discoverability-audit-2026-08-25` | `9905ca2` | — | Offer — squashed into `main` (PR #6 closed) | Safe to close |
 | `agent/clarity-before-content-insight`, `agent/insights-library`, `agent/social-media-icons` | — | — | Pre-redesign | **UNRELATED HISTORY — verified no common ancestor. Never merge** |
-| `agent/fix-mobile-hero-graphic` | `0bbb92a` | — | **PR #4 — see §15** | Close |
+| `agent/fix-mobile-hero-graphic` | `0bbb92a` | — | PR #4 — **CLOSED 28 Aug**, see §15 | Reference only; do not delete |
 | `agent/weekly-review-business-foundation`, `automation-assets` | — | — | Superseded | Read before deleting |
 | `pre-*` (three) | — | — | Restore points | **Keep permanently** |
 
@@ -254,22 +257,70 @@ git diff --diff-filter=D --name-only origin/main origin/backup/scorecard-hardeni
 It descends from the editorial branch, which predates both offer pages.
 **Merging it deletes two live pages.** Extract the three files individually.
 
-## 15 · PR #4 — verified, and worse than previously recorded
+## 15 · PR #4 — CLOSED, and a correction to this document
 
-**PR #4 is the only open pull request.** Head `0bbb92a`
-(`agent/fix-mobile-hero-graphic`), base `3e44ab7` — pre-redesign. It is titled
-*"Fix homepage hero graphic on mobile."*
+### Current status: CLOSED
 
-Verified against current `main`, merging it would:
+Independently verified against live GitHub API metadata on **28 August 2026**.
+PR #4 was **closed at `2026-08-28T16:20:06Z`**. It was never merged.
 
-- replace `index.html` — **608 lines → 39 lines**, reverting the entire redesign
-- **delete `.gitignore`**, which blocks `.env`, `*.pem`, `*.key`, `credentials*`,
-  `secrets*` from a public repository
-- **delete the whole `_original-design/` rollback archive**, including
-  `RESTORE.md` and the archived headshot
+| Field | Live value |
+| --- | --- |
+| State | `closed` (never merged) |
+| Draft | `true` |
+| Mergeable | **`false`** (`mergeable_state: dirty`) |
+| Changed files | **1** |
+| Additions | **1** |
+| Deletions | **1** |
+| Head / base | `0bbb92a` (`agent/fix-mobile-hero-graphic`) / `3e44ab7` |
 
-**It looks like a one-line mobile fix. It is a catastrophic revert plus the
-removal of the secret guard and the rollback path. Close it. Do not merge it.**
+Its single change was an **obsolete mobile-hero CSS adjustment in `index.html`**,
+written 10 August against a pre-redesign homepage. The redesign superseded it.
+
+### Correction — the earlier claim in this document was WRONG
+
+> **Superseded claim, preserved verbatim so the error is not hidden:**
+>
+> *"Verified against current `main`, merging it would: replace `index.html` —
+> 608 lines → 39 lines, reverting the entire redesign; **delete `.gitignore`**,
+> which blocks `.env`, `*.pem`, `*.key`, `credentials*`, `secrets*` from a public
+> repository; **delete the whole `_original-design/` rollback archive**,
+> including `RESTORE.md` and the archived headshot."*
+
+**That claim was incorrect.** PR #4 would not have deleted `.gitignore` or
+`_original-design/`, and the live metadata (1 file, +1/−1) is incompatible with
+a change of that size.
+
+**Root cause — comparing incompatible trees.** The claim came from running a
+*tree diff* between two branch tips:
+
+```
+git diff --name-status origin/main 0bbb92a      # WRONG for previewing a merge
+```
+
+That reports what differs between two snapshots. It listed 52 files as `D`
+simply because they exist on `main` and did not yet exist at `0bbb92a`, an
+August-10 commit. A merge does not delete those files: git resolves against the
+**merge base**, and where only one side changed a file, that side wins.
+
+The correct preview uses the merge base:
+
+```
+MB=$(git merge-base origin/main 0bbb92a)        # 3e44ab7
+git diff --name-status $MB 0bbb92a
+  M	index.html                                   # the only change PR #4 contributes
+```
+
+**One file. Exactly matching GitHub's own count.**
+
+**Lesson recorded for future sessions:** never preview a merge with
+`git diff <branch-a> <branch-b>`. Use `git merge-base` and diff from it, or
+`git merge-tree`. A tree diff against an older branch tip will always
+manufacture false deletions, and the older the branch, the more alarming the
+false result.
+
+The outcome — close PR #4, do not merge it — was correct. The stated reasoning
+was not.
 
 ## 16 · Source-of-truth hierarchy
 
@@ -306,7 +357,7 @@ credential, token or private URL in code, docs or commits.
 
 ## 18 · Recommended integration order — a recommendation only
 
-1. **Close PR #4** (§15). Nothing else should merge while it is open.
+1. ~~Close PR #4~~ — **done, closed 28 Aug** (§15).
 2. **Decide the canonical offer page** (§13). It gates sitemap and navigation work.
 3. **PR the automation branch**, resolving `sitemap.xml` toward `main`. This
    installs CI first, so every later merge is verified.
@@ -321,7 +372,6 @@ credential, token or private URL in code, docs or commits.
 ## 19 · Decisions required from Cassandra
 
 1. **Canonical offer page** — keep both, redirect one, or remove one?
-2. **Close PR #4?**
 3. **Approve or reject the v2 patch** — and authorise an empirical test of
    Finding 8 before any endpoint deployment.
 4. **The four editorial questions** — unblocks Editions 01 and 03.
@@ -329,8 +379,11 @@ credential, token or private URL in code, docs or commits.
 6. **Enable lead capture?** Requires `docs/11` step 1 and her Google account.
 7. **Keep or delete** the pre-redesign `agent/*` branches and the automation
    duplicate.
-8. **Confirm the content-engine sheet's sharing is restricted**, not
-   "anyone with the link".
+8. ~~Confirm the content-engine sheet's sharing~~ — **RESOLVED 28 Aug.**
+   Independently verified as **not shared**: the only permission returned is
+   owner access for `sklarzcreative@gmail.com`. No link sharing, no additional
+   grantees. Re-check if the sheet is ever used by Make.com, which will require
+   granting access to a service identity.
 
 ## 20 · Unknowns and verification limits
 
