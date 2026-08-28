@@ -590,6 +590,48 @@ check('29  analytics cap blocks the bypass route', () => {
   return '25 valid anonymous completions, ' + n + ' written, cap held';
 });
 
+check('30  duplicate captures do not consume the lead-write allowance', () => {
+  const h = ready();
+  h.ctx.MAX_LEAD_WRITES_PER_DAY = 2;
+  const first = '3f2b6c4e-9a1d-4c8e-b7a2-5d1e0f9c3c10';
+  const second = '3f2b6c4e-9a1d-4c8e-b7a2-5d1e0f9c3c11';
+  assert(post(h.ctx, goodCapture(first)).ok === true, 'first lead rejected');
+  for (let i = 0; i < 10; i++) {
+    assert(post(h.ctx, goodCapture(first)).ok === true, 'duplicate retry rejected');
+  }
+  assert(post(h.ctx, goodCapture(second)).ok === true,
+    'duplicate retries consumed the allowance and blocked a new lead');
+  assert(rowsOf(h, 'Leads').length === 2, 'expected two unique lead rows');
+  return '10 retries consumed zero write slots; second unique lead stored';
+});
+
+check('31  pending Analytics results are immutable and idempotent', () => {
+  const h = ready();
+  const id = '7a1b2c3d-4e5f-4a6b-8c7d-9e0f1a2b3d10';
+  assert(post(h.ctx, goodResult(id)).ok === true, 'initial pending result rejected');
+  const same = post(h.ctx, goodResult(id));
+  assert(same.ok === true && same.note === 'already_recorded',
+    'identical pending retry was not accepted idempotently');
+  const conflict = post(h.ctx, goodResult(id, {
+    total: 35, clarity: 8, consistency: 7, credibility: 7, connection: 8, conversion: 5,
+    weakest_signal: 'Conversion', band: 'Strong trust system'
+  }));
+  assert(conflict.ok === false && conflict.error === 'already_completed',
+    'conflicting pending retry was not rejected');
+  assert(rowsOf(h, 'Analytics').length === 1, 'pending retries created duplicate rows');
+  assert(cell(h, 'Analytics', 0, 'total_score') === 27, 'original pending result changed');
+  return 'identical retry reused one row; conflict rejected; original preserved';
+});
+
+check('32  an Analytics cap refusal is reported as failure', () => {
+  const h = ready();
+  h.ctx.MAX_ANALYTICS_WRITES_PER_DAY = 0;
+  const r = post(h.ctx, goodResult('7a1b2c3d-4e5f-4a6b-8c7d-9e0f1a2b3d11'));
+  assert(r.ok === false && r.error === 'busy', 'cap refusal was reported as success');
+  assert(rowsOf(h, 'Analytics').length === 0, 'cap refusal still wrote a row');
+  return 'no row written; caller receives ok:false and busy';
+});
+
 /* ---------------------------------------------------------------- report */
 
 const pass = results.filter(r => r.pass).length;
