@@ -1,7 +1,10 @@
 # 16 · Scorecard capture endpoint — security review and v2
 
-> **Status: for review. Nothing deployed, nothing committed, no endpoint URL
-> inserted, nothing under `insights/` modified.**
+> **Status: committed on the master integration branch for review. Nothing is
+> deployed, no endpoint URL or spreadsheet ID is inserted, and capture remains
+> disabled.** A separate approved offer-page commit added navigation links to
+> nine files under `insights/`; it did not change Scorecard capture
+> configuration or endpoint behavior.
 >
 > `integrations/scorecard-capture.gs` (v1) was reviewed before deployment. It
 > **cannot ship** — one finding is a functional blocker that would have caused
@@ -13,7 +16,7 @@
 > | v1 | `integrations/scorecard-capture.gs` — unmodified, `sha256 53c9707962c92993…` |
 > | v2 | `integrations/scorecard-capture.v2.gs` — proposed |
 > | Tests | `integrations/scorecard-capture.test.js` — `node integrations/scorecard-capture.test.js` |
-> | Result | **23/23 passing** |
+> | Result | **33/33 passing** |
 
 ---
 
@@ -106,8 +109,10 @@ quota resets.
 - Spam now goes to a separate **`Spam`** tab. `Leads` contains only valid,
   non-spam captures. Make.com reads `Leads` only.
 - Date-stamped counters in Script Properties cap daily writes
-  (`MAX_LEAD_WRITES_PER_DAY`, `MAX_SPAM_WRITES_PER_DAY`), bounding sheet growth
-  and write quota.
+  (`MAX_LEAD_WRITES_PER_DAY`, `MAX_SPAM_WRITES_PER_DAY`,
+  `MAX_ANALYTICS_WRITES_PER_DAY`), bounding sheet growth and write quota.
+- Duplicate capture delivery is checked before the lead counter, so retries do
+  not consume the allowance or block later unique leads.
 - The counters **fail open** — a Properties outage never costs a real lead
   (test 22).
 
@@ -128,7 +133,9 @@ range check and no already-completed guard. v1 also appended
 
 **Fixed in v2.** `validateScores_` enforces the contract derived from the front
 end and rejects anything inconsistent — nothing is written on failure. A result
-updates **only** an existing, valid, non-spam capture with the same ID.
+updates **only** an existing, valid, non-spam capture with the same ID. Completed
+lead results and pending Analytics results are immutable: an identical retry is
+idempotent, while a conflicting retry is refused and the original survives.
 Orphan results never touch `Leads` (findings 8/9 below explain where they go).
 
 ---
@@ -237,7 +244,7 @@ the *ordering* correct rather than merely recovered.
 | Orphan results | `result_without_capture` **in leads** | `Analytics`, merged on capture |
 | Anonymous results | mixed into leads | `Analytics` only, no name/email columns |
 | Consent | opt-in flag only | `consent_version` + `consent_at` + campaign preserved |
-| Rate limiting | none | daily caps, fail-open |
+| Rate limiting | none | daily caps; retries do not consume lead allowance; cap refusals return failure |
 | `doGet` | `{ok:true}` | configuration and tab health check, no rows or IDs |
 | Diagnostics | none | `console.error` reason codes, never PII |
 
@@ -256,7 +263,7 @@ script never writes it.
 
 ## Tests
 
-`node integrations/scorecard-capture.test.js` — 23 checks, all passing. The
+`node integrations/scorecard-capture.test.js` — 33 checks, all passing. The
 harness runs the real `.gs` source in a VM with mocked Apps Script services,
 including a `getActiveSpreadsheet()` that returns null so the v1 blocker is
 *reproduced* rather than asserted.
