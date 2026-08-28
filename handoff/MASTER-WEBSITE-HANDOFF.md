@@ -243,8 +243,8 @@ backup branches. **Next free number is 17.**
    uses Watch New Rows; `docs/11` uses scheduled Search Rows with a
    `sequence_state` stamp. One must be deleted, not left as an alternative.
 3. **Duplicate offer pages** — §13.
-4. **`Index.html` (413 B stub) and `index.html` (36,484 B) both on `main`** —
-   two files differing only in case. Verified. Intent unknown.
+4. **`Index.html` / `index.html` — RESOLVED 28 Aug: intent confirmed, file KEPT.**
+   Investigated for deletion and **deliberately not deleted.** See §15b.
 
 ### The backup branch hazard — verified
 
@@ -321,6 +321,60 @@ false result.
 
 The outcome — close PR #4, do not merge it — was correct. The stated reasoning
 was not.
+
+## 15b · `Index.html` determination — kept, with reasoning
+
+**Outcome: `Index.html` is retained.** Deletion was authorised only if the file
+held no unique required functionality. It holds none by *content* — but its
+redirect is its function, and that function was added deliberately.
+
+### The exact comparison
+
+| | `Index.html` | `index.html` |
+| --- | --- | --- |
+| Size | 413 B | 36,536 B |
+| Lines | 0 (single line) | 609 |
+| sha256 | `08d2605c197dd864…` | `3b2c3f06022742f3…` |
+| `<section>` | 0 | 12 |
+| `<img>` | 0 | 4 |
+| `<nav>` / `<footer>` | 0 / 0 | 1 / 1 |
+| JSON-LD | 0 | 1 |
+| `<script>` | 1 (`location.replace('/')`) | 4 |
+
+Token-level check — every `href`, `src`, `id` and `name` in `Index.html`
+compared against `index.html`: **zero attributes unique to `Index.html`.** It
+contains no markup, styling, structured data or behaviour that the real homepage
+lacks.
+
+### Why it was kept anyway
+
+1. **It was created on purpose.** Commit **`6feafb4` — "Redirect legacy
+   Index.html to canonical homepage."** It is not an accident or a stray copy.
+2. **It is documented as correct.** `QA_POST_LAUNCH_2026-08-09.md`: *"Root
+   homepage is a real `index.html` and legacy `Index.html` redirects to `/`."*
+3. **GitHub Pages is case-sensitive.** `/Index.html` is a distinct URL from `/`.
+   Deleting the file converts a working redirect into a 404 for every legacy
+   inbound link, old bookmark or stale external reference pointing at the
+   capitalised path.
+
+The file is correctly built for its job: `noindex`, canonical to `/`, meta
+refresh, `location.replace`, and a visible fallback link. It is the same pattern
+used for the Trust Files stub and now for `/trust-discoverability-audit/`.
+
+### References verified
+
+No reference to the capitalised path exists in any HTML, XML, CSS, JS or text
+file. `sitemap.xml` and `robots.txt`: **0 occurrences each.** The only mentions
+are the QA record above and `_original-design/Index.html`, which is protected
+rollback material and untouched. **All live references already use the lowercase
+path.**
+
+### If Cassandra still wants it removed
+
+It is a one-line deletion, reversible, and the only consequence is that
+`/Index.html` would serve the branded `404.html` instead of forwarding. That is
+a defensible choice — but it is a choice, not a cleanup, so it is being left to
+her rather than made here.
 
 ## 16 · Source-of-truth hierarchy
 
