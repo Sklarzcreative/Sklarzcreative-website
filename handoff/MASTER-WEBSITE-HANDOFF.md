@@ -381,6 +381,31 @@ It is a one-line deletion, reversible, and the only consequence is that
 a defensible choice — but it is a choice, not a cleanup, so it is being left to
 her rather than made here.
 
+## 15c · Branch register — nothing is deleted
+
+**Standing rule: no branch is deleted in this phase.** Not the pre-redesign
+`agent/*` branches, not the editorial or automation branches, not the prompt
+archive, not the backup, not Cannabiology. Several are 28–78 commits behind and
+may still hold something unique; the cost of reading one later is trivial next to
+the cost of discovering it is gone.
+
+| Classification | Branches | Rule |
+| --- | --- | --- |
+| **Active** | `claude/website-master-integration-2026-08-28` (this one) · `main` | Work here; `main` only via PR |
+| **Ready to integrate** | `claude/editorial-agent-longform-l42j6l` · `claude/overnight-automation-2026-08-24` · `claude/sklarz-creative-redesign-8yd5he` · `claude/sklarz-website-prompt-archive-qwy7h4` | PR in the order at §18 |
+| **Reference only** | `agent/fix-mobile-hero-graphic` (PR #4, closed) · `agent/weekly-review-business-foundation` · `automation-assets` | Read before any future decision. Do not merge |
+| **Duplicate** | `claude/loving-wozniak-ubvqew` = `claude/overnight-automation-2026-08-24` (`bd89ee9`) | Integrate one only |
+| **Absorbed** | `codex/ga4-consent-events-20260824` (PR #5) · `launch/trust-discoverability-audit-2026-08-25` (PR #6) | Content already on `main` |
+| **Unrelated history** | `agent/clarity-before-content-insight` · `agent/insights-library` · `agent/social-media-icons` | **Verified: no common ancestor with `main`.** Never merge. Extract file-by-file if anything is wanted |
+| **Dangerous to merge whole** | `backup/scorecard-hardening-2026-08-28` | Deletes two live offer pages. **Copy files by path only** — as was done for this branch's v2 work |
+| **Out of scope** | `claude/cannabiology-image-pipeline-bf9500` | A Python scientific-figure pipeline. **Not this website.** Never merge into this workstream, never reason about it as if it were website work |
+| **Permanent restore points** | `pre-luxury-redesign-2026-08-22` (`e5aa3a6`) · `pre-editorial-audit-2026-08-25` (`fa196c9`) · `pre-audit-offer-launch-2026-08-25` (`23f2834`) | **Never delete** |
+
+**Candidates for deletion — after reconciliation, and only with Cassandra's
+sign-off:** the duplicate automation branch, the two absorbed branches, and the
+`agent/*` branches once each has been read and anything unique extracted.
+**Nothing on that list is deleted now.**
+
 ## 16 · Source-of-truth hierarchy
 
 1. **Cassandra's explicit current instruction** — always wins
