@@ -17,14 +17,14 @@
 | | |
 | --- | --- |
 | **Lead capture is DISABLED.** | `endpoint: ''` on `main`. No lead has ever been captured. It stays off until Cassandra says otherwise. |
-| **The proposed v2 Apps Script patch is preserved, not approved, not deployed.** | It exists only on `backup/scorecard-hardening-2026-08-28`. |
+| **The proposed v2 Apps Script patch is preserved, not deployed.** | The three files were copied by path onto this integration branch and hardened further. v1 remains untouched. |
 | **The backup branch must NOT be merged as a whole.** | Relative to `main` it deletes two live pages. Extract files, never merge. |
-| **The two offer pages need a canonical-page decision.** | `/audit/` and `/trust-discoverability-audit/` are both live and indexable. |
+| **The canonical offer decision is resolved on this branch.** | `/audit/` keeps the full offer; `/trust-discoverability-audit/` becomes a `noindex,follow` forwarding stub. Production remains unchanged until an approved PR merges. |
 | **Edition 02 is approved but NOT published.** | Nothing has been sent to LinkedIn, Substack or the site. |
-| **Editions 01 and 03 are blocked on Cassandra's answers.** | Four questions, unanswered. |
+| **Editions 01 and 03 are blocked on Cassandra's approval of proposed answers.** | Four draft answers are preserved in `editorial/PROPOSED-AUTHOR-ANSWERS-2026-08-28.md`; none is inserted or attributed to her yet. |
 | **`main` is production. Pushing to `main` deploys.** | GitHub Pages, deploy-from-branch, ~30 seconds. No staging, no approval gate. |
 | **Nothing publishes without Cassandra's approval.** | Applies to editions, offers, capture activation and any live page. |
-| **Protected:** `insights/`, the approved logo, the approved headshots, `_original-design/` rollback material. | No branch in the repository modifies any of them. Verified. |
+| **Protected:** `insights/`, the approved logo, the approved headshots, `_original-design/` rollback material. | This branch has one explicit exception: nine `insights/` files receive only Mini Audit links. Capture configuration is untouched. Logo, headshots and rollback material remain unchanged. |
 | **Cannabiology is a separate project.** | `claude/cannabiology-image-pipeline-bf9500` is a Python figure pipeline. Never merge it into this workstream. |
 | **PR #4 is closed** (28 Aug, verified). | It was a 1-file, +1/−1 draft. An earlier claim in this document that it deleted `.gitignore` and `_original-design/` was **wrong** — see §15. |
 | **Content-engine Sheet is not shared.** | Verified 28 Aug: owner access only, `sklarzcreative@gmail.com`. |
@@ -149,7 +149,9 @@ record, never the visitor's access. **Preserve that ordering.**
 **v1** (`integrations/scorecard-capture.gs`, 187 lines, 24-column `HEADERS`) is on
 `main` and **has never been deployed**.
 
-**v2** is preserved, unapproved, undeployed.
+**v2** is preserved on this integration branch, reviewed and hardened locally,
+but still undeployed. Its mocked suite passes 33/33. Real Google Apps Script and
+Sheets behavior remains an activation prerequisite.
 
 > ### CONFIRMED deployment blocker — v1 must not be deployed
 >
@@ -204,14 +206,19 @@ contains **zero** `editorial/` files. Questions are in
 
 ## 13 · Offers, automation, QA, prompt memory
 
-**Offers — a decision is required.** Both pages are live:
+**Offers — resolved on this integration branch; production is unchanged until
+merge.** The branch makes `/audit/` canonical:
 
-- `/audit/` — in the sitemap at priority 0.95, Service schema, **orphaned: the
-  only `href="/audit/"` in the repository is the page's own internal anchor**
-- `/trust-discoverability-audit/` — `index,follow`, canonical pointing at itself,
-  **absent from the sitemap**, linked from nowhere
+- `/audit/` — retains the full offer, Service schema, $350 standard price and
+  $199 local portfolio-building rate; it remains in the sitemap.
+- `/trust-discoverability-audit/` — becomes a `noindex,follow` forwarding stub
+  canonicalized to `/audit/`, with meta refresh, `location.replace`, and a
+  visible fallback link.
+- Fourteen footers, the resources page and `/work/` add restrained entry points.
+  Nine of those footer/resource edits are the authorized `insights/` exception.
 
-Two indexable pages for one offer, neither reachable by navigation.
+On production `main`, the former duplicate state remains until an approved PR
+is merged.
 
 **Automation:** complete and unmerged. `automation/` is deliberately not deployed.
 Design rule to preserve: *a check that could not run is reported as skipped with
@@ -247,7 +254,8 @@ backup branches. **Next free number is 17.**
 2. **Two Make.com specifications.** `automation/runbooks/make-a-scorecard-capture.md`
    uses Watch New Rows; `docs/11` uses scheduled Search Rows with a
    `sequence_state` stamp. One must be deleted, not left as an alternative.
-3. **Duplicate offer pages** — §13.
+3. **Duplicate offer pages — RESOLVED on this branch.** See §13. Production
+   remains unchanged until merge.
 4. **`Index.html` / `index.html` — RESOLVED 28 Aug: intent confirmed, file KEPT.**
    Investigated for deletion and **deliberately not deleted.** See §15b.
 
@@ -425,7 +433,8 @@ Netlify as host.
 
 ## 17 · Protected assets and deployment rules
 
-**Never modify:** `insights/**` · `sklarz-creative-logo.png` ·
+**Never modify without an explicit scoped instruction:** `insights/**` ·
+`sklarz-creative-logo.png` ·
 `cassandra-sklarz-headshot.jpg.png` · `assets/images/cassandra-sklarz-headshot.webp` ·
 `favicon.svg` · `assets/graphics/*.svg` · `_original-design/**` · `.nojekyll`.
 Optimising is allowed; reinterpreting or regenerating is not. Never invent a
@@ -442,29 +451,40 @@ credential, token or private URL in code, docs or commits.
 ## 18 · Recommended integration order — a recommendation only
 
 1. ~~Close PR #4~~ — **done, closed 28 Aug** (§15).
-2. **Decide the canonical offer page** (§13). It gates sitemap and navigation work.
-3. **PR the automation branch**, resolving `sitemap.xml` toward `main`. This
+2. ~~Decide the canonical offer page~~ — **done on this branch:** `/audit/`
+   remains canonical and the duplicate forwards (§13).
+3. ~~Extract and harden the preserved v2 files~~ — **done by path, without
+   merging the backup branch.** Keep capture disabled pending real Google QA.
+4. **Review this integration branch and open a draft PR only after the source
+   documents and test results agree.** Do not merge or deploy yet.
+5. **PR the automation branch**, resolving `sitemap.xml` toward `main`. This
    installs CI first, so every later merge is verified.
-4. **PR the editorial branch** — merges clean today; ships the live privacy
+6. **PR the editorial branch** — merges clean today; ships the live privacy
    defect fix. Keep all three `robots.txt` disallows and both `README.md` sections.
-5. **PR the redesign branch** (docs only), then the prompt-archive branch.
-6. **Resolve the schema/`HEADERS` drift** and delete one Make.com specification.
-7. ~~Resolve Finding 8~~ — **confirmed**; `docs/11` step 1 stays suspended until v2 is approved.
-8. **Extract** the three preserved files from the backup branch — never merge it.
-9. **Only then** consider enabling capture, with Cassandra's approval.
+7. **PR the redesign branch** (docs only), then the prompt-archive branch.
+8. **Resolve the schema/`HEADERS` drift** and delete one Make.com specification.
+9. ~~Resolve Finding 8~~ — **confirmed**; `docs/11` step 1 remains suspended.
+10. **Only after empirical Google QA** consider enabling capture, with
+    Cassandra's explicit approval.
 
 ## 19 · Decisions required from Cassandra
 
-1. **Canonical offer page** — keep both, redirect one, or remove one?
-3. **Approve or reject the v2 patch.** Finding 8 no longer needs an empirical
-   test — it is confirmed by Google's documentation. `docs/11` step 1 is
-   suspended until v2 or an equivalent `openById` fix is approved.
-4. **The four editorial questions** — unblocks Editions 01 and 03.
-5. **Publish Edition 02?** LinkedIn + Substack same day, then the site archive.
-6. **Enable lead capture?** Requires `docs/11` step 1 and her Google account.
-7. **Keep or delete** the pre-redesign `agent/*` branches and the automation
-   duplicate.
-8. ~~Confirm the content-engine sheet's sharing~~ — **RESOLVED 28 Aug.**
+1. ~~**Canonical offer page**~~ — **RESOLVED:** `/audit/` is canonical; the
+   duplicate forwards on this branch.
+2. ~~**Close PR #4**~~ — **RESOLVED:** closed 28 Aug, never merged.
+3. **Approve v2 for empirical testing.** The code is reviewed and passes 33/33
+   mocked checks. Finding 8 is confirmed by Google's documentation, but real
+   Apps Script concurrency, quota behavior and formula handling still require
+   live test rows before activation. `docs/11` step 1 remains suspended.
+4. **Approve or correct the four proposed editorial answers.** Q1 and Q3 require
+   Cassandra's factual confirmation before anything may be attributed to her.
+5. **Publish Edition 02?** Requires a specific publishing decision and final
+   LinkedIn/Substack previews; it remains unpublished.
+6. **Enable lead capture?** Only after live Google QA and Cassandra's separate
+   activation approval. The endpoint remains empty.
+7. ~~**Delete branches**~~ — **RESOLVED for this phase:** keep all branches until
+   reconciliation is complete; permanent restore points are never deleted.
+8. ~~**Confirm the content-engine Sheet's sharing**~~ — **RESOLVED 28 Aug.**
    Independently verified as **not shared**: the only permission returned is
    owner access for `sklarzcreative@gmail.com`. No link sharing, no additional
    grantees. Re-check if the sheet is ever used by Make.com, which will require
@@ -478,7 +498,6 @@ credential, token or private URL in code, docs or commits.
 - **GitHub Pages settings were never read.** The production branch is inferred
   from `CNAME`, documentation and the absence of deploying workflows.
 - Whether GA4 is actually receiving data.
-- Whether `Index.html` is deliberate.
 - Whether the schema naming divergence is deliberate mapping or drift.
 - Whether the `agent/*` branches hold anything unique — **read before deleting**.
 - Kit's plan tier — whether Sequences and Visual Automations are available.
@@ -500,10 +519,12 @@ credential, token or private URL in code, docs or commits.
 branch hashes · the three memory files' existence and size · the three preserved
 files' existence and size · the backup branch's two deletions · the three
 unrelated-history branches having no common ancestor with `main` · both
-`Index.html` and `index.html` on `main` · `/audit/` having exactly one
-self-referential link · `/trust-discoverability-audit/` being `index,follow` and
-absent from the sitemap · the editorial branch merging clean · PR #4's line
-counts and its deletion of `.gitignore` and `_original-design/`.
+`Index.html` and `index.html` on `main` · the production-baseline offer state
+before this branch's redirect/link work · the integration branch's canonical
+redirect and entry points · the editorial branch merging clean · PR #4's
+verified one-file, +1/−1 diff and closed state. The earlier claim that PR #4
+deleted `.gitignore` and `_original-design/` is retracted in §15 and is not a
+repository fact.
 
 **Conversation context, not repository fact:** Cassandra is reconciling parallel
 Claude Code and ChatGPT work · she selected a single master session · her
