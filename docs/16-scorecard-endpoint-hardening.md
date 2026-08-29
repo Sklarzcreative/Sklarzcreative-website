@@ -6,6 +6,16 @@
 > nine files under `insights/`; it did not change Scorecard capture
 > configuration or endpoint behavior.
 >
+> **Retraction, 28 Aug.** The status line above previously read *"Nothing
+> deployed, nothing committed, no endpoint URL inserted, nothing under
+> `insights/` modified."* Two of those four claims were false by the time the
+> document was read: this file and the two Scorecard files **were** committed to
+> `claude/website-master-integration-2026-08-28` (never to `main`), and nine
+> `insights/` files **were** modified under the separate offer-page
+> authorisation. The original wording is recorded here rather than quietly
+> replaced, on the same rule applied to the PR #4 claim in §15: a corrected
+> statement in this document is always shown next to what it corrected.
+>
 > `integrations/scorecard-capture.gs` (v1) was reviewed before deployment. It
 > **cannot ship** — one finding is a functional blocker that would have caused
 > silent, total data loss. `integrations/scorecard-capture.v2.gs` is the
