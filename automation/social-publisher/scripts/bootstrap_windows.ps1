@@ -17,9 +17,16 @@ if (Get-Command py -ErrorAction SilentlyContinue) {
     throw "Python 3.11+ was not found. Install Python, then rerun this script."
 }
 
+function Assert-NativeSuccess([string]$Step) {
+    if ($LASTEXITCODE -ne 0) {
+        throw "$Step failed with exit code $LASTEXITCODE"
+    }
+}
+
 if (-not (Test-Path '.venv')) {
     Write-Host "Creating virtual environment..."
     & $PythonCmd -m venv .venv
+    Assert-NativeSuccess "Creating virtual environment"
 }
 
 $VenvPython = Join-Path $ProjectDir '.venv\Scripts\python.exe'
@@ -27,7 +34,9 @@ $VenvPip = Join-Path $ProjectDir '.venv\Scripts\pip.exe'
 
 Write-Host "Installing/updating dependencies..."
 & $VenvPython -m pip install --upgrade pip
+Assert-NativeSuccess "Upgrading pip"
 & $VenvPip install -r requirements.txt
+Assert-NativeSuccess "Installing dependencies"
 
 if (-not (Test-Path '.env')) {
     Copy-Item '.env.example' '.env'
@@ -39,6 +48,7 @@ if (-not (Test-Path '.env')) {
 Write-Host "Running test suite..."
 $env:PYTHONPATH = $ProjectDir
 & $VenvPython -m pytest -q
+Assert-NativeSuccess "Test suite"
 
 Write-Host ""
 Write-Host "Bootstrap complete." -ForegroundColor Green
