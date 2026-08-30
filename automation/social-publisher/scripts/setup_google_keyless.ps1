@@ -28,16 +28,28 @@ Write-Host 'Sklarz Social Publisher - keyless Google authentication' -Foreground
 Write-Host 'No service-account private key will be created or stored.'
 Write-Host ''
 
-Write-Host 'Signing into Google Cloud CLI...'
-Invoke-Checked gcloud auth login
+$Account = (& gcloud config get account 2>$null).Trim()
+$WorkingLogin = $false
+if ($Account -and $Account -ne '(unset)') {
+    & gcloud auth print-access-token --account=$Account *> $null
+    if ($LASTEXITCODE -eq 0) {
+        $WorkingLogin = $true
+    }
+}
+
+if ($WorkingLogin) {
+    Write-Host "Using existing Google Cloud CLI login: $Account"
+} else {
+    Write-Host 'No working Google Cloud CLI login found. Opening browser sign-in...'
+    Invoke-Checked gcloud auth login
+    $Account = (& gcloud config get account 2>$null).Trim()
+    if (-not $Account -or $Account -eq '(unset)') {
+        throw 'Could not determine the signed-in Google account.'
+    }
+}
 
 Write-Host "Setting project to $ProjectId..."
 Invoke-Checked gcloud config set project $ProjectId
-
-$Account = (& gcloud config get account 2>$null).Trim()
-if (-not $Account) {
-    throw 'Could not determine the signed-in Google account.'
-}
 Write-Host "Signed in as: $Account"
 
 Write-Host 'Enabling required APIs...'
