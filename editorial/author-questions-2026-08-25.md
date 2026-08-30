@@ -1,8 +1,9 @@
-# Four questions — Editions 01 and 03
+# Four questions - Editions 01 and 03
 
-> Everything else in both editions is done. These four answers are the only
-> things standing between them and Final Proof, and none of them can be written
-> for you: two are experiences only you have, two are positions only you hold.
+> **Completed 30 August 2026.** Cassandra approved all four answers. Q1's final
+> approval supersedes an earlier instruction to skip it. The answers have been
+> integrated into the second full edits of Editions 01 and 03; the original
+> questions remain below as the decision record.
 >
 > **Answer in note form.** Do not write prose — the editing is my job. Bullet
 > points, half-sentences and "roughly, it was like this" are all fine.
@@ -11,7 +12,7 @@
 
 ---
 
-## Edition 01 — *AI Is Making Execution Cheap. Judgment Is Becoming More Valuable.*
+## Edition 01 - *AI Is Making Execution Cheap. Judgment Is Becoming More Valuable.*
 
 ### Q1 · One concrete example. A tool you added and later removed.
 
@@ -34,6 +35,14 @@ something is not evidence that it should exist."*
 
 Two or three sentences of raw notes is plenty. If nothing fits, say so and I'll
 cut the flagged note rather than leave a gap where an example should be.
+
+**Approved answer:**
+
+> I set up an automated tracker for Curves Ahead because I wanted the publishing
+> work and progress centralized. Instead of replacing a clear workflow, it
+> became another system to monitor while higher-priority client work needed
+> attention. I turned it off until it had a defined job and a real workflow to
+> replace.
 
 ---
 
@@ -59,9 +68,17 @@ piece never engages it — which makes it easier to dismiss than it deserves.
 voice is comfortable saying "I don't know yet"; the piece is weaker for
 pretending the question isn't there.
 
+**Approved answer:**
+
+> The objection is partly right. AI will increasingly perform work that looks
+> like judgment, including ranking, critiquing, and choosing among options. The
+> durable human advantage is not making every choice manually. It is defining
+> the goal, deciding which tradeoffs matter, evaluating context the system may
+> not hold, and remaining accountable for the consequences.
+
 ---
 
-## Edition 03 — *Why Newsletters Are Becoming Interesting Again*
+## Edition 03 - *Why Newsletters Are Becoming Interesting Again*
 
 ### Q3 · One concrete example. Something you've actually observed.
 
@@ -80,6 +97,14 @@ compound."
 - The actual reason you chose biweekly, and what you expect it to cost you
 
 Notes, not prose.
+
+**Approved answer:**
+
+> Testing across multiple social platforms showed me that visibility and
+> relationship are not the same thing. A post can receive discovery or
+> engagement and then disappear without creating an ongoing connection. A
+> newsletter gives the ideas a continuing home and gives readers a deliberate
+> way to return.
 
 ---
 
@@ -105,6 +130,14 @@ as unmediated.
 **What I need:** **a**, **b**, both, neither, or your own third thing. If you
 pick one, one line on what you actually think about it is enough.
 
+**Approved answer:**
+
+> Both questions matter. Inbox attention can become crowded, and an email list
+> is portable rather than completely owned because deliverability and filtering
+> are still mediated. Newsletters remain valuable because the relationship is
+> more direct, but only when the content earns attention rather than treating
+> the inbox as guaranteed reach.
+
 ---
 
 ## What happens when you answer
@@ -116,5 +149,5 @@ pick one, one line on what you actually think about it is enough.
 | All four | Both editions go to Final Proof and join Edition 02 as publication-ready |
 | "Skip Q1 / Q3" | I remove the flagged note cleanly rather than leaving a visible gap. The piece stays honest; it just stays argued rather than demonstrated. |
 
-Nothing here is blocking anything else. Edition 02 is approved and ready
-independently.
+All four questions are complete. Edition 02 remains approved and ready
+independently. Nothing in this file authorizes publication.

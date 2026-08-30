@@ -31,9 +31,9 @@ are never edited in place:
 
 | Edition | Draft | Status |
 | --- | --- | --- |
-| 01 · AI Is Making Execution Cheap. Judgment Is Becoming More Valuable. | [`draft`](../drafts/curves-ahead-01-ai-execution-cheap.md) | Full pass done. Held at [four questions](../author-questions-2026-08-25.md) Q1–Q2. Not proofed. |
+| 01 · AI Is Making Execution Cheap. Judgment Is Becoming More Valuable. | [`draft`](../drafts/curves-ahead-01-ai-execution-cheap.md) | **Approved 30 Aug 2026.** Q1–Q2 integrated. Publish: [`--proof`](../reviews/curves-ahead-01-ai-execution-cheap--proof.md). Not published. |
 | 02 · Growth Without Losing the Plot | [`draft`](../drafts/curves-ahead-02-growth-without-losing-the-plot.md) | **Approved 25 Aug 2026.** Canonical: [`--light-2-edited`](../reviews/curves-ahead-02-growth-without-losing-the-plot--light-2-edited.md). Publish: [`--proof`](../reviews/curves-ahead-02-growth-without-losing-the-plot--proof.md). Not published. |
-| 03 · Why Newsletters Are Becoming Interesting Again | [`draft`](../drafts/curves-ahead-03-newsletters-interesting-again.md) | Full pass done, facts sourced. Held at [four questions](../author-questions-2026-08-25.md) Q3–Q4. Not proofed. |
+| 03 · Why Newsletters Are Becoming Interesting Again | [`draft`](../drafts/curves-ahead-03-newsletters-interesting-again.md) | **Approved 30 Aug 2026.** Q3–Q4 integrated and platform facts reverified. Publish: [`--proof`](../reviews/curves-ahead-03-newsletters-interesting-again--proof.md). Not published. |
 
 **Edition 02's three versions are all retained deliberately** — the draft, the
 voice-free light edit, and the approved restoration. The light edit is the

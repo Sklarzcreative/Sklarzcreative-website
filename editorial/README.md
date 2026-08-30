@@ -157,7 +157,7 @@ left in the text. The full list is §13 of the standard.
 | [`standards/CHANGELOG.md`](./standards/CHANGELOG.md) | **How to revise the standards.** Read before changing any of the above. |
 | [`curves-ahead/`](./curves-ahead/README.md) | The Curves Ahead publication source of truth, migrated from Drive — handoff, launch pack, backlog, and the agent's origin brief |
 | [`tools/cadence.py`](./tools/cadence.py) | Measures paragraph length, sentence length, first-person density and fragment stacks. Diagnostics, not a score. |
-| [`author-questions-2026-08-25.md`](./author-questions-2026-08-25.md) | **Open.** Four questions holding Editions 01 and 03 out of Final Proof. Two experiences, two positions — none of them writable by the agent. |
+| [`author-questions-2026-08-25.md`](./author-questions-2026-08-25.md) | **Completed 30 Aug 2026.** Four approved author answers integrated into Editions 01 and 03; Q1's approval supersedes the earlier skip instruction. |
 | `.claude/agents/editorial-director.md` | How the agent behaves mechanically |
 | `.claude/commands/editorial-director.md` | How it is invoked |
 
