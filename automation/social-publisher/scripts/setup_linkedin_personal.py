@@ -1,6 +1,9 @@
 from __future__ import annotations
 
+import argparse
 import getpass
+import subprocess
+import sys
 from pathlib import Path
 
 import requests
@@ -38,12 +41,59 @@ def _set_env_values(path: Path, updates: dict[str, str]) -> None:
     path.write_text("\n".join(output) + "\n", encoding="utf-8")
 
 
-def main() -> int:
+def _read_windows_clipboard() -> str:
+    if sys.platform != "win32":
+        raise RuntimeError("--clipboard is currently supported on Windows only")
+    result = subprocess.run(
+        ["powershell", "-NoProfile", "-Command", "Get-Clipboard -Raw"],
+        capture_output=True,
+        text=True,
+        timeout=15,
+        check=False,
+    )
+    if result.returncode != 0:
+        raise RuntimeError("Could not read the Windows clipboard")
+    token = result.stdout.strip()
+    if not token:
+        raise RuntimeError("Windows clipboard is empty")
+    return token
+
+
+def _clear_windows_clipboard() -> None:
+    if sys.platform != "win32":
+        return
+    subprocess.run(
+        ["powershell", "-NoProfile", "-Command", "Set-Clipboard -Value ''"],
+        capture_output=True,
+        text=True,
+        timeout=15,
+        check=False,
+    )
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description="Configure LinkedIn Personal credentials locally")
+    parser.add_argument(
+        "--clipboard",
+        action="store_true",
+        help="Read the LinkedIn access token from the Windows clipboard instead of hidden console input",
+    )
+    args = parser.parse_args(argv)
+
     print("Sklarz Social Publisher - LinkedIn Personal setup")
     print("The access token stays on this laptop and is written only to the ignored local .env file.")
     print("Publishing will remain disabled and dry-run after setup.\n")
 
-    token = getpass.getpass("Paste LinkedIn access token (input hidden): ").strip()
+    try:
+        if args.clipboard:
+            token = _read_windows_clipboard()
+            print("LinkedIn token read from Windows clipboard (value not displayed).")
+        else:
+            token = getpass.getpass("Paste LinkedIn access token (input hidden): ").strip()
+    except (RuntimeError, KeyboardInterrupt) as exc:
+        print(f"ERROR: {exc}")
+        return 2
+
     if not token:
         print("ERROR: No token entered.")
         return 2
@@ -81,8 +131,13 @@ def main() -> int:
         },
     )
 
+    if args.clipboard:
+        _clear_windows_clipboard()
+
     print(f"Verified LinkedIn member: {name}")
     print("LinkedIn Personal credential saved locally.")
+    if args.clipboard:
+        print("Windows clipboard cleared.")
     print("PUBLISHER_ENABLED=false")
     print("DRY_RUN=true")
     print("No post was created.")
