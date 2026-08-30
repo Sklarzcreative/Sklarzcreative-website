@@ -8,7 +8,7 @@ This subsystem replaces Make.com as the publishing execution layer while preserv
 
 Execution can happen in either of two free ways:
 
-1. **GitHub Actions** on a 15-minute schedule. This repository is public, so standard GitHub-hosted Actions are suitable for the scheduler.
+1. **GitHub Actions** on a 15-minute schedule.
 2. **An always-on spare laptop** running `scripts/run_loop.py`. This is the preferred option when tighter timing and full local control matter.
 
 Do not run both live schedulers at the same time. Pick one primary runner to avoid duplicate-publish races.
@@ -57,12 +57,15 @@ TikTok Direct Post requires an approved app and `video.publish` authorization; u
 
 ## One-time Google Sheet connection
 
-Use a Google Cloud service account for unattended execution.
+The preferred local Windows configuration is **keyless service-account impersonation**. Do not weaken an organization policy that blocks long-lived service-account keys.
 
-1. In the existing Sklarz Creative Google Cloud project, enable the Google Sheets API.
-2. Create a service account and JSON key.
+1. Enable Google Sheets API and IAM Service Account Credentials API in the existing Sklarz Creative Google Cloud project.
+2. Create the `sklarz-social-publisher` service account.
 3. Share the canonical spreadsheet with the service-account email as **Editor**.
-4. Store the entire JSON key as `GOOGLE_SERVICE_ACCOUNT_JSON` in the runner environment. Never commit it.
+4. Install Google Cloud CLI and authenticate the local Windows account.
+5. Run `scripts/setup_google_keyless.ps1` to grant the signed-in account `Service Account Token Creator` on the publisher service account and create local Application Default Credentials using impersonation.
+
+The Python queue adapter uses `GOOGLE_SERVICE_ACCOUNT_JSON` only when a usable JSON key is explicitly supplied. Otherwise it uses Application Default Credentials.
 
 Canonical spreadsheet ID:
 
@@ -76,15 +79,33 @@ Worksheet:
 
 The tokens stored inside Make.com are Make-managed connections and should not be assumed reusable here. Direct publishing requires credentials owned by Sklarz Creative.
 
-### LinkedIn
+### LinkedIn Personal
 
 Required:
 
 - `LINKEDIN_ACCESS_TOKEN`
 - `LINKEDIN_PERSON_URN`
-- `LINKEDIN_ORGANIZATION_URN`
 
-The publisher uses LinkedIn's current Posts API. Keep `LINKEDIN_VERSION` configurable so version upgrades do not require code changes.
+The LinkedIn Developer app must have **Share on LinkedIn** (`w_member_social`) and **Sign In with LinkedIn using OpenID Connect** (`openid`, `profile`, optionally `email`).
+
+For the simplest controlled local setup, generate a member access token from LinkedIn Developer Portal's OAuth 2.0 tools with `openid profile email w_member_social`, then run:
+
+```powershell
+.\.venv\Scripts\python.exe .\scripts\setup_linkedin_personal.py
+```
+
+Paste the token only into the hidden local prompt. The helper verifies it against `https://api.linkedin.com/v2/userinfo`, derives `urn:li:person:{sub}`, and writes both values only to the ignored local `.env`. It also forces `PUBLISHER_ENABLED=false` and `DRY_RUN=true` during credential setup.
+
+LinkedIn member access tokens are time-limited, so plan to reauthorize before expiry. Programmatic refresh tokens are not generally available to ordinary self-service Share on LinkedIn apps.
+
+### LinkedIn Company
+
+Required:
+
+- `LINKEDIN_ORGANIZATION_URN`
+- an access token with the organization permissions required by LinkedIn
+
+Company-page publishing is a separate access path and should remain held until organization permissions are confirmed.
 
 ### Facebook / Instagram
 
@@ -123,22 +144,20 @@ Required:
 
 ### Windows
 
+From the repository root, use the tested bootstrap:
+
+```powershell
+.\automation\social-publisher\START_HERE_WINDOWS.bat
+```
+
+Then configure Google keyless authentication and platform credentials one route at a time. Start in dry-run mode:
+
 ```powershell
 cd automation\social-publisher
-py -m venv .venv
-.\.venv\Scripts\Activate.ps1
-pip install -r requirements.txt
-Copy-Item .env.example .env
-notepad .env
+.\.venv\Scripts\python.exe -m social_publisher.main --dry-run
 ```
 
-Start in dry-run mode first:
-
-```powershell
-python -m social_publisher.main --dry-run
-```
-
-After credential tests pass, set:
+After one controlled platform test passes, set:
 
 ```text
 PUBLISHER_ENABLED=true
@@ -148,7 +167,7 @@ DRY_RUN=false
 Then run continuously:
 
 ```powershell
-python scripts\run_loop.py
+.\.venv\Scripts\python.exe scripts\run_loop.py
 ```
 
 Use Windows Task Scheduler to start that command at boot, with the laptop configured not to sleep while plugged in.
@@ -161,7 +180,6 @@ python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 cp .env.example .env
-nano .env
 python -m social_publisher.main --dry-run
 ```
 
@@ -177,27 +195,4 @@ A systemd service can be added after the controlled publishing test passes.
 
 The workflow is `.github/workflows/social-publisher.yml`.
 
-Required repository **Secrets** match the environment-variable names above. After all credentials are installed and a controlled post succeeds, create repository variable:
-
-`SOCIAL_PUBLISHER_ENABLED=true`
-
-Until that variable is present, scheduled GitHub runs will not publish.
-
-The manual workflow supports a safe dry run and an optional exact `Publish ID`.
-
-## Controlled cutover from Make.com
-
-1. Keep all rows on HOLD while credentials are configured.
-2. Leave Make.com exhausted/paused; do not upgrade merely for this migration.
-3. Configure Google Sheet credentials.
-4. Configure one platform first, preferably LinkedIn Personal.
-5. Queue one controlled test row 5-10 minutes ahead.
-6. Run dry-run and confirm only that exact row is eligible.
-7. Turn `PUBLISHER_ENABLED=true`, `DRY_RUN=false` on the chosen runner.
-8. Confirm the social post exists and the Sheet changes to `PUBLISHED`.
-9. Add Facebook, Threads, LinkedIn Company, Instagram, Bluesky, and Mastodon one at a time.
-10. Only after route validation, restore the normal content calendar.
-
-## Claude Code maintenance
-
-Claude Code can work directly in this repository to add platforms, improve tests, diagnose API failures, and change queue logic. The scheduler itself is GitHub Actions or the always-on laptop; Claude Code does not need to remain open for scheduled publishing.
+Do not enable GitHub-hosted publishing while the local laptop is the live primary runner. If GitHub Actions later becomes primary, store required credentials as repository Secrets and disable the laptop scheduler first.
