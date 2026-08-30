@@ -1,12 +1,29 @@
-# Client-confidential material. This repository is PUBLIC (serves sklarzcreative.com).
-# The Cannabiology manuscript, figure prompts, tracker data, generated artwork and
-# review packets are unpublished client IP and must never be committed here.
-# Canonical home for all of it is Google Drive; this directory is a working copy.
+# PRIMARY privacy boundary is CANNABIOLOGY_WORKSPACE, an absolute path OUTSIDE
+# this repository. These patterns are defence in depth only - never rely on them.
+#
+# This repository is PUBLIC (it serves sklarzcreative.com). The Cannabiology
+# manuscript, figure prompts, tracker data, generated artwork, OA reports and
+# review packets are unpublished client IP and must never be committed.
 client-data/
+canonical/
+context/
+runs/
+state/
+approved/
+holds/
+rejected/
+archive/
+*_third_draft.md
+*_polished_draft.md
+master-figure-tracker.csv
+prompt-library.csv
 
-# Local config may hold provider settings; keys come from the environment.
-pipeline/config.json
+# Local config may name providers; keys always come from the environment.
+config/pipeline.local.yaml
+.env
+.env.*
+!.env.example
 
-# Python
 __pycache__/
 *.pyc
+.pytest_cache/

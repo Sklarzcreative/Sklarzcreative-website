@@ -1,0 +1,47 @@
+# Cannabiology pipeline configuration.
+# Model IDs are configuration, never literals scattered through source.
+# Verify availability against current OpenAI docs; `doctor` reports reachability.
+
+models:
+  image_generate: gpt-image-2
+  image_edit: gpt-image-2
+  oa_routine: gpt-5.6-terra
+  oa_final: gpt-5.6-sol
+  prompt_authoring: gpt-5.6-terra
+
+image:
+  draft_size: 1536x1024
+  final_size: 2048x1152
+  draft_quality: medium
+  final_quality: high
+
+pipeline:
+  max_concurrent_figures: 2
+  max_generative_repairs: 4          # VECTOR_EDIT rounds do not count
+  auto_continue_after_pass: false    # human approval is always required
+  candidate_counts:                  # by risk tier
+    tier1: 2
+    tier2: 1
+    tier3: 1
+
+review:
+  # Deterministic gates. The model supplies findings; code computes the verdict.
+  blocker_severities: [BLOCKER]
+  major_severities: [MAJOR]
+  max_major_for_ready: 0
+  min_confidence_for_auto_action: 0.5
+  final_review_requires_composite: true
+
+tiers:
+  # Risk tier is independent of production route.
+  tier1:
+    - CH01-IMG-01
+    - CH02-IMG-02
+    - CH03-IMG-03
+    - CH04-IMG-05
+  tier3: []
+  default: tier2
+
+canonical:
+  expected_figures: 51
+  expected_assets: 52

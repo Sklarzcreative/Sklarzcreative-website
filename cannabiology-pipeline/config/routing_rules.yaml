@@ -1,0 +1,61 @@
+# Routing rules. Auditable, ordered, and escalation-only.
+#
+# A rule may only move a figure to a STRICTER route, never a looser one.
+# Strictness: GENERATE < HYBRID < VECTOR_BUILD < DATA_DRIVEN < HUMAN_BUILD < HOLD
+#
+# Source of truth is the canonical tracker. Rules read three fields:
+#   Current Status            - explicit production directive from the project
+#   Scientific Accuracy Notes - scientific constraints
+#   Labels to Add Manually    - presence implies a deterministic overlay layer
+
+strictness: [GENERATE, HYBRID, VECTOR_BUILD, DATA_DRIVEN, HUMAN_BUILD, HOLD]
+
+# 1. Explicit directives in Current Status. Highest authority; sets confidence=explicit.
+explicit_status:
+  - match: "^HOLD"
+    route: HOLD
+    reason: "Tracker marks this figure HOLD pending an unresolved decision."
+  - match: "DATA-DRIVEN"
+    route: DATA_DRIVEN
+    reason: "Tracker requires verified source data."
+  - match: "VECTOR-BUILD"
+    route: VECTOR_BUILD
+    reason: "Tracker requires deterministic vector construction."
+  - match: "^GENERATE"
+    route: GENERATE
+    reason: "Tracker approves generated base art."
+  - match: "GENERATED TEST|GENERATED STYLE|PRODUCTION-READY BASE ART"
+    route: GENERATE
+    reason: "Tracker records prior generated base art for this figure."
+
+# 2. Scientific-note escalations. Apply to every figure regardless of directive.
+scientific_escalation:
+  - match: "authoritative chemical drawing|exact structures must be added"
+    route: VECTOR_BUILD
+    reason: "Exact chemical structures must come from authoritative sources, not generation."
+  - match: "rebuild from cited|real GWAS|true data curve|checked against authoritative|verified spectrum|verified datasets"
+    route: DATA_DRIVEN
+    reason: "Figure carries empirical content requiring a verified source."
+  - match: "regulatory|legal status|clinical/regulatory"
+    route: DATA_DRIVEN
+    reason: "Regulatory or legal content requires current authoritative data and an as_of date."
+
+# 3. Visual-type escalations for figures with no explicit directive.
+visual_type_escalation:
+  - match: "karyotype|cytogenetic|chemistry|molecular-comparison|pathway topology"
+    route: VECTOR_BUILD
+    reason: "Exact scientific structure is the content of this figure."
+  - match: "data-visualization|graph base|visualization base"
+    route: DATA_DRIVEN
+    reason: "Figure is a data visualisation base."
+
+# 4. Manual labels imply a deterministic overlay layer: GENERATE becomes HYBRID.
+hybrid_upgrade:
+  when_labels_present: true
+  reason: "Figure requires manually applied labels, so base art is composited with a vector layer."
+
+# 5. Fallback for anything still unrouted after the rules above.
+fallback:
+  route: HYBRID
+  reason: "No explicit directive; derived from figure metadata."
+  needs_route_confirmation: true
