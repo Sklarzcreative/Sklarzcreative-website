@@ -19,6 +19,7 @@ what the Editorial Director reads.
 | File | What it is |
 | --- | --- |
 | [`00-master-handoff.md`](./00-master-handoff.md) | **Start here.** Brand, positioning, pillars, departments, platform architecture, workflow, rollout, the first six editions. |
+| [`01-edition-01-launch-preview-package-2026-08-30.md`](./01-edition-01-launch-preview-package-2026-08-30.md) | Final review package for the Edition 01 LinkedIn Newsletter and Substack launch. Copy and platform fields only; not scheduled or published. |
 | [`04-launch-distribution-pack.md`](./04-launch-distribution-pack.md) | Publication profile, launch copy, per-platform derivatives, six-week rollout, Edition 02 migration notes |
 | [`05-editorial-backlog-community-matrix.md`](./05-editorial-backlog-community-matrix.md) | 50 scored article ideas, community publishing rules, the adaptation ladder |
 | [`06-editorial-director-agent-prompt.md`](./06-editorial-director-agent-prompt.md) | The original brief for the Editorial Director. Kept as the origin document. |
