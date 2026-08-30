@@ -8,9 +8,10 @@ from datetime import datetime
 from typing import Any, Iterable
 from zoneinfo import ZoneInfo
 
+import google.auth
 import gspread
 from dotenv import load_dotenv
-from google.auth.exceptions import MalformedError
+from google.auth.exceptions import DefaultCredentialsError, MalformedError
 from google.oauth2.service_account import Credentials
 from gspread.utils import rowcol_to_a1
 
@@ -18,7 +19,6 @@ load_dotenv()
 
 SHEETS_SCOPES = [
     "https://www.googleapis.com/auth/spreadsheets",
-    "https://www.googleapis.com/auth/drive.file",
 ]
 
 
@@ -97,6 +97,43 @@ class QueueRow:
         return self.get("Post Type")
 
 
+def _google_credentials(settings: Settings):
+    """Return Google credentials without requiring a long-lived key.
+
+    Local machines should use Application Default Credentials (ADC), ideally an
+    ADC file created with service-account impersonation. A raw service-account
+    JSON value is retained only as a compatibility fallback for environments
+    where key creation is explicitly permitted.
+    """
+    raw = settings.google_service_account_json.strip()
+    if raw and raw != "{}":
+        try:
+            service_info = json.loads(raw)
+        except json.JSONDecodeError as exc:
+            raise ConfigurationError(
+                "GOOGLE_SERVICE_ACCOUNT_JSON is not valid JSON"
+            ) from exc
+
+        try:
+            return Credentials.from_service_account_info(
+                service_info, scopes=SHEETS_SCOPES
+            )
+        except (MalformedError, ValueError) as exc:
+            raise ConfigurationError(
+                f"GOOGLE_SERVICE_ACCOUNT_JSON is not a usable service-account key: {exc}"
+            ) from exc
+
+    try:
+        credentials, _ = google.auth.default(scopes=SHEETS_SCOPES)
+        return credentials
+    except DefaultCredentialsError as exc:
+        raise ConfigurationError(
+            "Google credentials are not configured. For the local publisher, "
+            "create Application Default Credentials with service-account "
+            "impersonation instead of a service-account key."
+        ) from exc
+
+
 class GoogleSheetQueue:
     """Thin queue adapter for the existing MAKE - Publish Queue worksheet.
 
@@ -104,21 +141,7 @@ class GoogleSheetQueue:
     """
 
     def __init__(self, settings: Settings):
-        if not settings.google_service_account_json:
-            raise ConfigurationError("GOOGLE_SERVICE_ACCOUNT_JSON is required")
-        try:
-            service_info = json.loads(settings.google_service_account_json)
-        except json.JSONDecodeError as exc:
-            raise ConfigurationError("GOOGLE_SERVICE_ACCOUNT_JSON is not valid JSON") from exc
-
-        try:
-            credentials = Credentials.from_service_account_info(
-                service_info, scopes=SHEETS_SCOPES
-            )
-        except (MalformedError, ValueError) as exc:
-            raise ConfigurationError(
-                f"GOOGLE_SERVICE_ACCOUNT_JSON is not a usable service-account key: {exc}"
-            ) from exc
+        credentials = _google_credentials(settings)
         client = gspread.authorize(credentials)
         spreadsheet = client.open_by_key(settings.sheet_id)
         self.ws = spreadsheet.worksheet(settings.worksheet_name)
