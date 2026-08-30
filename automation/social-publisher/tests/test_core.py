@@ -8,6 +8,7 @@ from social_publisher.core import (
     GoogleSheetQueue,
     QueueRow,
     Settings,
+    _google_credentials,
     parse_queue_datetime,
 )
 
@@ -53,19 +54,32 @@ def _settings(service_account_json: str) -> Settings:
 @pytest.mark.parametrize(
     "service_account_json",
     [
-        "",
-        "{}",
         "not json",
         '{"client_email": "a@b.iam.gserviceaccount.com"}',
     ],
 )
-def test_unusable_service_account_raises_configuration_error(service_account_json):
-    """A placeholder or partial key must surface as ConfigurationError.
-
-    `.env.example` ships GOOGLE_SERVICE_ACCOUNT_JSON={}, so this is the state of
-    every machine before the Sheets credential is installed. main.py turns
-    ConfigurationError into a readable message and exit code 2; anything else
-    escapes as an unhandled traceback.
-    """
+def test_unusable_explicit_service_account_raises_configuration_error(
+    service_account_json,
+):
     with pytest.raises(ConfigurationError):
-        GoogleSheetQueue(_settings(service_account_json))
+        _google_credentials(_settings(service_account_json))
+
+
+def test_placeholder_uses_application_default_credentials(monkeypatch):
+    marker = object()
+
+    def fake_default(*, scopes):
+        assert scopes == ["https://www.googleapis.com/auth/spreadsheets"]
+        return marker, "project-id"
+
+    monkeypatch.setattr("social_publisher.core.google.auth.default", fake_default)
+    assert _google_credentials(_settings("{}")) is marker
+
+
+def test_empty_value_uses_application_default_credentials(monkeypatch):
+    marker = object()
+    monkeypatch.setattr(
+        "social_publisher.core.google.auth.default",
+        lambda *, scopes: (marker, "project-id"),
+    )
+    assert _google_credentials(_settings("")) is marker
