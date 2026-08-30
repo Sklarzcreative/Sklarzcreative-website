@@ -4,3 +4,4 @@ python-dateutil>=2.9,<3
 python-dotenv>=1.0,<2
 requests>=2.32,<3
 pytest>=8.3,<9
+tzdata>=2025.2; platform_system == "Windows"
