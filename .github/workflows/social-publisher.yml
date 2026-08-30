@@ -38,6 +38,8 @@ jobs:
     defaults:
       run:
         working-directory: automation/social-publisher
+    env:
+      PYTHONPATH: ${{ github.workspace }}/automation/social-publisher
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -56,6 +58,8 @@ jobs:
     defaults:
       run:
         working-directory: automation/social-publisher
+    env:
+      PYTHONPATH: ${{ github.workspace }}/automation/social-publisher
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
