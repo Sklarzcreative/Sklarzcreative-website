@@ -12,6 +12,17 @@
 credentials*
 secrets*
 
+# A downloaded Google service-account key is named like
+# sklarz-creative-1a2b3c4d5e6f.json, which matches none of the patterns above.
+# No JSON file is tracked under the publisher, so ignore the lot.
+automation/social-publisher/*.json
+
+# Python local environment
+.venv/
+venv/
+__pycache__/
+*.pyc
+
 # OS / editor noise
 .DS_Store
 Thumbs.db

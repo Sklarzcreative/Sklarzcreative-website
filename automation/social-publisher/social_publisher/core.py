@@ -10,6 +10,7 @@ from zoneinfo import ZoneInfo
 
 import gspread
 from dotenv import load_dotenv
+from google.auth.exceptions import MalformedError
 from google.oauth2.service_account import Credentials
 from gspread.utils import rowcol_to_a1
 
@@ -110,9 +111,14 @@ class GoogleSheetQueue:
         except json.JSONDecodeError as exc:
             raise ConfigurationError("GOOGLE_SERVICE_ACCOUNT_JSON is not valid JSON") from exc
 
-        credentials = Credentials.from_service_account_info(
-            service_info, scopes=SHEETS_SCOPES
-        )
+        try:
+            credentials = Credentials.from_service_account_info(
+                service_info, scopes=SHEETS_SCOPES
+            )
+        except (MalformedError, ValueError) as exc:
+            raise ConfigurationError(
+                f"GOOGLE_SERVICE_ACCOUNT_JSON is not a usable service-account key: {exc}"
+            ) from exc
         client = gspread.authorize(credentials)
         spreadsheet = client.open_by_key(settings.sheet_id)
         self.ws = spreadsheet.worksheet(settings.worksheet_name)
