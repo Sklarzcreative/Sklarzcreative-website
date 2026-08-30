@@ -1,0 +1,32 @@
+# Chemical source registry.
+#
+# The pipeline draws a structure ONLY from an entry here. Nothing is drawn from
+# a model's memory of what a molecule looks like.
+#
+# The real registry lives in your private workspace, never in this public repo:
+#   $CANNABIOLOGY_WORKSPACE/canonical/chem_sources.yaml
+#
+# Populate it from an authoritative source. With network access:
+#   python -m cannabiology fetch-chem cannabidiol --cid 644019
+#
+# Then a human checks the rendered structure against the source and sets
+# verified: true. Until then the builder refuses to draw it.
+#
+# molecular_formula is recorded FROM THE SOURCE and cross-checked against the
+# formula RDKit computes from the SMILES. A transcription slip changes the
+# formula and is caught before anything renders.
+
+compounds: {}
+
+# Example of the required shape (values below are placeholders, not real data):
+#
+# compounds:
+#   cannabidiol:
+#     display_name: "Cannabidiol (CBD)"
+#     smiles: "<canonical SMILES from the source>"
+#     molecular_formula: "<formula from the source>"
+#     source: PubChem
+#     source_id: "CID 644019"
+#     retrieved: "2026-08-27"
+#     verified: false          # a human sets this true after checking
+#     verified_by: ""

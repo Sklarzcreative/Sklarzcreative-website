@@ -4,7 +4,7 @@ import json
 import sys
 
 from . import (canonical, config, doctor as doc, package, reconcile, routing,
-               runner, state as st, workspace)
+               runner, state as st, vectorbuild, workspace)
 
 
 def _load():
@@ -159,6 +159,68 @@ def cmd_batch(a):
     return 0
 
 
+def cmd_build(a):
+    """Deterministic build for VECTOR_BUILD figures. Never calls an image model."""
+    figs, dec = _load()
+    fig = _resolve(figs, a.figure_id)
+    store = st.Store()
+    rc = 0
+    for asset in fig.assets:
+        print(f"\n{asset['asset_id']}  {fig.title}")
+        try:
+            with st.figure_lock(asset["asset_id"]):
+                vectorbuild.run_asset(fig, asset, dec[fig.figure_id], store)
+        except (vectorbuild.BuildSpecMissing,) as e:
+            print(f"  SPEC REQUIRED: {e}")
+            rc = 2
+        except Exception as e:
+            print(f"  BUILD FAILED: {type(e).__name__}: {e}")
+            rc = 2
+        finally:
+            store.save()
+    return rc
+
+
+def cmd_fetch_chem(a):
+    """Fetch a structure from PubChem into the verified registry (needs network)."""
+    import json as _json
+    import urllib.request
+    import urllib.error
+    import yaml as _yaml
+    from datetime import date
+
+    url = (f"https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/{a.cid}"
+           f"/property/CanonicalSMILES,MolecularFormula,IUPACName/JSON")
+    try:
+        with urllib.request.urlopen(url, timeout=30) as r:
+            data = _json.loads(r.read().decode())
+    except Exception as e:
+        print(f"Could not reach PubChem: {type(e).__name__}: {e}\n"
+              "Run this in an environment with outbound access to "
+              "pubchem.ncbi.nlm.nih.gov, or add the entry by hand.")
+        return 2
+    props = data["PropertyTable"]["Properties"][0]
+    path = vectorbuild.chem_registry_path()
+    reg = _yaml.safe_load(path.read_text()) if path.exists() else {"compounds": {}}
+    reg.setdefault("compounds", {})[a.name] = {
+        "display_name": a.display_name or a.name,
+        "smiles": props.get("CanonicalSMILES") or props.get("SMILES"),
+        "molecular_formula": props["MolecularFormula"],
+        "iupac_name": props.get("IUPACName", ""),
+        "source": "PubChem",
+        "source_id": f"CID {a.cid}",
+        "retrieved": date.today().isoformat(),
+        "verified": False,
+        "verified_by": "",
+    }
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(_yaml.safe_dump(reg, sort_keys=True))
+    print(f"Added '{a.name}' ({props['MolecularFormula']}, CID {a.cid}) to {path}\n"
+          "It will NOT render until a human checks it against the source and sets "
+          "verified: true.")
+    return 0
+
+
 def cmd_package(a):
     figs, dec = _load()
     store = st.Store()
@@ -224,6 +286,14 @@ def build_parser():
     b = sub.add_parser("batch", help="run every figure on one route")
     b.add_argument("--route", required=True); b.add_argument("--limit", type=int)
     gen_flags(b); b.set_defaults(fn=cmd_batch)
+
+    bd = sub.add_parser("build", help="deterministic build (VECTOR_BUILD route)")
+    bd.add_argument("figure_id"); bd.set_defaults(fn=cmd_build)
+
+    fc = sub.add_parser("fetch-chem", help="add a structure from PubChem to the registry")
+    fc.add_argument("name"); fc.add_argument("--cid", required=True)
+    fc.add_argument("--display-name", default="")
+    fc.set_defaults(fn=cmd_fetch_chem)
 
     pk = sub.add_parser("package", help="build the human review packet")
     pk.add_argument("figure_id", nargs="?"); pk.add_argument("--batch", default="001")

@@ -1,0 +1,9 @@
+# Core
+PyYAML>=6.0
+
+# Deterministic chemical structure rendering (VECTOR_BUILD route).
+# Required only to build chemistry figures; the rest of the pipeline runs without it.
+rdkit>=2024.3
+
+# Optional: uses the library validator instead of the built-in fallback.
+# jsonschema>=4.0

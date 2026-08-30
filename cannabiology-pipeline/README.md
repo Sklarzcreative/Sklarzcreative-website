@@ -29,10 +29,10 @@ python3 -m cannabiology audit
 python3 -m cannabiology run CH01-IMG-01 --dry-run
 ```
 
-Python 3.11+, PyYAML. `jsonschema` is used if present; a built-in validator
-covers it otherwise. No other dependencies.
+Python 3.11+ and PyYAML. RDKit is needed only to build chemistry figures.
+`jsonschema` is used if present; a built-in validator covers it otherwise.
 
-## The four guarantees
+## The five guarantees
 
 **1. Routing gate.** Every figure gets exactly one of six routes before anything
 is generated. `VECTOR_BUILD`, `DATA_DRIVEN`, `HUMAN_BUILD` and `HOLD` can never
@@ -45,13 +45,19 @@ remain. Fabricated data or generated scientific text is `REJECTED` outright,
 because once invented values are baked into a composition, editing is not a
 reliable fix.
 
-**3. Science-bearing text is vector, not pixels.** Generated base art carries no
+**3. Exact structures are built, not generated.** Chemistry renders from a cited
+source via RDKit, with the molecular formula cross-checked against that source;
+mechanism diagrams build from a human-confirmed topology spec. A compound with
+no citation, or a spec nobody confirmed, refuses to draw. See
+[Building figures deterministically](docs/05-vector-build.md).
+
+**4. Science-bearing text is vector, not pixels.** Generated base art carries no
 authoritative text. Labels, leaders, panel letters, scale bars and captions are
 built as SVG and composited over the art. A spelling error costs an SVG rewrite,
 never a regeneration — so `VECTOR_EDIT` rounds don't count against the repair
 cap.
 
-**4. Human approval is mandatory.** The terminal automated state is
+**5. Human approval is mandatory.** The terminal automated state is
 `PENDING_HUMAN_APPROVAL`. `HUMAN_APPROVED` is reachable only through
 `cannabiology approve`. Silence is not approval.
 
@@ -77,4 +83,5 @@ also carries a manual-label list, which makes it `HYBRID`. 19 of the 32 are
 - [The routing gate](docs/02-routing.md)
 - [Review, verdicts and repair](docs/03-review-and-repair.md)
 - [Operations](docs/04-operations.md)
+- [Building figures deterministically](docs/05-vector-build.md)
 - [Permanent project instructions](CLAUDE.md)
