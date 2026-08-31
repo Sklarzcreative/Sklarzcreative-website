@@ -69,3 +69,18 @@ def test_unusable_service_account_raises_configuration_error(service_account_jso
     """
     with pytest.raises(ConfigurationError):
         GoogleSheetQueue(_settings(service_account_json))
+
+
+@pytest.mark.parametrize(
+    "raw,expected",
+    [
+        ("@sklarzcreative.bsky.social", "sklarzcreative.bsky.social"),
+        ("sklarzcreative.bsky.social", "sklarzcreative.bsky.social"),
+        ("  @sklarzcreative.bsky.social  ", "sklarzcreative.bsky.social"),
+    ],
+)
+def test_bluesky_handle_accepts_the_at_prefix(raw, expected):
+    """Bluesky displays @handle but its API rejects the @; accept both forms."""
+    from social_publisher.platforms import normalize_bluesky_handle
+
+    assert normalize_bluesky_handle(raw) == expected

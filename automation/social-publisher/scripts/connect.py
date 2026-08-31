@@ -82,7 +82,7 @@ def _api_error(response: requests.Response) -> str:
 
 def check_bluesky() -> Result:
     result = Result("Bluesky")
-    handle = _env("BLUESKY_HANDLE")
+    handle = _env("BLUESKY_HANDLE").lstrip("@")
     password = _env("BLUESKY_APP_PASSWORD")
     pds = os.getenv("BLUESKY_PDS", "https://bsky.social").rstrip("/")
 
@@ -92,7 +92,7 @@ def check_bluesky() -> Result:
         result.note("-> App passwords -> Add App Password. Takes about two minutes.")
         return result
 
-    if not password.count("-") == 3:
+    if password.count("-") != 3:
         result.note("That does not look like an app password (format: xxxx-xxxx-xxxx-xxxx).")
         result.note("Use an app password, never your real account password.")
 

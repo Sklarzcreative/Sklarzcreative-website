@@ -149,7 +149,7 @@ def publish_threads(row: QueueRow) -> str:
 
 
 def publish_bluesky(row: QueueRow) -> str:
-    handle = required_env("BLUESKY_HANDLE")
+    handle = normalize_bluesky_handle(required_env("BLUESKY_HANDLE"))
     password = required_env("BLUESKY_APP_PASSWORD")
     pds = os.getenv("BLUESKY_PDS", "https://bsky.social").rstrip("/")
 
@@ -197,6 +197,16 @@ def publish_mastodon(row: QueueRow) -> str:
     )
     ensure_ok(response, {200})
     return response.json().get("url") or f"mastodon:{response.json().get('id', 'published')}"
+
+
+def normalize_bluesky_handle(handle: str) -> str:
+    """Accept the handle as people naturally write it.
+
+    Bluesky shows handles as @name.bsky.social, but its API expects the bare
+    form. Stripping the @ here keeps a copy-paste from the profile page working
+    and keeps the post URL well-formed.
+    """
+    return handle.strip().lstrip("@")
 
 
 def required_env(name: str) -> str:
