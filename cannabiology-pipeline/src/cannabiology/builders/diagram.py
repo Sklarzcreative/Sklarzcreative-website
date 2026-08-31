@@ -24,7 +24,8 @@ class UnconfirmedSpec(DiagramError):
     """Raised when no human-confirmed spec exists. Always fail closed."""
 
 
-def load_spec(path):
+def load_spec(path, allow_unconfirmed=False):
+    """Load a diagram spec. Unconfirmed specs load ONLY for preview rendering."""
     p = Path(path)
     if not p.exists():
         raise UnconfirmedSpec(
@@ -33,7 +34,7 @@ def load_spec(path):
             "inferred. Write the spec, confirm it against the manuscript, and set "
             "confirmed: true.")
     spec = yaml.safe_load(p.read_text()) or {}
-    if spec.get("confirmed") is not True:
+    if spec.get("confirmed") is not True and not allow_unconfirmed:
         raise UnconfirmedSpec(
             f"Spec {p.name} is not marked confirmed. A human must check the "
             "topology against the manuscript and set confirmed: true.")
@@ -62,8 +63,13 @@ def _layout(nodes, width, height, pad=48, node_w=190, node_h=64):
     return placed
 
 
-def build(spec, width=1200, height=720):
-    """Render the confirmed spec to SVG. Deterministic for a given spec."""
+def build(spec, width=1200, height=720, draft=False):
+    """Render the spec to SVG. Deterministic for a given spec.
+
+    draft=True renders an unconfirmed spec for review, with an unmissable
+    banner. A topology cannot be checked without being seen, but a draft must
+    never be mistaken for an approved figure.
+    """
     nodes, edges = spec["nodes"], spec.get("edges", [])
     placed = _layout(nodes, width, height)
 
@@ -113,9 +119,17 @@ def build(spec, width=1200, height=720):
                      f'font-weight="{600 if emph else 400}" fill="{PALETTE["ink"]}">'
                      f'{escape(line)}</text>')
 
+    confirmed = spec.get("confirmed") is True
     p.append(f'<text x="24" y="{height - 16}" font-family="{FONT}" font-size="11" '
-             f'fill="{PALETTE["muted"]}">Built from confirmed spec: '
+             f'fill="{PALETTE["muted"]}">'
+             f'{"Built from confirmed spec" if confirmed else "DRAFT - topology NOT confirmed"}: '
              f'{escape(str(spec["source"]))}</text>')
+    if draft or not confirmed:
+        p.append(f'<rect x="0" y="0" width="{width}" height="34" fill="#9b2f2c"/>')
+        p.append(f'<text x="{width / 2}" y="23" text-anchor="middle" '
+                 f'font-family="{FONT}" font-size="14" font-weight="700" '
+                 f'letter-spacing="0.08em" fill="#ffffff">'
+                 f'DRAFT FOR REVIEW - TOPOLOGY NOT YET CONFIRMED</text>')
     p.append("</svg>")
     return "\n".join(p)
 

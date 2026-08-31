@@ -181,6 +181,22 @@ def cmd_build(a):
     return rc
 
 
+def cmd_preview_diagram(a):
+    """Render a diagram spec for review, confirmed or not. Never approves it."""
+    from .builders import diagram
+    from . import workspace
+    path = workspace.resolve() / "canonical" / "diagram_specs" / f"{a.figure_id}.yaml"
+    spec = diagram.load_spec(path, allow_unconfirmed=True)
+    svg = diagram.build(spec, int(a.width), int(a.height), draft=True)
+    out = workspace.resolve() / "runs" / "_previews" / f"{a.figure_id}_preview.svg"
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(svg)
+    status = "CONFIRMED" if spec.get("confirmed") else "NOT CONFIRMED"
+    print(f"preview: {out}\n  spec is {status} - {len(spec['nodes'])} nodes, "
+          f"{len(spec.get('edges', []))} edges\n  source: {spec['source']}")
+    return 0
+
+
 def cmd_fetch_chem(a):
     """Fetch a structure from PubChem into the verified registry (needs network)."""
     import json as _json
@@ -289,6 +305,10 @@ def build_parser():
 
     bd = sub.add_parser("build", help="deterministic build (VECTOR_BUILD route)")
     bd.add_argument("figure_id"); bd.set_defaults(fn=cmd_build)
+
+    pv = sub.add_parser("preview-diagram", help="render a spec for review (draft banner)")
+    pv.add_argument("figure_id"); pv.add_argument("--width", default=1400)
+    pv.add_argument("--height", default=800); pv.set_defaults(fn=cmd_preview_diagram)
 
     fc = sub.add_parser("fetch-chem", help="add a structure from PubChem to the registry")
     fc.add_argument("name"); fc.add_argument("--cid", required=True)
