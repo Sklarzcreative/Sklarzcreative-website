@@ -89,6 +89,14 @@ class QueueRow:
         return self.get("Asset URL")
 
     @property
+    def alt_text(self) -> str:
+        return self.get("Alt Text")
+
+    @property
+    def title(self) -> str:
+        return self.get("Title")
+
+    @property
     def canonical_url(self) -> str:
         return self.get("Canonical URL")
 
