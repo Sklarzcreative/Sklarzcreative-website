@@ -24,9 +24,10 @@ import os
 import sys
 
 import requests
-from dotenv import load_dotenv
+from dotenv import find_dotenv, load_dotenv
 
-load_dotenv()
+ENV_PATH = find_dotenv(usecwd=True)
+load_dotenv(ENV_PATH)
 
 TIMEOUT = 30
 
@@ -420,6 +421,15 @@ def main(argv: list[str]) -> int:
     print()
     print("Sklarz Creative publisher - credential check (read-only, posts nothing)")
     print("=" * 72)
+
+    # "Where is .env?" is the most common first question, so always answer it.
+    if ENV_PATH:
+        print(f"\nReading credentials from: {os.path.abspath(ENV_PATH)}")
+    else:
+        here = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
+        print("\nNo .env file found. Create one with:")
+        print(f"    copy .env.example .env      (run it inside {here})")
+        print("Then open it in Notepad and fill in your credentials.")
 
     results = []
     for check in checks:
