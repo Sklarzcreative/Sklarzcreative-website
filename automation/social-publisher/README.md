@@ -86,6 +86,11 @@ Required:
 - `LINKEDIN_ACCESS_TOKEN`
 - `LINKEDIN_PERSON_URN`
 
+LinkedIn queue rows must also include a public HTTPS `Asset URL` pointing to a
+JPG, PNG, or GIF. The publisher uploads that image through LinkedIn's Images API
+and includes `Alt Text` from the queue when present. It will not fall back to a
+text-only LinkedIn post when the asset is missing or invalid.
+
 The LinkedIn Developer app must have **Share on LinkedIn** (`w_member_social`) and **Sign In with LinkedIn using OpenID Connect** (`openid`, `profile`, optionally `email`).
 
 For the simplest controlled local setup, generate a member access token from LinkedIn Developer Portal's OAuth 2.0 tools with `openid profile email w_member_social`, then run:
