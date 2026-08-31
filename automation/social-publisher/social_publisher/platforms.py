@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import os
+import time
 from datetime import datetime, timezone
+from urllib.parse import quote
 from urllib.parse import urlparse
 
 import requests
@@ -37,6 +39,34 @@ def publish(row: QueueRow) -> str:
 def publish_linkedin(row: QueueRow, author_urn: str) -> str:
     token = required_env("LINKEDIN_ACCESS_TOKEN")
     version = os.getenv("LINKEDIN_VERSION", "202608")
+    if not row.asset_url:
+        raise ConfigurationError(
+            "LinkedIn publishing requires Asset URL so the post cannot silently publish without its image"
+        )
+
+    image_urn = upload_linkedin_image(
+        asset_url=row.asset_url,
+        owner_urn=author_urn,
+        token=token,
+        version=version,
+    )
+    media: dict[str, str] = {"id": image_urn}
+    if row.alt_text:
+        media["altText"] = row.alt_text[:4086]
+
+    payload = {
+        "author": author_urn,
+        "commentary": row.copy,
+        "visibility": "PUBLIC",
+        "distribution": {
+            "feedDistribution": "MAIN_FEED",
+            "targetEntities": [],
+            "thirdPartyDistributionChannels": [],
+        },
+        "content": {"media": media},
+        "lifecycleState": "PUBLISHED",
+        "isReshareDisabledByAuthor": False,
+    }
     response = requests.post(
         "https://api.linkedin.com/rest/posts",
         headers={
@@ -45,18 +75,7 @@ def publish_linkedin(row: QueueRow, author_urn: str) -> str:
             "X-Restli-Protocol-Version": "2.0.0",
             "Content-Type": "application/json",
         },
-        json={
-            "author": author_urn,
-            "commentary": row.copy,
-            "visibility": "PUBLIC",
-            "distribution": {
-                "feedDistribution": "MAIN_FEED",
-                "targetEntities": [],
-                "thirdPartyDistributionChannels": [],
-            },
-            "lifecycleState": "PUBLISHED",
-            "isReshareDisabledByAuthor": False,
-        },
+        json=payload,
         timeout=TIMEOUT,
     )
     ensure_ok(response, {200, 201})
@@ -64,6 +83,83 @@ def publish_linkedin(row: QueueRow, author_urn: str) -> str:
     if post_id:
         return f"https://www.linkedin.com/feed/update/{post_id}"
     return "linkedin:published"
+
+
+def upload_linkedin_image(
+    *, asset_url: str, owner_urn: str, token: str, version: str
+) -> str:
+    parsed = urlparse(asset_url)
+    if parsed.scheme != "https" or not parsed.netloc:
+        raise ConfigurationError("LinkedIn Asset URL must be a public HTTPS URL")
+
+    source = requests.get(asset_url, timeout=TIMEOUT)
+    ensure_ok(source, {200})
+    content_type = source.headers.get("Content-Type", "").split(";", 1)[0].lower()
+    suffix = parsed.path.lower()
+    allowed_content_types = {"image/jpeg", "image/png", "image/gif"}
+    allowed_suffix = suffix.endswith((".jpg", ".jpeg", ".png", ".gif"))
+    if content_type not in allowed_content_types and not allowed_suffix:
+        raise ConfigurationError("LinkedIn Asset URL must resolve to a JPG, PNG, or GIF image")
+    if not source.content:
+        raise ConfigurationError("LinkedIn Asset URL returned an empty image")
+
+    api_headers = {
+        "Authorization": f"Bearer {token}",
+        "LinkedIn-Version": version,
+        "X-Restli-Protocol-Version": "2.0.0",
+        "Content-Type": "application/json",
+    }
+    initialized = requests.post(
+        "https://api.linkedin.com/rest/images?action=initializeUpload",
+        headers=api_headers,
+        json={"initializeUploadRequest": {"owner": owner_urn}},
+        timeout=TIMEOUT,
+    )
+    ensure_ok(initialized, {200})
+    try:
+        upload = initialized.json()["value"]
+        upload_url = upload["uploadUrl"]
+        image_urn = upload["image"]
+    except (KeyError, TypeError, ValueError) as exc:
+        raise RuntimeError("LinkedIn image initialization returned an incomplete response") from exc
+
+    uploaded = requests.put(
+        upload_url,
+        data=source.content,
+        headers={"Content-Type": content_type or "application/octet-stream"},
+        timeout=TIMEOUT,
+    )
+    ensure_ok(uploaded, {200, 201})
+    _wait_for_linkedin_image(image_urn, token, version)
+    return str(image_urn)
+
+
+def _wait_for_linkedin_image(image_urn: str, token: str, version: str) -> None:
+    """Wait briefly when the token can read image status.
+
+    Member tokens with only w_member_social can be write-only for the versioned
+    Images API. A 403 therefore means status polling is unavailable, not that the
+    completed upload failed. The subsequent Posts API call remains authoritative.
+    """
+    status_url = f"https://api.linkedin.com/rest/images/{quote(image_urn, safe='')}"
+    headers = {
+        "Authorization": f"Bearer {token}",
+        "LinkedIn-Version": version,
+        "X-Restli-Protocol-Version": "2.0.0",
+    }
+    for attempt in range(10):
+        response = requests.get(status_url, headers=headers, timeout=TIMEOUT)
+        if response.status_code == 403:
+            return
+        ensure_ok(response, {200})
+        status = str(response.json().get("status", "")).upper()
+        if status == "AVAILABLE":
+            return
+        if status == "PROCESSING_FAILED":
+            raise RuntimeError("LinkedIn image processing failed")
+        if attempt < 9:
+            time.sleep(1)
+    raise RuntimeError("LinkedIn image did not become available before timeout")
 
 
 def publish_facebook(row: QueueRow) -> str:
