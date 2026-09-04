@@ -31,6 +31,26 @@ GENERATE < HYBRID < VECTOR_BUILD < DATA_DRIVEN < HUMAN_BUILD < HOLD
 
 A **derived** route can never generate until a human passes `--confirm-route`.
 
+## Overriding a route
+
+The canonical tracker is read-only to automation, so a deliberate reroute is
+recorded in `canonical/route_overrides.yaml` in the private workspace:
+
+```yaml
+overrides:
+  CH07-IMG-02:
+    route: VECTOR_BUILD
+    reason: "Evidence hierarchy; the ranking is the science"
+    authorized_by: "Cassandra Sklarz"
+```
+
+Overrides obey the same escalation rule as everything else: **stricter only.**
+An override that would loosen a route is refused, so this file can never be used
+to talk a figure into the generative lane, and it can never release a `HOLD`.
+
+A route named explicitly by a human counts as its confirmation, so an override
+also clears `needs_route_confirmation`.
+
 ## Why so few figures are purely generative
 
 Every figure in the current tracker that the project marked `GENERATE` also

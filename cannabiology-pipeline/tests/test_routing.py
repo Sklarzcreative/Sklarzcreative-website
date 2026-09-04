@@ -66,3 +66,55 @@ class TestRouting(WorkspaceTest):
         text = prompts.assemble(asset)
         self.assertIn("must NOT be typeset", text)
         self.assertIn("LAYOUT RESERVATION", text)
+
+
+class TestRouteOverrides(WorkspaceTest):
+    """Deliberate reroutes are recorded in an override file, not by editing the
+    read-only canonical tracker."""
+
+    def test_override_can_make_a_route_stricter(self):
+        from cannabiology import routing
+        figs, _ = self.load()
+        r = routing.Router(overrides={"CH01-IMG-01": {
+            "route": "VECTOR_BUILD", "reason": "topology is the content",
+            "authorized_by": "Cassandra Sklarz"}})
+        d = r.route(figs["CH01-IMG-01"])          # HYBRID in the fixture
+        self.assertEqual(d.route, routing.VECTOR_BUILD)
+        self.assertEqual(d.confidence, "override")
+        self.assertTrue(any("overridden" in x for x in d.reasons))
+
+    def test_override_cannot_loosen_a_route(self):
+        from cannabiology import routing
+        figs, _ = self.load()
+        r = routing.Router(overrides={"CH03-IMG-01": {"route": "GENERATE"}})
+        with self.assertRaises(ValueError):
+            r.route(figs["CH03-IMG-01"])          # HOLD in the fixture
+
+    def test_override_cannot_release_a_hold(self):
+        from cannabiology import routing
+        figs, _ = self.load()
+        for target in ("GENERATE", "HYBRID", "VECTOR_BUILD", "DATA_DRIVEN"):
+            r = routing.Router(overrides={"CH03-IMG-01": {"route": target}})
+            with self.assertRaises(ValueError):
+                r.route(figs["CH03-IMG-01"])
+
+    def test_unknown_route_in_override_is_refused(self):
+        from cannabiology import routing
+        figs, _ = self.load()
+        r = routing.Router(overrides={"CH01-IMG-01": {"route": "SPARKLE"}})
+        with self.assertRaises(ValueError):
+            r.route(figs["CH01-IMG-01"])
+
+    def test_override_clears_the_route_confirmation_requirement(self):
+        """A human naming the route explicitly IS the confirmation."""
+        from cannabiology import routing
+        figs, _ = self.load()
+        base = routing.Router().route(figs["CH04-IMG-01"])
+        self.assertTrue(base.needs_route_confirmation)
+        r = routing.Router(overrides={"CH04-IMG-01": {
+            "route": "VECTOR_BUILD", "authorized_by": "Cassandra Sklarz"}})
+        self.assertFalse(r.route(figs["CH04-IMG-01"]).needs_route_confirmation)
+
+    def test_no_override_file_is_not_an_error(self):
+        from cannabiology import routing
+        self.assertEqual(routing.load_overrides("/nonexistent/overrides.yaml"), {})
