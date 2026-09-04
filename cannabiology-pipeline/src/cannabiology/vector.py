@@ -31,9 +31,27 @@ def default_layout(labels, width, height, margin=24, line_h=22):
     return out
 
 
+def _wrap(text, chars):
+    words, lines, cur = text.split(), [], ""
+    for w in words:
+        if len(cur) + len(w) + 1 <= chars:
+            cur = f"{cur} {w}".strip()
+        else:
+            lines.append(cur); cur = w
+    if cur:
+        lines.append(cur)
+    return lines or [""]
+
+
 def build_layer(labels, width, height, layout=None, panel_letters=None,
-                figure_number=None, caption=None, scale_bar=None):
-    """Return the annotation-only SVG layer (no base image)."""
+                figure_number=None, caption=None, scale_bar=None,
+                footer_top=None):
+    """Return the annotation-only SVG layer (no base image).
+
+    footer_top is the y where the figure-number/caption block starts. Callers
+    compositing over artwork that already prints a footer must pass a value
+    that clears it, or the two collide.
+    """
     items = layout or default_layout(labels, width, height)
     parts = [
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" '
@@ -60,14 +78,19 @@ def build_layer(labels, width, height, layout=None, panel_letters=None,
         parts.append(
             f'<text x="{sb["x"]}" y="{sb["y"] - 6}" font-size="12">'
             f'{escape(sb["label"])}</text>')
+    cap_lines = _wrap(caption, max(40, int((width - 48) / 6.6))) if caption else []
+    block_h = (18 if figure_number else 0) + 15 * len(cap_lines)
+    y = footer_top if footer_top is not None else height - 14 - block_h
     if figure_number:
         parts.append(
-            f'<text x="24" y="{height - 34}" font-size="13" font-weight="700">'
+            f'<text x="24" y="{y}" font-size="13" font-weight="700">'
             f'{escape(figure_number)}</text>')
-    if caption:
+        y += 18
+    for line in cap_lines:
         parts.append(
-            f'<text x="24" y="{height - 14}" font-size="12" fill="#3d4a41">'
-            f'{escape(caption)}</text>')
+            f'<text x="24" y="{y}" font-size="12" fill="#3d4a41">'
+            f'{escape(line)}</text>')
+        y += 15
     parts.append("</g></svg>")
     return "\n".join(parts)
 
@@ -90,8 +113,14 @@ def composite(base_image_path, layer_svg, width, height):
             f'height="{height}" viewBox="0 0 {width} {height}">{img}{inner}</svg>')
 
 
-def write_layer(run_dir, asset_id, labels, width, height, **kw):
-    """Write layer SVG + label manifest. Returns (svg_path, manifest_path)."""
+def write_layer(run_dir, asset_id, labels, width, height, all_labels=None,
+                covered=None, **kw):
+    """Write layer SVG + label manifest. Returns (svg_path, manifest_path).
+
+    `labels` are the ones actually drawn. `all_labels` / `covered` record the
+    full tracker list and which of those the underlying artwork already prints,
+    so a skipped label is an auditable decision rather than a silent omission.
+    """
     d = workspace.assert_safe_write(Path(run_dir) / "vector")
     d.mkdir(parents=True, exist_ok=True)
     version = len(list(d.glob(f"{asset_id}_labels_v*.svg"))) + 1
@@ -100,7 +129,9 @@ def write_layer(run_dir, asset_id, labels, width, height, **kw):
     svg_path.write_text(svg)
     manifest = {
         "asset_id": asset_id, "version": version, "width": width, "height": height,
-        "labels": labels, "label_count": len(labels),
+        "labels_drawn": labels, "label_count": len(labels),
+        "labels_required": all_labels if all_labels is not None else labels,
+        "labels_already_in_artwork": covered or [],
         "source": "canonical tracker 'Labels to Add Manually'",
         "authoritative_text_in_base_art": False,
     }

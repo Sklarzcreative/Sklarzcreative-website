@@ -168,3 +168,70 @@ class TestVectorBuildRoute(WorkspaceTest):
         with self.assertRaises(vectorbuild.BuildSpecMissing):
             vectorbuild.run_asset(fig, fig.assets[0], dec["CH02-IMG-01"],
                                   st.Store(), log=lambda *a: None)
+
+
+class TestLabelCoverage(WorkspaceTest):
+    """A built diagram prints its own text; a generated image prints none.
+    The overlay must reflect that instead of blindly stacking every label."""
+
+    def test_labels_already_in_artwork_are_not_overlaid(self):
+        from cannabiology.vectorbuild import label_coverage
+        covered, missing = label_coverage(
+            ["cannabinoids", "terpenes"], ["Cannabinoids", "Terpenes"])
+        self.assertEqual(covered, ["cannabinoids", "terpenes"])
+        self.assertEqual(missing, [])
+
+    def test_labels_absent_from_artwork_are_overlaid(self):
+        from cannabiology.vectorbuild import label_coverage
+        covered, missing = label_coverage(
+            ["cannabinoids", "scale bar"], ["Cannabinoids"])
+        self.assertEqual(covered, ["cannabinoids"])
+        self.assertEqual(missing, ["scale bar"])
+
+    def test_generated_art_prints_nothing_so_all_labels_overlay(self):
+        from cannabiology.vectorbuild import label_coverage
+        covered, missing = label_coverage(["nucleus", "cell wall"], [])
+        self.assertEqual(covered, [])
+        self.assertEqual(missing, ["nucleus", "cell wall"])
+
+    def test_matching_tolerates_spelling_and_punctuation(self):
+        from cannabiology.vectorbuild import label_coverage
+        covered, _ = label_coverage(
+            ["ecological defense/stress response"],
+            ["Ecological defence and stress response"])
+        self.assertEqual(len(covered), 1)
+
+    def test_partial_label_inside_a_longer_node_still_counts(self):
+        from cannabiology.vectorbuild import label_coverage
+        covered, _ = label_coverage(
+            ["carbohydrates"], ["Carbohydrates (glucose, starch, cellulose)"])
+        self.assertEqual(covered, ["carbohydrates"])
+
+
+class TestCaptionLayout(WorkspaceTest):
+    CAPTION = ("Emphasize resource allocation and the dependence of specialized "
+               "metabolism on primary metabolic energy and precursors.")
+
+    def test_caption_is_never_truncated(self):
+        """The old layer cut the caption mid-word at 110 characters."""
+        from cannabiology import vector
+        svg = vector.build_layer([], 1500, 820, caption=self.CAPTION,
+                                 footer_top=742)
+        self.assertIn("precursors.", svg)
+        self.assertNotIn("and pre<", svg)
+
+    def test_caption_wraps_when_the_figure_is_narrow(self):
+        from cannabiology import vector
+        svg = vector.build_layer([], 600, 500, caption=self.CAPTION,
+                                 footer_top=400)
+        self.assertGreaterEqual(svg.count('font-size="12"'), 2)
+        self.assertIn("precursors.", svg)
+
+    def test_footer_top_keeps_caption_clear_of_artwork_footer(self):
+        from cannabiology import vector
+        import re
+        svg = vector.build_layer([], 1500, 820, figure_number="CH01-IMG-04",
+                                 caption="Short caption.", footer_top=742)
+        ys = [int(y) for y in re.findall(r'<text x="24" y="(\d+)"', svg)]
+        self.assertTrue(all(y < 804 for y in ys),
+                        f"annotation footer must clear the artwork's line at 804: {ys}")

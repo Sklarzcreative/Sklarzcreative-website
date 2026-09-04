@@ -10,8 +10,34 @@ from pathlib import Path
 
 import yaml
 
+import re
+
 from . import routing, state as st, vector, workspace
 from .builders import chem, diagram
+
+
+def _norm(t):
+    """Loose match for label coverage: case, punctuation and en/-ce spellings."""
+    t = t.lower().replace("defence", "defense")
+    return re.sub(r"[^a-z0-9]+", " ", t).strip()
+
+
+def label_coverage(required, artwork_texts):
+    """Split the tracker's required labels into those the artwork already
+    prints and those still needing an overlay.
+
+    A built diagram prints its own node text, so overlaying the same words again
+    is duplication. A generated image prints nothing, so everything needs an
+    overlay. Deciding this by inspection, rather than by route, keeps the
+    tracker's label list authoritative either way.
+    """
+    haystack = " | ".join(_norm(t) for t in artwork_texts)
+    covered, missing = [], []
+    for label in required:
+        parts = [p for p in re.split(r"[/,]", label) if p.strip()]
+        hit = any(_norm(p) and _norm(p) in haystack for p in parts)
+        (covered if hit else missing).append(label)
+    return covered, missing
 
 
 class BuildSpecMissing(RuntimeError):
@@ -66,6 +92,7 @@ def run_asset(figure, asset, decision, store, log=print):
     store.transition(aid, st.CONTEXT_READY, f"build spec: {spec['builder']}")
 
     provenance = {"builder": spec["builder"], "figure_id": figure.figure_id}
+    artwork_texts = []
     width = int(spec.get("width", 1200))
     height = int(spec.get("height", 720))
 
@@ -77,11 +104,14 @@ def run_asset(figure, asset, decision, store, log=print):
         svg, provs = chem.render_panel(
             names, registry, cols=int(spec.get("columns", 2)))
         provenance["compounds"] = provs
+        artwork_texts = [p["display_name"] for p in provs]
         log(f"  chemistry: {len(provs)} structure(s) from cited sources")
     elif spec["builder"] == "diagram":
         dspec = diagram.load_spec(
             workspace.resolve() / "canonical" / "diagram_specs" / f"{figure.figure_id}.yaml")
         svg = diagram.build(dspec, width, height)
+        artwork_texts = ([n["label"] for n in dspec["nodes"]]
+                         + [b.get("label", "") for b in dspec.get("bands", [])])
         provenance["spec_source"] = dspec["source"]
         provenance["nodes"] = len(dspec["nodes"])
         log(f"  diagram: {len(dspec['nodes'])} nodes from confirmed spec")
@@ -98,15 +128,28 @@ def run_asset(figure, asset, decision, store, log=print):
     rec["selected_candidate"] = "build001"
     store.transition(aid, st.BUILT, "built deterministically")
 
-    labels = asset.get("manual_labels", [])
-    layer, manifest = vector.write_layer(run_dir, aid, labels, width, height,
-                                         figure_number=figure.figure_id,
-                                         caption=asset.get("caption", "")[:110])
+    required = asset.get("manual_labels", [])
+    covered, missing = label_coverage(required, artwork_texts)
+    provenance["labels_required"] = required
+    provenance["labels_already_in_artwork"] = covered
+    provenance["labels_overlaid"] = missing
+    if covered:
+        log(f"  labels: {len(covered)}/{len(required)} already printed by the "
+            f"artwork; overlaying {len(missing)}")
+    # The diagram prints its own footer source line, so start the annotation
+    # footer above it rather than on top of it.
+    layer, manifest = vector.write_layer(
+        run_dir, aid, missing, width, height,
+        all_labels=required, covered=covered,
+        figure_number=figure.figure_id,
+        caption=asset.get("caption", ""),
+        footer_top=height - 78)
     comp = _overlay(svg, Path(layer).read_text(), width, height)
     comp_path = run_dir / "package" / f"{aid}_composite.svg"
     comp_path.write_text(comp)
     rec["vector"] = {"layer": str(layer), "manifest": str(manifest),
-                     "composite": str(comp_path), "label_count": len(labels),
+                     "composite": str(comp_path), "label_count": len(missing),
+                     "labels_already_in_artwork": len(covered),
                      "provenance": str(run_dir / "vector" / f"{aid}_provenance.json")}
     rec["run_dir"] = str(run_dir)
 
