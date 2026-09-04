@@ -34,6 +34,27 @@ python3 -m cannabiology build CH01-IMG-03
 
 `fetch-chem` always writes `verified: false`. Only a person sets it true.
 
+## Diagram layouts
+
+Six layouts, chosen by the spec's `layout` key (default `flow`). All share one
+palette and type scale so the figures read as one system across the book.
+
+| Layout | Shape | Required per node | Use for |
+|---|---|---|---|
+| `flow` | boxes and arrows in columns | `column` | pipelines, mechanisms, pathways |
+| `lanes` | parallel tracks of stages | `lane`, `step` | side-by-side workflow comparison |
+| `timeline` | dated events along an axis | `date` | histories, process evolution |
+| `pyramid` | tiers narrowing upward | `tier` | evidence hierarchies |
+| `layers` | stacked horizontal bands | `layer` | multi-omics and systems stacks |
+| `hub` | centre with radiating spokes | one node with `hub: true` | convergence and network maps |
+
+`flow` also accepts `bands` (labelled background regions) and `edges` with
+optional `label` and `style: dashed`. `pyramid` and `layers` accept a `note` per
+node, set beside the tier. Any node may carry `emphasis: primary`.
+
+A layout that is missing a required field on any node refuses to build and names
+the node, rather than silently placing it at position zero.
+
 ## Mechanism and concept diagrams
 
 Topology is scientific content, so it is never inferred. Write a spec in

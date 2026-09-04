@@ -3,6 +3,7 @@
 Fixtures use benzene and cyclohexane - molecules whose formulas are trivially
 checkable - so the test proves the machinery, not any client chemistry.
 """
+import copy
 import unittest
 
 from base import WorkspaceTest
@@ -353,3 +354,112 @@ class TestAutopilotSafety(WorkspaceTest):
                                     no_network=True, log=lambda *a: None)
         self.assertGreater(len(results), 1)
         self.assertTrue(any(r["outcome"] == autopilot.COMPLETED for r in results))
+
+
+SPECS = {
+    "flow": {"nodes": [{"id": "a", "label": "One", "column": 0},
+                       {"id": "b", "label": "Two", "column": 1}],
+             "edges": [{"from": "a", "to": "b", "label": "then"}],
+             "bands": [{"x": 10, "y": 10, "width": 100, "height": 100,
+                        "label": "a band"}]},
+    "lanes": {"nodes": [{"id": "a", "label": "Screen", "lane": "Traditional", "step": 0},
+                        {"id": "b", "label": "Grow", "lane": "Traditional", "step": 1},
+                        {"id": "c", "label": "Genotype", "lane": "Marker-assisted", "step": 0}]},
+    "timeline": {"nodes": [{"id": "a", "date": "1000 CE", "label": "Hashish"},
+                           {"id": "b", "date": "1970", "label": "Solvent"},
+                           {"id": "c", "date": "2026", "label": "Supercritical"}]},
+    "pyramid": {"nodes": [{"id": "a", "tier": 0, "label": "Systematic reviews"},
+                          {"id": "b", "tier": 1, "label": "Randomised trials"},
+                          {"id": "c", "tier": 2, "label": "Case reports", "note": "weakest"}]},
+    "layers": {"nodes": [{"id": "a", "layer": 0, "label": "Genome"},
+                         {"id": "b", "layer": 1, "label": "Transcriptome", "note": "RNA"},
+                         {"id": "c", "layer": 2, "label": "Metabolome"}]},
+    "hub": {"nodes": [{"id": "h", "label": "Cannabiology", "hub": True},
+                      {"id": "a", "label": "Genomics"},
+                      {"id": "b", "label": "Chemistry"},
+                      {"id": "c", "label": "Medicine"}]},
+}
+
+
+def _spec(layout):
+    # Deep copy: these fixtures are shared, and a test that mutates a node
+    # would otherwise corrupt every later test in the file.
+    s = copy.deepcopy(SPECS[layout])
+    s.update({"figure_id": "CH01-IMG-01", "confirmed": True,
+              "source": "FIXTURE", "layout": layout})
+    return s
+
+
+class TestLayouts(WorkspaceTest):
+    def test_every_layout_renders(self):
+        from cannabiology.builders import diagram
+        for layout in ("flow", "lanes", "timeline", "pyramid", "layers", "hub"):
+            svg = diagram.build(_spec(layout), 1200, 700)
+            self.assertTrue(svg.startswith("<svg"), layout)
+            self.assertTrue(svg.rstrip().endswith("</svg>"), layout)
+
+    def test_every_layout_is_deterministic(self):
+        from cannabiology.builders import diagram
+        for layout in SPECS:
+            a = diagram.build(_spec(layout), 1200, 700)
+            b = diagram.build(_spec(layout), 1200, 700)
+            self.assertEqual(a, b, layout)
+
+    def test_every_layout_shows_its_content(self):
+        from cannabiology.builders import diagram
+        checks = {"flow": "One", "lanes": "Traditional", "timeline": "1000 CE",
+                  "pyramid": "Randomised trials", "layers": "Transcriptome",
+                  "hub": "Cannabiology"}
+        for layout, needle in checks.items():
+            self.assertIn(needle, diagram.build(_spec(layout), 1200, 700), layout)
+
+    def test_every_layout_escapes_text(self):
+        from cannabiology.builders import diagram
+        for layout in SPECS:
+            s = _spec(layout)
+            s["nodes"][-1]["label"] = "A & <b>"
+            svg = diagram.build(s, 1200, 700)
+            self.assertIn("&amp;", svg, layout)
+            self.assertNotIn("<b>", svg, layout)
+
+    def test_unknown_layout_is_refused(self):
+        from cannabiology.builders import diagram
+        s = _spec("flow"); s["layout"] = "spiral"
+        with self.assertRaises(diagram.DiagramError):
+            diagram.build(s, 1200, 700)
+
+    def test_layout_missing_required_node_field_is_refused(self):
+        from cannabiology.builders import diagram
+        s = _spec("timeline")
+        del s["nodes"][0]["date"]
+        with self.assertRaises(diagram.DiagramError):
+            diagram.build(s, 1200, 700)
+
+    def test_hub_requires_exactly_one_hub_node(self):
+        from cannabiology.builders import diagram
+        s = _spec("hub")
+        s["nodes"][1]["hub"] = True
+        with self.assertRaises(diagram.DiagramError):
+            diagram.build(s, 1200, 700)
+
+    def test_unconfirmed_spec_still_carries_the_draft_banner(self):
+        from cannabiology.builders import diagram
+        for layout in SPECS:
+            s = _spec(layout); s["confirmed"] = False
+            self.assertIn("DRAFT", diagram.build(s, 1200, 700, draft=True), layout)
+
+    def test_flow_wraps_at_the_width_the_approved_figures_used(self):
+        """Approved artwork must not reflow. 190px boxes wrap at 24 chars."""
+        from cannabiology.builders import diagram
+        s = _spec("flow")
+        s["nodes"] = [{"id": "a", "column": 0,
+                       "label": "Carbohydrates (glucose, starch, cellulose, sucrose)"}]
+        s["edges"] = []
+        svg = diagram.build(s, 1500, 820)
+        self.assertIn("Carbohydrates (glucose,", svg)
+        self.assertIn("starch, cellulose,", svg)
+
+    def test_band_labels_keep_their_letter_spacing(self):
+        from cannabiology.builders import diagram
+        svg = diagram.build(_spec("flow"), 1200, 700)
+        self.assertIn('letter-spacing="0.06em"', svg)
