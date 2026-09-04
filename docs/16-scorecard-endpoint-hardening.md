@@ -10,7 +10,10 @@
 > deployed, nothing committed, no endpoint URL inserted, nothing under
 > `insights/` modified."* Two of those four claims were false by the time the
 > document was read: this file and the two Scorecard files **were** committed to
-> `claude/website-master-integration-2026-08-28` (never to `main`), and nine
+> `claude/website-master-integration-2026-08-28` — **not on `main` at the time of
+> the original status claim.** That branch has since been merged, so those files
+> are on `main` today; the parenthetical here previously read "never to `main`",
+> which was true when written and is not true now. And nine
 > `insights/` files **were** modified under the separate offer-page
 > authorisation. The original wording is recorded here rather than quietly
 > replaced, on the same rule applied to the PR #4 claim in §15: a corrected
