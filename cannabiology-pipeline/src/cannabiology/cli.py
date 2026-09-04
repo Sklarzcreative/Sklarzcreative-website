@@ -3,8 +3,8 @@ import argparse
 import json
 import sys
 
-from . import (canonical, config, doctor as doc, package, reconcile, routing,
-               runner, state as st, vectorbuild, workspace)
+from . import (autopilot, canonical, config, doctor as doc, package,
+               reconcile, routing, runner, state as st, vectorbuild, workspace)
 
 
 def _load():
@@ -250,17 +250,83 @@ def cmd_package(a):
     return 0
 
 
+def cmd_autopilot(a):
+    """Run every runnable figure unattended. Stops at PENDING_HUMAN_APPROVAL."""
+    figs, dec = _load()
+    store, cfg = st.Store(), config.load()
+    print(f"Autopilot over {len(figs)} figures "
+          f"({'dry-run' if a.dry_run else 'live'})\n")
+    results = autopilot.run_all(figs, dec, store, cfg=cfg, dry_run=a.dry_run,
+                                no_network=a.no_network,
+                                confirm_route=a.confirm_route, limit=a.limit)
+    done = [r for r in results if r["outcome"] == autopilot.COMPLETED]
+    failed = [r for r in results if r["outcome"] == autopilot.FAILED]
+    skipped = [r for r in results if r["outcome"] == autopilot.SKIPPED]
+    print(f"\n{len(done)} completed, {len(failed)} failed, {len(skipped)} skipped")
+    if failed:
+        print("\nFAILED:")
+        for r in failed:
+            print(f"  {r['figure_id']:14} {r['detail']}")
+    if skipped:
+        print("\nSKIPPED (nothing automation can do yet):")
+        by_reason = {}
+        for r in skipped:
+            by_reason.setdefault(r["detail"], []).append(r["figure_id"])
+        for reason, ids in sorted(by_reason.items()):
+            print(f"  {reason}: {len(ids)}")
+            print(f"      {', '.join(ids)}")
+    clear, flagged = autopilot.approvable(store)
+    print(f"\nAwaiting your approval: {len(clear)} clear, {len(flagged)} flagged")
+    if clear or flagged:
+        print("  Review them together:  python3 -m cannabiology package --batch auto")
+        print("  Then approve in one go: python3 -m cannabiology approve --all")
+    return 1 if failed else 0
+
+
 def cmd_approve(a):
     store = st.Store()
-    rec = store.get(a.asset_id)
-    if rec["state"] != st.PENDING_HUMAN_APPROVAL:
-        print(f"{a.asset_id} is {rec['state']}, not {st.PENDING_HUMAN_APPROVAL}. "
-              "Only a figure awaiting approval can be approved.")
+    if not a.all and not a.asset_id:
+        print("Name an asset, or use --all to approve every clear figure at once.")
         return 1
-    store.transition(a.asset_id, st.HUMAN_APPROVED, f"approved by {a.by}")
-    rec["human_approved"] = True
-    store.save()
-    print(f"{a.asset_id}: HUMAN_APPROVED")
+
+    if a.asset_id and not a.all:
+        rec = store.get(a.asset_id)
+        if rec["state"] != st.PENDING_HUMAN_APPROVAL:
+            print(f"{a.asset_id} is {rec['state']}, not {st.PENDING_HUMAN_APPROVAL}. "
+                  "Only a figure awaiting approval can be approved.")
+            return 1
+        reasons = autopilot.flag_reasons(rec)
+        if reasons and not a.include_flagged:
+            print(f"{a.asset_id} is flagged:")
+            for r in reasons:
+                print(f"  - {r}")
+            print("Approve anyway with --include-flagged.")
+            return 1
+        autopilot.approve_many(store, [a.asset_id], a.by)
+        print(f"{a.asset_id}: HUMAN_APPROVED")
+        return 0
+
+    exclude = set((a.exclude or "").split(",")) - {""}
+    clear, flagged = autopilot.approvable(store, exclude=exclude)
+    targets = clear + (flagged if a.include_flagged else [])
+    if flagged and not a.include_flagged:
+        print(f"HELD BACK - {len(flagged)} figure(s) the reviewer flagged:")
+        for aid in flagged:
+            print(f"  {aid}")
+            for r in autopilot.flag_reasons(store.get(aid)):
+                print(f"      - {r}")
+        print("  Approve these deliberately, or add --include-flagged.\n")
+    if not targets:
+        print("Nothing clear to approve.")
+        return 0
+    print(f"About to approve {len(targets)} figure(s) as {a.by}:")
+    for aid in targets:
+        print(f"  {aid}")
+    if not a.yes:
+        print("\nRe-run with --yes to record these approvals.")
+        return 0
+    autopilot.approve_many(store, targets, a.by)
+    print(f"\n{len(targets)} figure(s): HUMAN_APPROVED")
     return 0
 
 
@@ -319,8 +385,19 @@ def build_parser():
     pk.add_argument("figure_id", nargs="?"); pk.add_argument("--batch", default="001")
     pk.set_defaults(fn=cmd_package)
 
+    at = sub.add_parser("autopilot",
+                        help="run every runnable figure unattended, stopping at approval")
+    gen_flags(at); at.add_argument("--limit", type=int)
+    at.set_defaults(fn=cmd_autopilot)
+
     ap = sub.add_parser("approve", help="record explicit human approval")
-    ap.add_argument("asset_id"); ap.add_argument("--by", default="Cassandra Sklarz")
+    ap.add_argument("asset_id", nargs="?")
+    ap.add_argument("--all", action="store_true", help="approve every clear figure")
+    ap.add_argument("--yes", action="store_true", help="actually record the approvals")
+    ap.add_argument("--include-flagged", action="store_true",
+                    help="also approve figures the reviewer flagged")
+    ap.add_argument("--exclude", help="comma-separated asset IDs to hold back")
+    ap.add_argument("--by", default="Cassandra Sklarz")
     ap.set_defaults(fn=cmd_approve)
     return p
 

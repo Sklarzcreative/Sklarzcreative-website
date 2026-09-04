@@ -59,7 +59,9 @@ cap.
 
 **5. Human approval is mandatory.** The terminal automated state is
 `PENDING_HUMAN_APPROVAL`. `HUMAN_APPROVED` is reachable only through
-`cannabiology approve`. Silence is not approval.
+`cannabiology approve`. Silence is not approval. Batch approval exists so that
+is one decision rather than forty, and it refuses to sweep up any figure the
+reviewer flagged — including one whose review was a dry-run placeholder.
 
 ## Current routing of the canonical library
 
@@ -83,5 +85,6 @@ also carries a manual-label list, which makes it `HYBRID`. 19 of the 32 are
 - [The routing gate](docs/02-routing.md)
 - [Review, verdicts and repair](docs/03-review-and-repair.md)
 - [Operations](docs/04-operations.md)
+- [Autopilot and batch approval](docs/06-autopilot.md)
 - [Building figures deterministically](docs/05-vector-build.md)
 - [Permanent project instructions](CLAUDE.md)

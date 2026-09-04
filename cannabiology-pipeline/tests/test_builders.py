@@ -276,3 +276,80 @@ class TestProvenanceRecord(WorkspaceTest):
         self.assertEqual(sorted(prov["labels_already_in_artwork"]),
                          ["part a", "part b"])
         self.assertEqual(prov["labels_overlaid"], ["part c"])
+
+
+class TestAutopilotSafety(WorkspaceTest):
+    """Autopilot removes the interruption, not the gate."""
+
+    def _pending(self, reviews=None, state=None):
+        from cannabiology import state as st
+        store = st.Store()
+        rec = store.get("CH01-IMG-01")
+        rec["state"] = state or st.PENDING_HUMAN_APPROVAL
+        rec["reviews"] = reviews or []
+        return store, rec
+
+    def test_dry_run_review_is_never_batch_approvable(self):
+        """A synthetic review must not be mistaken for scientific review."""
+        from cannabiology import autopilot
+        store, rec = self._pending([{"verdict": "PRODUCTION_READY_BASE_ART",
+                                     "synthetic": True, "counts": {}}])
+        reasons = autopilot.flag_reasons(rec)
+        self.assertTrue(any("dry-run" in r for r in reasons))
+        clear, flagged = autopilot.approvable(store)
+        self.assertIn("CH01-IMG-01", flagged)
+        self.assertNotIn("CH01-IMG-01", clear)
+
+    def test_major_findings_are_flagged(self):
+        from cannabiology import autopilot
+        _store, rec = self._pending([{"verdict": "PRODUCTION_READY_BASE_ART",
+                                      "counts": {"majors": 2}}])
+        self.assertTrue(any("major" in r for r in autopilot.flag_reasons(rec)))
+
+    def test_preserve_damage_is_flagged(self):
+        from cannabiology import autopilot
+        _store, rec = self._pending([{"verdict": "PRODUCTION_READY_BASE_ART",
+                                      "counts": {"preserve_damage": 1}}])
+        self.assertTrue(any("preserved" in r for r in autopilot.flag_reasons(rec)))
+
+    def test_clean_real_review_is_approvable(self):
+        from cannabiology import autopilot
+        store, _rec = self._pending([{"verdict": "PRODUCTION_READY_BASE_ART",
+                                      "synthetic": False, "counts": {}}])
+        clear, flagged = autopilot.approvable(store)
+        self.assertIn("CH01-IMG-01", clear)
+        self.assertEqual(flagged, [])
+
+    def test_figure_not_awaiting_approval_is_never_swept_up(self):
+        from cannabiology import autopilot, state as st
+        store, _rec = self._pending([], state=st.OA_REVIEW)
+        clear, flagged = autopilot.approvable(store)
+        self.assertEqual(clear, [])
+        self.assertEqual(flagged, [])
+
+    def test_exclude_holds_a_figure_back(self):
+        from cannabiology import autopilot
+        store, _rec = self._pending([{"verdict": "PRODUCTION_READY_BASE_ART",
+                                      "counts": {}}])
+        clear, _f = autopilot.approvable(store, exclude={"CH01-IMG-01"})
+        self.assertEqual(clear, [])
+
+    def test_blocked_routes_are_reported_not_run(self):
+        from cannabiology import autopilot, state as st
+        figs, dec = self.load()
+        store = st.Store()
+        results = autopilot.run_all(figs, dec, store, dry_run=True,
+                                    no_network=True, log=lambda *a: None)
+        by_id = {r["figure_id"]: r for r in results}
+        for fid in ("CH02-IMG-02", "CH03-IMG-01"):   # DATA_DRIVEN and HOLD in fixture
+            self.assertEqual(by_id[fid]["outcome"], autopilot.SKIPPED)
+            self.assertNotIn("completed", by_id[fid]["detail"])
+
+    def test_one_failure_does_not_stop_the_run(self):
+        from cannabiology import autopilot, state as st
+        figs, dec = self.load()
+        # CH01-IMG-01 is HYBRID and will run; CH04-IMG-01 is a derived route
+        results = autopilot.run_all(figs, dec, st.Store(), dry_run=True,
+                                    no_network=True, log=lambda *a: None)
+        self.assertGreater(len(results), 1)
+        self.assertTrue(any(r["outcome"] == autopilot.COMPLETED for r in results))
