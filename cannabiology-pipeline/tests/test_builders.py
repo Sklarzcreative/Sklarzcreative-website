@@ -201,6 +201,14 @@ class TestLabelCoverage(WorkspaceTest):
             ["Ecological defence and stress response"])
         self.assertEqual(len(covered), 1)
 
+    def test_multiplication_sign_matches_plain_x(self):
+        """The tracker writes 'genotype x environment' with U+00D7."""
+        from cannabiology.vectorbuild import label_coverage
+        covered, missing = label_coverage(
+            ["genotype \u00d7 environment"], ["genotype x environment"])
+        self.assertEqual(len(covered), 1)
+        self.assertEqual(missing, [])
+
     def test_partial_label_inside_a_longer_node_still_counts(self):
         from cannabiology.vectorbuild import label_coverage
         covered, _ = label_coverage(
