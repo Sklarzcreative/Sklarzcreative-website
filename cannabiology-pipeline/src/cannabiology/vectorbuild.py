@@ -88,7 +88,7 @@ def run_asset(figure, asset, decision, store, log=print):
     else:
         raise BuildSpecMissing(f"Unknown builder {spec['builder']!r}")
 
-    store.transition(aid, st.GENERATING, "deterministic build")
+    store.transition(aid, st.BUILDING, "deterministic build - no model call")
     art_path = run_dir / "vector" / f"{aid}_structure.svg"
     art_path.write_text(svg)
     (run_dir / "vector" / f"{aid}_provenance.json").write_text(
@@ -96,7 +96,7 @@ def run_asset(figure, asset, decision, store, log=print):
     rec["candidates"].append({"candidate_id": "build001", "path": str(art_path),
                               "written": True, "deterministic": True})
     rec["selected_candidate"] = "build001"
-    store.transition(aid, st.CANDIDATE_READY, "built")
+    store.transition(aid, st.BUILT, "built deterministically")
 
     labels = asset.get("manual_labels", [])
     layer, manifest = vector.write_layer(run_dir, aid, labels, width, height,
