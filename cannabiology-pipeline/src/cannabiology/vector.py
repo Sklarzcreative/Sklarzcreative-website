@@ -78,7 +78,10 @@ def build_layer(labels, width, height, layout=None, panel_letters=None,
         parts.append(
             f'<text x="{sb["x"]}" y="{sb["y"] - 6}" font-size="12">'
             f'{escape(sb["label"])}</text>')
-    cap_lines = _wrap(caption, max(40, int((width - 48) / 6.6))) if caption else []
+    # 12px IBM Plex Sans runs ~6.4px per character. Wrapping at 7.2px per
+    # character leaves real margin, so a long caption breaks onto a second line
+    # instead of running off the edge of the figure.
+    cap_lines = _wrap(caption, max(40, int((width - 48) / 7.2))) if caption else []
     block_h = (18 if figure_number else 0) + 15 * len(cap_lines)
     y = footer_top if footer_top is not None else height - 14 - block_h
     if figure_number:

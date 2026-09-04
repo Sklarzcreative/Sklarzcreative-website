@@ -49,6 +49,24 @@ def _now_slug():
     return time.strftime("%Y%m%dT%H%M%SZ", time.gmtime())
 
 
+def label_decisions_path():
+    return workspace.resolve() / "canonical" / "label_decisions.yaml"
+
+
+def load_label_decisions(figure_id):
+    """Human decisions about tracker labels this figure will not overlay.
+
+    The canonical tracker is read-only, so a decision to drop or skip one of its
+    required labels is recorded here with a reason and who authorised it, rather
+    than by quietly editing the tracker or silently omitting the label.
+    """
+    p = label_decisions_path()
+    if not p.exists():
+        return []
+    data = yaml.safe_load(p.read_text()) or {}
+    return (data.get("figures", {}) or {}).get(figure_id, {}).get("skip", []) or []
+
+
 def build_spec_path(figure_id):
     return workspace.resolve() / "canonical" / "build_specs" / f"{figure_id}.yaml"
 
@@ -73,8 +91,14 @@ def load_build_spec(figure_id):
     return spec
 
 
-def run_asset(figure, asset, decision, store, log=print):
-    """Build one VECTOR_BUILD asset. Refuses any other route."""
+def run_asset(figure, asset, decision, store, log=print, rebuild=False):
+    """Build one VECTOR_BUILD asset. Refuses any other route.
+
+    rebuild=True re-runs a figure that already reached PENDING_HUMAN_APPROVAL,
+    for when a builder fix should be applied to it. It will not touch a figure a
+    human has approved: that artwork is settled, and silently redrawing it would
+    make the approval meaningless.
+    """
     if decision.route != routing.VECTOR_BUILD:
         raise RuntimeError(
             f"{figure.figure_id} is routed {decision.route}, not VECTOR_BUILD. "
@@ -82,6 +106,13 @@ def run_asset(figure, asset, decision, store, log=print):
 
     aid = asset["asset_id"]
     rec = store.get(aid)
+    if rebuild:
+        if rec["state"] in (st.HUMAN_APPROVED, st.PACKAGED):
+            raise RuntimeError(
+                f"{aid} is {rec['state']}. Approved artwork is not rebuilt "
+                "automatically; a human must un-approve it first.")
+        if rec["state"] != st.UNROUTED:
+            store.transition(aid, st.UNROUTED, "rebuild requested", force=True)
     rec["route"] = decision.route
     store.transition(aid, st.ROUTED, "vector build")
 
@@ -129,20 +160,30 @@ def run_asset(figure, asset, decision, store, log=print):
 
     required = asset.get("manual_labels", [])
     covered, missing = label_coverage(required, artwork_texts)
+    decisions = load_label_decisions(figure.figure_id)
+    skipped = {d["label"]: d for d in decisions if d.get("label") in missing}
+    missing = [m for m in missing if m not in skipped]
     provenance["labels_required"] = required
     provenance["labels_already_in_artwork"] = covered
+    provenance["labels_skipped_by_decision"] = list(skipped.values())
     provenance["labels_overlaid"] = missing
+    if skipped:
+        log(f"  labels: {len(skipped)} skipped by recorded decision")
     if covered:
         log(f"  labels: {len(covered)}/{len(required)} already printed by the "
             f"artwork; overlaying {len(missing)}")
     # The diagram prints its own footer source line, so start the annotation
     # footer above it rather than on top of it.
+    caption = asset.get("caption", "")
+    if spec.get("caption_addendum"):
+        caption = f"{caption} {spec['caption_addendum']}".strip()
+        provenance["caption_addendum"] = spec["caption_addendum"]
     layer, manifest = vector.write_layer(
         run_dir, aid, missing, width, height,
         all_labels=required, covered=covered,
         figure_number=figure.figure_id,
-        caption=asset.get("caption", ""),
-        footer_top=height - 78)
+        caption=caption,
+        footer_top=height - 96)
     comp = _overlay(svg, Path(layer).read_text(), width, height)
     comp_path = run_dir / "package" / f"{aid}_composite.svg"
     comp_path.write_text(comp)

@@ -169,7 +169,8 @@ def cmd_build(a):
         print(f"\n{asset['asset_id']}  {fig.title}")
         try:
             with st.figure_lock(asset["asset_id"]):
-                vectorbuild.run_asset(fig, asset, dec[fig.figure_id], store)
+                vectorbuild.run_asset(fig, asset, dec[fig.figure_id], store,
+                                      rebuild=a.rebuild)
         except (vectorbuild.BuildSpecMissing,) as e:
             print(f"  SPEC REQUIRED: {e}")
             rc = 2
@@ -370,7 +371,10 @@ def build_parser():
     gen_flags(b); b.set_defaults(fn=cmd_batch)
 
     bd = sub.add_parser("build", help="deterministic build (VECTOR_BUILD route)")
-    bd.add_argument("figure_id"); bd.set_defaults(fn=cmd_build)
+    bd.add_argument("figure_id")
+    bd.add_argument("--rebuild", action="store_true",
+                    help="re-run a figure already awaiting approval; refuses approved ones")
+    bd.set_defaults(fn=cmd_build)
 
     pv = sub.add_parser("preview-diagram", help="render a spec for review (draft banner)")
     pv.add_argument("figure_id"); pv.add_argument("--width", default=1400)

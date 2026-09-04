@@ -463,3 +463,83 @@ class TestLayouts(WorkspaceTest):
         from cannabiology.builders import diagram
         svg = diagram.build(_spec("flow"), 1200, 700)
         self.assertIn('letter-spacing="0.06em"', svg)
+
+
+class TestCaptionFits(WorkspaceTest):
+    """A caption that runs off the edge is invisible damage: it renders, it
+    just cannot be read. Wrapping must leave real margin."""
+
+    CH_W = 6.4          # measured average for 12px IBM Plex Sans
+
+    def _widest(self, svg):
+        import re
+        lines = re.findall(
+            r'<text x="24" y="\d+" font-size="12" fill="#3d4a41">([^<]*)</text>', svg)
+        return max((24 + len(l) * self.CH_W for l in lines), default=0)
+
+    def test_long_caption_stays_inside_the_canvas(self):
+        from cannabiology import vector
+        cap = ("Quality control and release review are pass/fail gates: material "
+               "that fails either loops back to reformulation before re-entering "
+               "the sequence, and the caption must still fit within the figure "
+               "rather than running off its right edge.")
+        for width in (1200, 1500, 1600, 1800):
+            svg = vector.build_layer([], width, 800, caption=cap, footer_top=700)
+            self.assertLessEqual(self._widest(svg), width - 24,
+                                 f"caption overflows at width {width}")
+
+    def test_a_caption_too_long_for_one_line_wraps(self):
+        from cannabiology import vector
+        import re
+        cap = "word " * 80
+        svg = vector.build_layer([], 1500, 800, caption=cap, footer_top=700)
+        lines = re.findall(
+            r'<text x="24" y="\d+" font-size="12" fill="#3d4a41">', svg)
+        self.assertGreater(len(lines), 1)
+
+
+class TestRebuildGuard(WorkspaceTest):
+    def _ready(self):
+        import yaml
+        from cannabiology import workspace
+        spec = {"figure_id": "CH01-IMG-01", "confirmed": True, "source": "FIXTURE",
+                "nodes": [{"id": "a", "label": "part a", "column": 0}], "edges": []}
+        d = workspace.resolve() / "canonical" / "diagram_specs"
+        d.mkdir(parents=True, exist_ok=True)
+        (d / "CH01-IMG-01.yaml").write_text(yaml.safe_dump(spec))
+        b = workspace.resolve() / "canonical" / "build_specs"
+        b.mkdir(parents=True, exist_ok=True)
+        (b / "CH01-IMG-01.yaml").write_text(yaml.safe_dump({"builder": "diagram"}))
+        figs, dec = self.load()
+        dec["CH01-IMG-01"].route = "VECTOR_BUILD"
+        return figs["CH01-IMG-01"], dec["CH01-IMG-01"]
+
+    def test_rebuild_reruns_a_pending_figure(self):
+        from cannabiology import state as st, vectorbuild
+        fig, d = self._ready()
+        store = st.Store()
+        vectorbuild.run_asset(fig, fig.assets[0], d, store, log=lambda *a: None)
+        self.assertEqual(store.get("CH01-IMG-01")["state"], st.PENDING_HUMAN_APPROVAL)
+        rec = vectorbuild.run_asset(fig, fig.assets[0], d, store,
+                                    log=lambda *a: None, rebuild=True)
+        self.assertEqual(rec["state"], st.PENDING_HUMAN_APPROVAL)
+
+    def test_rebuild_refuses_approved_artwork(self):
+        """An approval means that artwork is settled. Redrawing it silently
+        would make the approval meaningless."""
+        from cannabiology import state as st, vectorbuild
+        fig, d = self._ready()
+        store = st.Store()
+        vectorbuild.run_asset(fig, fig.assets[0], d, store, log=lambda *a: None)
+        store.transition("CH01-IMG-01", st.HUMAN_APPROVED, "approved")
+        with self.assertRaises(RuntimeError):
+            vectorbuild.run_asset(fig, fig.assets[0], d, store,
+                                  log=lambda *a: None, rebuild=True)
+
+    def test_build_without_rebuild_still_refuses_a_pending_figure(self):
+        from cannabiology import state as st, vectorbuild
+        fig, d = self._ready()
+        store = st.Store()
+        vectorbuild.run_asset(fig, fig.assets[0], d, store, log=lambda *a: None)
+        with self.assertRaises(st.StateError):
+            vectorbuild.run_asset(fig, fig.assets[0], d, store, log=lambda *a: None)
