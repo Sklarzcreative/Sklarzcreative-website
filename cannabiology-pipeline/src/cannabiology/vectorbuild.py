@@ -122,8 +122,6 @@ def run_asset(figure, asset, decision, store, log=print):
     store.transition(aid, st.BUILDING, "deterministic build - no model call")
     art_path = run_dir / "vector" / f"{aid}_structure.svg"
     art_path.write_text(svg)
-    (run_dir / "vector" / f"{aid}_provenance.json").write_text(
-        json.dumps(provenance, indent=2))
     rec["candidates"].append({"candidate_id": "build001", "path": str(art_path),
                               "written": True, "deterministic": True})
     rec["selected_candidate"] = "build001"
@@ -148,10 +146,14 @@ def run_asset(figure, asset, decision, store, log=print):
     comp = _overlay(svg, Path(layer).read_text(), width, height)
     comp_path = run_dir / "package" / f"{aid}_composite.svg"
     comp_path.write_text(comp)
+    # Written last, so it records the label decisions made above rather than a
+    # half-filled record.
+    prov_path = run_dir / "vector" / f"{aid}_provenance.json"
+    prov_path.write_text(json.dumps(provenance, indent=2))
     rec["vector"] = {"layer": str(layer), "manifest": str(manifest),
                      "composite": str(comp_path), "label_count": len(missing),
                      "labels_already_in_artwork": len(covered),
-                     "provenance": str(run_dir / "vector" / f"{aid}_provenance.json")}
+                     "provenance": str(prov_path)}
     rec["run_dir"] = str(run_dir)
 
     # No image review: there is no generated art to second-guess. The content is

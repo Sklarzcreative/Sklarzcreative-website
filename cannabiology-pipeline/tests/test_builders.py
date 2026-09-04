@@ -243,3 +243,36 @@ class TestCaptionLayout(WorkspaceTest):
         ys = [int(y) for y in re.findall(r'<text x="24" y="(\d+)"', svg)]
         self.assertTrue(all(y < 804 for y in ys),
                         f"annotation footer must clear the artwork's line at 804: {ys}")
+
+
+class TestProvenanceRecord(WorkspaceTest):
+    def test_provenance_records_the_label_decision(self):
+        """The record is written last so it captures what was actually decided."""
+        import json
+        from pathlib import Path
+        import yaml
+        from cannabiology import state as st, vectorbuild, workspace
+
+        spec = {"figure_id": "CH01-IMG-01", "confirmed": True, "source": "FIXTURE",
+                "nodes": [{"id": "a", "label": "part a", "column": 0},
+                          {"id": "b", "label": "part b", "column": 1}],
+                "edges": [{"from": "a", "to": "b"}]}
+        d = workspace.resolve() / "canonical" / "diagram_specs"
+        d.mkdir(parents=True, exist_ok=True)
+        (d / "CH01-IMG-01.yaml").write_text(yaml.safe_dump(spec))
+        b = workspace.resolve() / "canonical" / "build_specs"
+        b.mkdir(parents=True, exist_ok=True)
+        (b / "CH01-IMG-01.yaml").write_text(yaml.safe_dump({"builder": "diagram"}))
+
+        figs, dec = self.load()
+        fig = figs["CH01-IMG-01"]
+        # fixture routes CH01-IMG-01 HYBRID; force the build lane for this test
+        dec["CH01-IMG-01"].route = "VECTOR_BUILD"
+        rec = vectorbuild.run_asset(fig, fig.assets[0], dec["CH01-IMG-01"],
+                                    st.Store(), log=lambda *a: None)
+        prov = json.loads(Path(rec["vector"]["provenance"]).read_text())
+        for key in ("labels_required", "labels_already_in_artwork", "labels_overlaid"):
+            self.assertIn(key, prov, f"{key} missing from the provenance record")
+        self.assertEqual(sorted(prov["labels_already_in_artwork"]),
+                         ["part a", "part b"])
+        self.assertEqual(prov["labels_overlaid"], ["part c"])
