@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import logging
 import os
 import socket
 from dataclasses import dataclass
@@ -16,6 +17,8 @@ from google.oauth2.service_account import Credentials
 from gspread.utils import rowcol_to_a1
 
 load_dotenv()
+
+LOGGER = logging.getLogger("sklarz-social-publisher.queue")
 
 SHEETS_SCOPES = [
     "https://www.googleapis.com/auth/spreadsheets",
@@ -197,8 +200,21 @@ class GoogleSheetQueue:
             if row.get("Published URL"):
                 continue
 
-            scheduled = parse_queue_datetime(row.get("Scheduled DateTime ET"), self.settings.tz)
-            if scheduled is None or scheduled > now:
+            raw_schedule = row.get("Scheduled DateTime ET")
+            scheduled = parse_queue_datetime(raw_schedule, self.settings.tz)
+            if scheduled is None:
+                if raw_schedule:
+                    # An unparseable date is indistinguishable from "not due yet",
+                    # so the row would be skipped on every run with nothing written
+                    # back to the Sheet. Name it instead of failing silently.
+                    LOGGER.warning(
+                        "Skipping %s: could not parse 'Scheduled DateTime ET' value %r. "
+                        "This row stays ineligible until the cell is corrected.",
+                        row.publish_id or f"row {row.row_number}",
+                        raw_schedule,
+                    )
+                continue
+            if scheduled > now:
                 continue
 
             age_minutes = (now - scheduled).total_seconds() / 60
