@@ -210,6 +210,17 @@ class TestLabelCoverage(WorkspaceTest):
         self.assertEqual(len(covered), 1)
         self.assertEqual(missing, [])
 
+    def test_british_and_american_spellings_match(self):
+        """The manuscript uses American forms; a tracker label written either
+        way must not read as a missing label."""
+        from cannabiology.vectorbuild import label_coverage
+        for required, drawn in (("sterilization", "Surface sterilisation"),
+                                ("sterilisation", "Surface sterilization"),
+                                ("acclimatization", "Acclimatisation and hardening")):
+            covered, missing = label_coverage([required], [drawn])
+            self.assertEqual(len(covered), 1, f"{required} vs {drawn}")
+            self.assertEqual(missing, [])
+
     def test_partial_label_inside_a_longer_node_still_counts(self):
         from cannabiology.vectorbuild import label_coverage
         covered, _ = label_coverage(

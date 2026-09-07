@@ -18,8 +18,11 @@ from .builders import chem, diagram
 
 def _norm(t):
     """Loose match for label coverage: case, punctuation, the multiplication
-    sign the tracker uses for genotype x environment, and en/-ce spellings."""
+    sign the tracker uses for genotype x environment, and the British/American
+    spellings that otherwise cause a label to read as missing when it is
+    plainly present (defence/defense, sterilisation/sterilization)."""
     t = t.lower().replace("defence", "defense").replace("\u00d7", "x")
+    t = re.sub(r"is(ation|ing|ed|e|es)\b", r"iz\1", t)
     return re.sub(r"[^a-z0-9]+", " ", t).strip()
 
 
