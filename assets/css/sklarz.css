@@ -280,16 +280,23 @@ p:last-child { margin-bottom: 0; }
 }
 .is-dark .role-title, .page-hero .role-title, .hero .role-title { color: var(--champagne); }
 
-/* The four disciplines are set as adjacent <span>s with no whitespace between
-   the tags, and each span is nowrap. In normal inline flow that gives the line
-   no break opportunity at all: it measures 586px and cannot wrap, which forced
-   the founder grid open on phones. Flex makes each discipline its own item, so
-   the line wraps between them while the phrases stay unbroken. */
+/* The four disciplines are set as adjacent <span>s, each nowrap. In normal
+   inline flow the whole run measured 586px with no break opportunity anywhere,
+   which forced the founder grid open on phones. A wrapping flex row lets the
+   line break between disciplines while each phrase stays intact.
+
+   Deliberately no interpunct between them. A CSS separator has to belong to one
+   item or the other, so wherever it is attached it lands at a line edge as soon
+   as the row wraps - leading the line if it hangs off the following item,
+   dangling if it trails the preceding one - and CSS cannot suppress it only at
+   line ends. This row wraps at every width from 360px to roughly 1150px, so the
+   gap does the separating and there is no width at which a separator could be
+   orphaned. */
 .role-disciplines {
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
-  column-gap: .6em;
+  column-gap: 1.6em;
   row-gap: .3rem;
   margin: 0 0 1.6rem;
   font-size: .92rem;
@@ -297,18 +304,6 @@ p:last-child { margin-bottom: 0; }
   color: var(--ink-muted);
 }
 .role-disciplines span { white-space: nowrap; }
-.role-disciplines span + span::before {
-  content: "·";
-  margin-inline-end: .6em;
-  color: var(--gold);
-}
-@media (max-width: 620px) {
-  /* Wrapped onto three lines, an interpunct that belongs between two
-     disciplines ends up leading a line instead. At this width the wrap itself
-     separates them, so the separator is dropped and the gap widened. */
-  .role-disciplines { column-gap: 1.15em; }
-  .role-disciplines span + span::before { content: none; margin-inline-end: 0; }
-}
 .is-dark .role-disciplines, .page-hero .role-disciplines { color: var(--on-dark-muted); }
 
 /* Pull quote — the single most "expensive" typographic moment on a page */
