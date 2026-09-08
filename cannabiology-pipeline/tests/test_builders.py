@@ -371,8 +371,7 @@ SPECS = {
     "flow": {"nodes": [{"id": "a", "label": "One", "column": 0},
                        {"id": "b", "label": "Two", "column": 1}],
              "edges": [{"from": "a", "to": "b", "label": "then"}],
-             "bands": [{"x": 10, "y": 10, "width": 100, "height": 100,
-                        "label": "a band"}]},
+             "bands": [{"nodes": ["a"], "label": "a band"}]},
     "lanes": {"nodes": [{"id": "a", "label": "Screen", "lane": "Traditional", "step": 0},
                         {"id": "b", "label": "Grow", "lane": "Traditional", "step": 1},
                         {"id": "c", "label": "Genotype", "lane": "Marker-assisted", "step": 0}]},
@@ -459,16 +458,26 @@ class TestLayouts(WorkspaceTest):
             s = _spec(layout); s["confirmed"] = False
             self.assertIn("DRAFT", diagram.build(s, 1200, 700, draft=True), layout)
 
-    def test_flow_wraps_at_the_width_the_approved_figures_used(self):
-        """Approved artwork must not reflow. 190px boxes wrap at 24 chars."""
+    def test_flow_wrap_is_pinned(self):
+        """Pin the wrap so artwork does not reflow unnoticed between builds.
+
+        Re-pinned 2026-09-08. This previously pinned the 24-character wrap of
+        the 2026-09-04 approved figures, but that wrap measured ~214px inside a
+        190px box and several nodes overhung their own border. The approved
+        figures are being re-issued for that and other geometry defects, so the
+        pin moves with them. Changing it again means artwork changes: re-render
+        and look at every figure before you do.
+        """
         from cannabiology.builders import diagram
         s = _spec("flow")
         s["nodes"] = [{"id": "a", "column": 0,
                        "label": "Carbohydrates (glucose, starch, cellulose, sucrose)"}]
         s["edges"] = []
+        s["bands"] = []
         svg = diagram.build(s, 1500, 820)
-        self.assertIn("Carbohydrates (glucose,", svg)
-        self.assertIn("starch, cellulose,", svg)
+        self.assertIn("Carbohydrates", svg)
+        self.assertIn("(glucose, starch,", svg)
+        self.assertIn("cellulose, sucrose)", svg)
 
     def test_band_labels_keep_their_letter_spacing(self):
         from cannabiology.builders import diagram
@@ -554,3 +563,267 @@ class TestRebuildGuard(WorkspaceTest):
         vectorbuild.run_asset(fig, fig.assets[0], d, store, log=lambda *a: None)
         with self.assertRaises(st.StateError):
             vectorbuild.run_asset(fig, fig.assets[0], d, store, log=lambda *a: None)
+
+
+# One spec per layout, each exercising every text-bearing field that layout
+# reads. If a layout gains a new field, add it here: the drift test below is
+# only as good as the coverage of these fixtures.
+LAYOUT_SPECS = {
+    "flow": {"nodes": [{"id": "a", "label": "Alpha", "column": 0, "row": 0},
+                       {"id": "d", "label": "Delta", "column": 0, "row": 1},
+                       {"id": "e", "label": "Echo", "column": 0, "row": 2},
+                       {"id": "b", "label": "Bravo", "column": 1, "row": 0}],
+             "edges": [{"from": "a", "to": "b", "label": "Charlie"}],
+             "bands": [{"nodes": ["a", "d", "e"], "label": "Foxtrot"}]},
+    "lanes": {"nodes": [{"id": "a", "label": "Alpha", "lane": "Echo", "step": 0},
+                        {"id": "b", "label": "Bravo", "lane": "Echo", "step": 1},
+                        {"id": "c", "label": "Golf", "lane": "Foxtrot", "step": 0}]},
+    "timeline": {"nodes": [{"id": "a", "label": "Alpha", "date": "1839"},
+                           {"id": "b", "label": "Bravo", "date": "1937"}]},
+    "pyramid": {"nodes": [{"id": "a", "label": "Alpha", "tier": 0, "note": "Charlie"},
+                          {"id": "b", "label": "Bravo", "tier": 1}],
+                "axis_label": "Delta"},
+    "layers": {"nodes": [{"id": "a", "label": "Alpha", "layer": 0, "note": "Charlie"},
+                         {"id": "b", "label": "Bravo", "layer": 1}]},
+    "hub": {"nodes": [{"id": "a", "label": "Alpha", "hub": True},
+                      {"id": "b", "label": "Bravo"}]},
+}
+
+
+class TestDrawnTexts(WorkspaceTest):
+    """`drawn_texts` tells label coverage what the artwork already prints.
+
+    If it under-reports, the build overlays a label on top of words the diagram
+    already draws; if it over-reports, a required label silently never gets
+    overlaid at all. Both are silent defects in the finished artwork, so this
+    checks the two directions against the rendered SVG itself.
+    """
+
+    # The provenance stamp and the draft banner are chrome that `_close` adds
+    # to every figure. They are not figure content and never need overlaying,
+    # so they are excluded rather than being taught to `drawn_texts`.
+    CHROME = ("Built from confirmed spec", "DRAFT - topology NOT confirmed",
+              "DRAFT FOR REVIEW - TOPOLOGY NOT YET CONFIRMED")
+
+    @classmethod
+    def _svg_words(cls, svg, source):
+        import re
+        from html import unescape
+        from cannabiology.vectorbuild import _norm
+        chrome = {w for c in cls.CHROME for w in _norm(c).split()}
+        chrome |= set(_norm(source).split())
+        words = set()
+        for body in re.findall(r"<text[^>]*>(.*?)</text>", svg, re.S):
+            words.update(_norm(unescape(body)).split())
+        return words - chrome
+
+    def _render(self, layout):
+        import copy
+        from cannabiology.builders import diagram
+        spec = copy.deepcopy(LAYOUT_SPECS[layout])
+        spec.update(figure_id="CH01-IMG-04", confirmed=True,
+                    source="TEST-FIXTURE", layout=layout)
+        return spec, diagram.build(spec)
+
+    def test_drawn_texts_matches_svg(self):
+        from cannabiology.builders import diagram
+        for layout in LAYOUT_SPECS:
+            with self.subTest(layout=layout):
+                spec, svg = self._render(layout)
+                from cannabiology.vectorbuild import _norm
+                claimed = set()
+                for t in diagram.drawn_texts(spec):
+                    claimed.update(_norm(t).split())
+                drawn = self._svg_words(svg, spec["source"])
+                self.assertTrue(drawn, f"{layout} drew no text at all")
+                self.assertFalse(
+                    drawn - claimed,
+                    f"{layout} typesets {sorted(drawn - claimed)} but drawn_texts "
+                    "omits it, so label coverage would overlay it twice")
+                self.assertFalse(
+                    claimed - drawn,
+                    f"{layout} does not typeset {sorted(claimed - drawn)} but "
+                    "drawn_texts claims it, so a required label would be dropped")
+
+    def test_note_and_date_count_as_covered(self):
+        from cannabiology import vectorbuild
+        spec, _ = self._render("pyramid")
+        covered, missing = vectorbuild.label_coverage(
+            ["Charlie", "Delta", "Zulu"], vectorbuild_texts(spec))
+        self.assertEqual(covered, ["Charlie", "Delta"])
+        self.assertEqual(missing, ["Zulu"])
+
+
+def vectorbuild_texts(spec):
+    from cannabiology.builders import diagram
+    return diagram.drawn_texts(spec)
+
+
+class TestDiagramGeometry(WorkspaceTest):
+    """Geometry defects that text-based review cannot see.
+
+    Four figures reached APPROVED with text running off the canvas or printing
+    underneath the caption, because every check until now compared strings and
+    none measured where they land. These measure.
+    """
+
+    # Generous per-character advance, matching the builder's own reservation.
+    EM = 0.66
+
+    @staticmethod
+    def _boxes(svg):
+        import re
+        from html import unescape
+        out = []
+        for m in re.finditer(
+                r'<text x="([-\d.]+)" y="([-\d.]+)"([^>]*)>(.*?)</text>', svg, re.S):
+            x, y, attrs, body = (float(m.group(1)), float(m.group(2)),
+                                 m.group(3), unescape(m.group(4)))
+            size = float((re.search(r'font-size="([\d.]+)"', attrs)
+                          or [None, "13"])[1])
+            anchor = (re.search(r'text-anchor="(\w+)"', attrs) or [None, "start"])[1]
+            w = len(body) * size * TestDiagramGeometry.EM
+            left = x - w / 2 if anchor == "middle" else (x - w if anchor == "end" else x)
+            out.append({"l": left, "r": left + w, "y": y, "size": size, "text": body})
+        return out
+
+    def _spec(self, layout, **over):
+        import copy
+        spec = copy.deepcopy(LAYOUT_SPECS[layout])
+        spec.update(figure_id="CH01-IMG-04", confirmed=True,
+                    source="TEST-FIXTURE", layout=layout)
+        spec.update(over)
+        return spec
+
+    def test_footer_reserve_matches_compositor(self):
+        """If these drift, the caption lands on the artwork again."""
+        import inspect
+        from cannabiology import vectorbuild
+        from cannabiology.builders import diagram
+        src = inspect.getsource(vectorbuild)
+        self.assertIn(f"height - {diagram.FOOTER_RESERVE}", src,
+                      "vectorbuild's footer_top no longer matches "
+                      "diagram.FOOTER_RESERVE")
+
+    def test_no_text_runs_off_the_canvas(self):
+        from cannabiology.builders import diagram
+        # A long end label is what clipped CH05-IMG-01 at the left edge.
+        cases = {
+            "timeline": self._spec("timeline", nodes=[
+                {"id": "a", "label": "Hand-rubbed hashish; trichomes separated "
+                                     "on silk screens", "date": "1000-1200 CE"},
+                {"id": "b", "label": "Advanced delivery and modern processing",
+                 "date": "2020-2026"}]),
+        }
+        for layout in LAYOUT_SPECS:
+            cases.setdefault(layout, self._spec(layout))
+        for layout, spec in cases.items():
+            with self.subTest(layout=layout):
+                w, h = 1200, 800
+                for b in self._boxes(diagram.build(spec, w, h)):
+                    self.assertGreaterEqual(
+                        b["l"], 0, f"{layout}: {b['text']!r} runs off the left edge")
+                    self.assertLessEqual(
+                        b["r"], w, f"{layout}: {b['text']!r} runs off the right edge")
+
+    def test_artwork_keeps_clear_of_the_caption_strip(self):
+        from cannabiology.builders import diagram
+        w, h = 1200, 800
+        floor = h - diagram.FOOTER_RESERVE
+        for layout in LAYOUT_SPECS:
+            with self.subTest(layout=layout):
+                svg = diagram.build(self._spec(layout), w, h)
+                for b in self._boxes(svg):
+                    # The provenance stamp is meant to sit in the strip.
+                    if "spec:" in b["text"] or "DRAFT" in b["text"]:
+                        continue
+                    self.assertLessEqual(
+                        b["y"], floor,
+                        f"{layout}: {b['text']!r} sits at y={b['y']:.0f}, inside the "
+                        f"caption strip below y={floor}")
+
+    def test_band_label_is_not_painted_over_by_the_first_row(self):
+        from cannabiology.builders import diagram
+        import re
+        spec = self._spec("flow", bands=[{"nodes": ["a", "d", "e"],
+                                          "label": "Foxtrot"}])
+        svg = diagram.build(spec, 1200, 800)
+        band = next(b for b in self._boxes(svg) if b["text"] == "FOXTROT")
+        for m in re.finditer(r'<rect x="([-\d.]+)" y="([-\d.]+)" '
+                             r'width="([\d.]+)" height="([\d.]+)"', svg):
+            x, y, rw, rh = (float(m.group(i)) for i in range(1, 5))
+            if rw > 400:       # the band itself, not a node box
+                continue
+            overlaps = (x < band["r"] and band["l"] < x + rw
+                        and y < band["y"] + 4 and band["y"] - 12 < y + rh)
+            self.assertFalse(
+                overlaps, f"node box at ({x:.0f},{y:.0f}) paints over the band label")
+
+
+class TestBandsGroupNodes(WorkspaceTest):
+    def test_pixel_band_is_refused(self):
+        """Hand-written band coordinates went stale silently. Fail loudly."""
+        from cannabiology.builders import diagram
+        spec = {"figure_id": "CH01-IMG-04", "confirmed": True,
+                "source": "TEST-FIXTURE", "layout": "flow",
+                "nodes": [{"id": "a", "label": "Alpha", "column": 0}],
+                "bands": [{"x": 10, "y": 10, "width": 100, "height": 100,
+                           "label": "stale"}]}
+        with self.assertRaises(diagram.DiagramError) as ctx:
+            diagram.build(spec, 1200, 800)
+        self.assertIn("lists no nodes", str(ctx.exception))
+
+    def test_band_referencing_an_unknown_node_is_refused(self):
+        from cannabiology.builders import diagram
+        spec = {"figure_id": "CH01-IMG-04", "confirmed": True,
+                "source": "TEST-FIXTURE", "layout": "flow",
+                "nodes": [{"id": "a", "label": "Alpha", "column": 0}],
+                "bands": [{"nodes": ["a", "ghost"], "label": "b"}]}
+        with self.assertRaises(diagram.DiagramError) as ctx:
+            diagram.build(spec, 1200, 800)
+        self.assertIn("ghost", str(ctx.exception))
+
+    def test_band_encloses_the_nodes_it_names(self):
+        from cannabiology.builders import diagram
+        import re
+        spec = {"figure_id": "CH01-IMG-04", "confirmed": True,
+                "source": "TEST-FIXTURE", "layout": "flow",
+                "nodes": [{"id": "a", "label": "Alpha", "column": 0, "row": 0},
+                          {"id": "b", "label": "Bravo", "column": 0, "row": 1},
+                          {"id": "c", "label": "Outside", "column": 1, "row": 0}],
+                "bands": [{"nodes": ["a", "b"], "label": "Group"}]}
+        svg = diagram.build(spec, 1200, 800)
+        rects = [tuple(float(g) for g in m.groups()) for m in re.finditer(
+            r'<rect x="([-\d.]+)" y="([-\d.]+)" width="([\d.]+)" height="([\d.]+)"', svg)]
+        band = max(rects, key=lambda r: r[2] * r[3])
+        boxes = [r for r in rects if r[2] == diagram.NODE_W]
+        inside = [r for r in boxes
+                  if band[0] <= r[0] and r[0] + r[2] <= band[0] + band[2]
+                  and band[1] <= r[1] and r[1] + r[3] <= band[1] + band[3]]
+        self.assertEqual(len(inside), 2,
+                         "band should enclose exactly the two nodes it names")
+
+
+class TestNodeTextFitsItsBox(WorkspaceTest):
+    def test_no_line_overhangs_its_node_box(self):
+        """Node labels used to wrap wider than the box that contains them."""
+        from cannabiology.builders import diagram
+        import re
+        from html import unescape
+        spec = {"figure_id": "CH01-IMG-04", "confirmed": True,
+                "source": "TEST-FIXTURE", "layout": "flow",
+                "nodes": [{"id": "a", "label": "Mevalonate / MEP pathway",
+                           "column": 0, "row": 0},
+                          {"id": "b", "label": "Environment B: low-light indoor",
+                           "column": 1, "row": 0},
+                          {"id": "c", "label": "Feature extraction: SNP alleles "
+                                               "at THCAS, CBDAS, TPS",
+                           "column": 2, "row": 0}]}
+        svg = diagram.build(spec, 1200, 800)
+        for m in re.finditer(r'<text x="([-\d.]+)" y="[-\d.]+" text-anchor="middle"'
+                             r'[^>]*?font-size="([\d.]+)"[^>]*>(.*?)</text>', svg, re.S):
+            body = unescape(m.group(3))
+            w = diagram.text_width(body, float(m.group(2)))
+            self.assertLessEqual(
+                w, diagram.NODE_W,
+                f"{body!r} measures {w:.0f}px inside a {diagram.NODE_W}px box")

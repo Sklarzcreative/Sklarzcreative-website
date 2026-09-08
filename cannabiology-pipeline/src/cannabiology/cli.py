@@ -416,3 +416,11 @@ def main(argv=None):
     except (canonical.CanonicalError, reconcile.ReconciliationError) as e:
         print(f"ERROR: {e}", file=sys.stderr)
         return 4
+
+
+# Without this, `python -m cannabiology.cli ...` defines every function and
+# exits 0 having done nothing - which reads as a successful run and can leave
+# you reviewing a stale preview. `python -m cannabiology` is the real entry
+# point; this makes the other spelling work rather than lie.
+if __name__ == "__main__":
+    sys.exit(main())

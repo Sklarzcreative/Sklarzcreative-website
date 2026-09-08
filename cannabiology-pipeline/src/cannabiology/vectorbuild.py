@@ -145,8 +145,7 @@ def run_asset(figure, asset, decision, store, log=print, rebuild=False):
         dspec = diagram.load_spec(
             workspace.resolve() / "canonical" / "diagram_specs" / f"{figure.figure_id}.yaml")
         svg = diagram.build(dspec, width, height)
-        artwork_texts = ([n["label"] for n in dspec["nodes"]]
-                         + [b.get("label", "") for b in dspec.get("bands", [])])
+        artwork_texts = diagram.drawn_texts(dspec)
         provenance["spec_source"] = dspec["source"]
         provenance["nodes"] = len(dspec["nodes"])
         log(f"  diagram: {len(dspec['nodes'])} nodes from confirmed spec")

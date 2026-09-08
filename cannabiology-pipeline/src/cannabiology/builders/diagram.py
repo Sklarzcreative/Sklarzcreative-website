@@ -33,6 +33,30 @@ STEPS = ["#e8ede6", "#dbe4d8", "#cddaca", "#bfd0bc", "#b1c6ae", "#a3bca0"]
 
 NODE_W, NODE_H, LINE_H = 190, 64, 16
 
+# The compositor drops the figure number and caption into the bottom strip
+# (vectorbuild passes footer_top = height - 96). Layouts must keep artwork out
+# of it, or the caption prints straight through the bottom row of the diagram.
+# Kept in step with vectorbuild by test_footer_reserve_matches_compositor.
+FOOTER_RESERVE = 96
+
+# A labelled band prints its name in a strip along its own top edge. Nodes have
+# to start below that strip, or the first row paints over the band label.
+BAND_LABEL_H = 30
+
+# Advance width per character, as a fraction of font size, for the font stack
+# below. Deliberately generous: it is used to reserve space, so overestimating
+# costs a little whitespace while underestimating clips the author's wording.
+EM = 0.66
+
+
+def text_width(s, size):
+    return len(str(s)) * size * EM
+
+
+def fits(px, size):
+    """How many characters of `size` type fit in `px`, never fewer than 10."""
+    return max(10, int(px / (size * EM)))
+
 
 class DiagramError(RuntimeError):
     pass
@@ -81,6 +105,35 @@ def _wrap(text, chars):
     return lines or [""]
 
 
+# Every per-node key whose value the layouts typeset. `lane` is handled
+# separately because it is drawn once per lane, not once per node.
+NODE_TEXT_FIELDS = ("label", "note", "date")
+
+
+def drawn_texts(spec):
+    """Every string the layouts typeset for this spec.
+
+    Label coverage compares the tracker's required manual labels against this
+    list, so any field the builders draw but this omits gets overlaid a second
+    time on top of artwork that already prints it. test_drawn_texts_matches_svg
+    renders every layout and fails if the two ever drift apart.
+    """
+    out = []
+    for n in spec.get("nodes", []):
+        out += [str(n[f]) for f in NODE_TEXT_FIELDS if n.get(f)]
+    seen = set()
+    for n in spec.get("nodes", []):
+        lane = n.get("lane")
+        if lane and lane not in seen:
+            seen.add(lane)
+            out.append(str(lane))
+    out += [str(e["label"]) for e in spec.get("edges", []) if e.get("label")]
+    out += [str(b["label"]) for b in spec.get("bands", []) if b.get("label")]
+    if spec.get("axis_label"):
+        out.append(str(spec["axis_label"]))
+    return out
+
+
 def _text(x, y, s, size=13.5, weight=400, anchor="middle", fill=None,
           letter_spacing=None):
     ls = f' letter-spacing="{letter_spacing}"' if letter_spacing else ""
@@ -102,8 +155,11 @@ def _node_box(x, y, label, emphasis=False, w=NODE_W, h=NODE_H, fill=None):
     out = [f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="3" '
            f'fill="{fill or PALETTE["fill"]}" stroke="{stroke}" '
            f'stroke-width="{2.2 if emphasis else 1.3}"/>']
-    out += _block(x + w / 2, y + h / 2, label,
-                  chars=max(12, round(w / 8)), weight=600 if emphasis else 400)
+    # Wrap to what actually fits inside the box. The old round(w / 8) gave 24
+    # characters for a 190px box, but 24 characters of 13.5px type measure
+    # about 214px, so the longest line of many nodes overhung its own border.
+    out += _block(x + w / 2, y + h / 2, label, chars=fits(w - 14, 13.5),
+                  weight=600 if emphasis else 400)
     return out
 
 
@@ -151,24 +207,26 @@ def _flow(spec, width, height, pad=48):
     for n in nodes:
         by_col.setdefault(n.get("column", 0), []).append(n)
     step_x = (width - 2 * pad - NODE_W) / max(1, cols - 1) if cols > 1 else 0
+
+    # Rows run between the band-label strip and the caption strip. Using the
+    # full canvas height instead put the bottom row underneath the caption; not
+    # reserving the label strip let the first row paint over a band's name.
+    labelled = any(b.get("label") for b in spec.get("bands", []))
+    top = pad + (BAND_LABEL_H if labelled else 0)
+    bottom = height - FOOTER_RESERVE - NODE_H
     placed = {}
     for col, group in by_col.items():
         group = sorted(group, key=lambda n: n.get("row", 0))
-        span = height - 2 * pad - NODE_H
+        span = max(0, bottom - top)
         step_y = span / max(1, len(group) - 1) if len(group) > 1 else 0
         for i, n in enumerate(group):
             placed[n["id"]] = {
                 "x": pad + col * step_x,
-                "y": pad + (i * step_y if len(group) > 1 else span / 2), "node": n}
+                "y": top + (i * step_y if len(group) > 1 else span / 2), "node": n}
 
     p = _open(width, height)
     for band in spec.get("bands", []):
-        p.append(f'<rect x="{band["x"]}" y="{band["y"]}" width="{band["width"]}" '
-                 f'height="{band["height"]}" fill="{PALETTE["band"]}" rx="4"/>')
-        if band.get("label"):
-            p.append(_text(band["x"] + 12, band["y"] + 22, band["label"].upper(),
-                           size=12, weight=600, anchor="start",
-                           fill=PALETTE["muted"], letter_spacing="0.06em"))
+        p += _band(band, placed)
     for e in edges:
         a, b = placed.get(e["from"]), placed.get(e["to"])
         if not a or not b:
@@ -187,6 +245,44 @@ def _flow(spec, width, height, pad=48):
         p += _node_box(pl["x"], pl["y"], pl["node"]["label"],
                        pl["node"].get("emphasis") == "primary")
     return p
+
+
+# Gap between a band's edge and the nodes it groups, and the height of the
+# strip above it that carries its name.
+BAND_INSET = 18
+
+
+def _band(band, placed):
+    """Draw one grouping band and its label.
+
+    A band names the nodes it groups, and its rectangle is measured from where
+    those nodes actually landed. Bands used to carry hand-written pixel
+    coordinates, which silently went stale whenever the layout moved: on
+    CH01-IMG-04 and CH02-IMG-05 the label ended up underneath the first row of
+    node boxes and could not be read.
+    """
+    ids = band.get("nodes")
+    if not ids:
+        raise DiagramError(
+            f"Band {band.get('label', '?')!r} lists no nodes. Bands group nodes "
+            "by id; pixel coordinates are no longer accepted because they go "
+            "stale when the layout changes.")
+    missing = [i for i in ids if i not in placed]
+    if missing:
+        raise DiagramError(
+            f"Band {band.get('label', '?')!r} references unknown node(s): {missing}")
+    boxes = [placed[i] for i in ids]
+    x = min(b["x"] for b in boxes) - BAND_INSET
+    y = min(b["y"] for b in boxes) - BAND_INSET
+    w = max(b["x"] for b in boxes) + NODE_W + BAND_INSET - x
+    h = max(b["y"] for b in boxes) + NODE_H + BAND_INSET - y
+    out = [f'<rect x="{x}" y="{y}" width="{w}" height="{h}" '
+           f'fill="{PALETTE["band"]}" rx="4"/>']
+    if band.get("label"):
+        out.append(_text(x, y - 9, band["label"].upper(), size=12, weight=600,
+                         anchor="start", fill=PALETTE["muted"],
+                         letter_spacing="0.06em"))
+    return out
 
 
 def _lanes(spec, width, height, pad=48):
@@ -231,6 +327,13 @@ def _timeline(spec, width, height, pad=64):
     _require(spec, "timeline", per_node="date")
     nodes = spec["nodes"]
     axis_y = height / 2
+    # The first and last cards are centred on the axis endpoints, so a wide
+    # label at either end hangs off the canvas. Widen the pad to fit whichever
+    # end card is widest, rather than clipping the author's wording.
+    for end in ({nodes[0]["id"]: nodes[0], nodes[-1]["id"]: nodes[-1]}).values():
+        half = max([text_width(end["date"], 13)]
+                   + [text_width(ln, 13) for ln in _wrap(end["label"], 20)]) / 2
+        pad = max(pad, half + 8)
     span = width - 2 * pad
     step = span / max(1, len(nodes) - 1) if len(nodes) > 1 else 0
 
