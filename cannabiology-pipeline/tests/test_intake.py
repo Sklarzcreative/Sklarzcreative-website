@@ -107,8 +107,24 @@ class TestInventedData(WorkspaceTest):
 
     def test_sample_size_is_fatal(self):
         from cannabiology import intake
-        self.assertTrue(any(x.code == "data.sample_size"
+        self.assertTrue(any(x.code == "data.count_claim"
                             for x in intake.check_invented_data(svg(text("n=120")))))
+
+    def test_ploidy_claim_is_fatal(self):
+        """"2n = 20" is a chromosome-count assertion and needs a source.
+
+        The first version of this check required a word boundary before the n,
+        so "2n" did not match and a karyotype figure passed with the claim on it.
+        """
+        from cannabiology import intake
+        f = intake.check_invented_data(
+            svg(text("10 homologous chromosome pairs - 2n = 20")))
+        self.assertTrue(any(x.code == "data.count_claim" for x in f))
+
+    def test_a_word_ending_in_n_is_not_a_count(self):
+        from cannabiology import intake
+        self.assertEqual(
+            intake.check_invented_data(svg(text("carbon = major element"))), [])
 
     def test_readable_sequence_is_fatal(self):
         from cannabiology import intake

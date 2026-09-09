@@ -37,7 +37,10 @@ ASPECT_TOLERANCE = 0.06
 UNIT_NUMBER = re.compile(
     r"\b\d[\d,.]*\s*(%|nm|µm|um|mm|cm|kDa|kb|bp|mg|ml|mL|µL|uL|g\b|kg|"
     r"°\s*[CF]|bar|psi|rpm|Hz|kHz|mM|µM|uM|nM|ppm|mol|kcal|kJ)", re.I)
-SAMPLE_SIZE = re.compile(r"\bn\s*=\s*\d+", re.I)
+# Sample sizes ("n=120") and ploidy or count claims ("2n = 20"). The leading
+# digit matters: \bn would not match "2n", so a chromosome-count assertion
+# walked straight through the first version of this check.
+COUNT_CLAIM = re.compile(r"(?<![A-Za-z])\d*n\s*=\s*\d+", re.I)
 # Four or more contiguous unambiguous bases reads as a real sequence.
 SEQUENCE = re.compile(r"\b[ACGTU]{4,}\b")
 
@@ -168,7 +171,7 @@ def check_invented_data(svg):
     out = []
     for t in svgtext.all_text(svg):
         for rx, code, what in ((UNIT_NUMBER, "data.unit_number", "a number with a unit"),
-                               (SAMPLE_SIZE, "data.sample_size", "a sample size"),
+                               (COUNT_CLAIM, "data.count_claim", "a stated count, ploidy or sample size"),
                                (SEQUENCE, "data.sequence", "a readable base sequence")):
             m = rx.search(t)
             if m:
