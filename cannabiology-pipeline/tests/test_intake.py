@@ -177,3 +177,112 @@ class TestIngestLane(WorkspaceTest):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestRasterChecks(WorkspaceTest):
+    """Pixels cannot be read for text, but size and shape can."""
+
+    def _fig(self, aspect):
+        from cannabiology import canonical
+        return canonical.Figure(
+            figure_id="CH01-IMG-01", chapter="1", title="t", purpose="p",
+            visual_type="v", status="", prompt="", negative="", science_notes="",
+            manual_labels=[], caption="", aspect=aspect, page_treatment="",
+            approval="", manuscript_section="", source_manuscript="")
+
+    def _png(self, w, h, name="a.png"):
+        import struct, zlib
+        from cannabiology import workspace
+        raw = b"".join(b"\x00" + b"\xff\xff\xff" * w for _ in range(h))
+        def chunk(tag, data):
+            c = tag + data
+            return (struct.pack(">I", len(data)) + c
+                    + struct.pack(">I", zlib.crc32(c) & 0xffffffff))
+        png = (b"\x89PNG\r\n\x1a\n"
+               + chunk(b"IHDR", struct.pack(">IIBBBBB", w, h, 8, 2, 0, 0, 0))
+               + chunk(b"IDAT", zlib.compress(raw))
+               + chunk(b"IEND", b""))
+        p = workspace.resolve() / name
+        p.parent.mkdir(parents=True, exist_ok=True)
+        p.write_bytes(png)
+        return p
+
+    def test_pixel_size_reads_a_png_header(self):
+        from cannabiology import intake
+        self.assertEqual(intake.pixel_size(self._png(37, 11)), (37, 11))
+
+    def test_below_print_resolution_is_fatal(self):
+        from cannabiology import intake
+        f = intake.check_raster(self._png(356, 540), self._fig("3:4"))
+        self.assertTrue(any(x.code == "raster.below_print_resolution"
+                            and x.level == "FAIL" for x in f))
+
+    def test_wrong_orientation_is_named_explicitly(self):
+        """A 4:3 figure delivered portrait is the error most easily missed."""
+        from cannabiology import intake
+        f = intake.check_raster(self._png(356, 540), self._fig("4:3"))
+        mismatch = [x for x in f if x.code == "raster.aspect_mismatch"]
+        self.assertTrue(mismatch)
+        self.assertIn("wrong orientation", mismatch[0].detail)
+
+    def test_correct_aspect_and_size_passes_both(self):
+        from cannabiology import intake
+        f = intake.check_raster(self._png(2400, 1800), self._fig("4:3"))
+        self.assertEqual([x.code for x in f], ["file.raster_not_inspected"])
+
+    def test_unparseable_tracker_aspect_is_not_a_finding(self):
+        from cannabiology import intake
+        f = intake.check_raster(self._png(2400, 1800), self._fig("Full-width"))
+        self.assertEqual([x.code for x in f], ["file.raster_not_inspected"])
+
+    def test_raster_always_says_what_could_not_be_checked(self):
+        from cannabiology import intake
+        for aspect in ("4:3", "3:4", "16:9"):
+            f = intake.check_raster(self._png(2400, 1800), self._fig(aspect))
+            self.assertTrue(any(x.code == "file.raster_not_inspected" for x in f))
+
+    def test_parse_aspect(self):
+        from cannabiology import intake
+        self.assertAlmostEqual(intake.parse_aspect("16:9"), 16 / 9)
+        self.assertAlmostEqual(intake.parse_aspect("3:4"), 0.75)
+        self.assertIsNone(intake.parse_aspect("Full-width timeline"))
+
+
+class TestAssertedTextIsScopedToWordlessRoutes(WorkspaceTest):
+    """VECTOR_BUILD artwork prints its own labels. That is correct, not a fault."""
+
+    def _fig(self, status, labels):
+        from cannabiology import canonical
+        return canonical.Figure(
+            figure_id="CH01-IMG-04", chapter="1", title="t", purpose="p",
+            visual_type="v", status=status, prompt="", negative="",
+            science_notes="", manual_labels=labels, caption="", aspect="16:9",
+            page_treatment="", approval="", manuscript_section="",
+            source_manuscript="")
+
+    def _svg_path(self, body, name="art.svg"):
+        from cannabiology import workspace
+        p = workspace.resolve() / name
+        p.parent.mkdir(parents=True, exist_ok=True)
+        p.write_text(SVG_HEAD + body + "</svg>")
+        return p
+
+    def test_vector_build_may_print_its_labels(self):
+        from cannabiology import intake, routing
+        fig = self._fig("VECTOR-BUILD — conceptual metabolic branching diagram",
+                        ["cannabinoids", "terpenes"])
+        dec = routing.Router().route(fig)
+        self.assertEqual(dec.route, "VECTOR_BUILD")
+        path = self._svg_path(text("cannabinoids") + text("terpenes", y=500))
+        codes = [f.code for f in intake.inspect(path, fig, dec, GOOD_RECORD)]
+        self.assertNotIn("text.asserted_label", codes)
+
+    def test_hybrid_may_not(self):
+        from cannabiology import intake, routing
+        fig = self._fig("Prompt ready / artwork not generated",
+                        ["cannabinoids", "terpenes"])
+        dec = routing.Router().route(fig)
+        self.assertIn(dec.route, intake.WORDLESS_ROUTES)
+        path = self._svg_path(text("cannabinoids"), name="art2.svg")
+        codes = [f.code for f in intake.inspect(path, fig, dec, GOOD_RECORD)]
+        self.assertIn("text.asserted_label", codes)

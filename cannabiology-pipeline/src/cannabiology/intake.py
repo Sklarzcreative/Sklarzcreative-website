@@ -23,6 +23,15 @@ from .vectorbuild import _norm
 
 RASTER_SUFFIXES = {".png", ".jpg", ".jpeg", ".tif", ".tiff", ".webp"}
 
+# A full-width textbook figure is about 7 inches wide. At 300dpi that is 2100px,
+# so anything under this on its long edge cannot be placed at print size. The
+# threshold is deliberately below 2100 to allow a 2/3-page figure.
+MIN_PRINT_LONG_EDGE = 1500
+
+# How far a delivered aspect ratio may drift from the tracker's before it is
+# reported. Generous, because a few pixels of trim is not a finding.
+ASPECT_TOLERANCE = 0.06
+
 # Matches a number carrying a unit, which is the shape of the invented data the
 # tracker's negative constraints forbid: "18%", "35 °C", "300 bar", "n=120".
 UNIT_NUMBER = re.compile(
@@ -120,12 +129,22 @@ def check_geometry(svg, footer_reserve=96):
     return out
 
 
+# Routes whose artwork is commissioned wordless, with labels overlaid later.
+# On VECTOR_BUILD the pipeline draws the labels itself from a cited spec, so
+# printed labels are correct there and must not be reported.
+WORDLESS_ROUTES = ("HYBRID", "GENERATE")
+
+
 def check_asserted_text(svg, required_labels):
     """Base art must not print the labels we overlay from verified sources.
 
     A label printed by the illustrator looks identical to one we verified, and
     nobody downstream can tell the difference. That is the whole reason HYBRID
     artwork is drawn wordless.
+
+    Applies only to the wordless routes. Running it on VECTOR_BUILD artwork
+    reported ten failures for labels that route is supposed to print, which is
+    the kind of false alarm that teaches people to ignore a gate.
     """
     # Match against rejoined blocks as well as individual runs: a label wrapped
     # across two tspans is two runs but one phrase, and would otherwise pass.
@@ -189,20 +208,90 @@ def inspect(path, figure, decision, record_text, footer_reserve=96):
         svg = path.read_text(errors="replace")
         try:
             findings += check_geometry(svg, footer_reserve)
-            findings += check_asserted_text(svg, figure.manual_labels)
+            if decision.route in WORDLESS_ROUTES:
+                findings += check_asserted_text(svg, figure.manual_labels)
             findings += check_invented_data(svg)
         except svgtext.MalformedSVG as e:
             findings.append(_fail("file.malformed", str(e)))
     elif suffix in RASTER_SUFFIXES:
-        findings.append(_warn(
-            "file.raster_not_inspected",
-            "raster artwork: the text, geometry and invented-data checks cannot "
-            "run on pixels. A human must confirm by eye that the artwork prints "
-            "no labels, no numbers and nothing in the caption strip."))
+        findings += check_raster(path, figure)
     else:
         findings.append(_fail("file.unsupported",
                               f"unsupported artwork format {suffix!r}"))
     return findings
+
+
+def pixel_size(path):
+    """(width, height) for PNG and JPEG, from the file header.
+
+    Header parsing rather than an imaging library, so the pipeline keeps its
+    stdlib-only footprint. Returns None for formats it cannot read, and the
+    caller reports that rather than guessing.
+    """
+    data = Path(path).read_bytes()
+    if data[:8] == b"\x89PNG\r\n\x1a\n" and data[12:16] == b"IHDR":
+        return (int.from_bytes(data[16:20], "big"),
+                int.from_bytes(data[20:24], "big"))
+    if data[:2] == b"\xff\xd8":                       # JPEG
+        i = 2
+        while i < len(data) - 9:
+            if data[i] != 0xFF:
+                i += 1
+                continue
+            marker = data[i + 1]
+            if marker in (0xC0, 0xC1, 0xC2, 0xC3, 0xC5, 0xC6, 0xC7,
+                          0xC9, 0xCA, 0xCB, 0xCD, 0xCE, 0xCF):
+                return (int.from_bytes(data[i + 7:i + 9], "big"),
+                        int.from_bytes(data[i + 5:i + 7], "big"))
+            i += 2 + int.from_bytes(data[i + 2:i + 4], "big")
+    return None
+
+
+def parse_aspect(spec):
+    """'16:9' -> 1.777. Returns None if the tracker's value is not a ratio."""
+    m = re.match(r"\s*(\d+(?:\.\d+)?)\s*[:x/]\s*(\d+(?:\.\d+)?)\s*$", str(spec or ""))
+    if not m:
+        return None
+    w, h = float(m.group(1)), float(m.group(2))
+    return w / h if h else None
+
+
+def check_raster(path, figure):
+    """What can be checked on pixels: size, shape, and that we said so."""
+    out = [_warn(
+        "file.raster_not_inspected",
+        "raster artwork: the text, geometry and invented-data checks cannot run "
+        "on pixels. A human must confirm by eye that the artwork prints no "
+        "labels, no numbers and nothing in the caption strip.")]
+    size = pixel_size(path)
+    if size is None:
+        out.append(_warn("raster.size_unknown",
+                         f"could not read pixel dimensions from {Path(path).suffix} "
+                         "header; check resolution and aspect by hand"))
+        return out
+    w, h = size
+    long_edge = max(w, h)
+    if long_edge < MIN_PRINT_LONG_EDGE:
+        out.append(_fail(
+            "raster.below_print_resolution",
+            f"{w}x{h} is {long_edge}px on the long edge. A full-width figure "
+            f"needs about {MIN_PRINT_LONG_EDGE}-2100px to place at print size; "
+            "this would be re-sampled up and look soft."))
+    want = parse_aspect(figure.aspect)
+    if want:
+        got = w / h
+        if abs(got - want) > ASPECT_TOLERANCE:
+            orientation = ""
+            if (want > 1) != (got > 1):
+                orientation = (" This is the wrong orientation: the tracker asks "
+                               "for " + ("landscape" if want > 1 else "portrait")
+                               + " and the artwork is "
+                               + ("landscape" if got > 1 else "portrait") + ".")
+            out.append(_fail(
+                "raster.aspect_mismatch",
+                f"delivered {w}x{h} (ratio {got:.3f}); the tracker specifies "
+                f"{figure.aspect} (ratio {want:.3f}).{orientation}"))
+    return out
 
 
 def digest(path):
