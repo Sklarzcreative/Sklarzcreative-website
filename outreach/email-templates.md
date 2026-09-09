@@ -1,159 +1,147 @@
-# Cold Email Templates: Trust & Discoverability Mini Audit
+# Mini Audit outreach guide
 
-**Goal:** Book 5 qualified conversations, sell 3–5 introductory audits ($199) or 2–4 standard audits ($350) in 7 days.
+This is the canonical cold-outreach guide for the Trust & Discoverability Mini Audit. It covers direct prospecting only. The opt-in follow-up sequence for Trust-First Content Scorecard users remains separately governed by [`docs/12-email-sequence.md`](../docs/12-email-sequence.md).
 
-**Tone:** Direct, intelligent, warm. No hype. Lead with their problem, not your process.
+## Confirmed offer facts
 
----
+- Standard price: $350 fixed fee, paid upfront
+- Typical turnaround: 3–5 business days
+- Review scope: homepage or main landing page plus one primary social profile
+- Deliverables: written review, prioritized 30-day action plan, 15–20 minute recorded walkthrough, concise written summary, and 20-minute follow-up Q&A within seven days
+- Central Massachusetts founder rate: $199 for five introductory, qualified founder-led business spots, subject to availability
+- No rebrand or retainer is required afterward
 
-## Template A: Founder-Led Small Businesses
+The $199 rate is not a general discount. Use it only for a qualifying Central Massachusetts founder and describe it as subject to availability.
 
-**Subject line options:**
-- Your [industry] positioning is clearer than most, but one thing is probably costing you
-- Quick question about your site + messaging
-- Worth a 15-minute conversation?
+## Personalization tokens
 
----
+Use these exact tokens in working drafts:
 
-**Email:**
+- `{first_name}`
+- `{company}`
+- `{website_or_link}`
+- `{referrer_or_context}`
+- `{specific_observation}`
+- `{relevant_issue}`
 
-```
-Hi [First Name],
+Every message must include a real observation supported by the prospect's public website or profile. Do not claim that an issue is costing money, suppressing reach, or losing clients unless evidence establishes that.
 
-I looked at [Business Name]'s website and [one specific observation: "your social profile," "your LinkedIn," "your homepage," etc.].
+## 1. Email
 
-You're doing the hard part right—[one genuine observation about what's working].
+**Subject:** A focused question about {company}
 
-But I'm noticing [one specific fixable problem: "the offer gets buried," "it's inconsistent between channels," "the proof isn't visible," "people probably aren't finding you when they search," etc.].
+Hi {first_name},
 
-That's the kind of thing that usually costs a founder-led business real opportunities. Not because the work isn't good. Because people can't tell quickly that it is.
+I found {company} through {referrer_or_context} and spent a little time with {website_or_link}.
 
-I do something specific for this: a $199 focused audit that identifies exactly what's making your business harder to understand, trust, find, or act on—then a 30-day action plan so you know what to fix first.
+One thing that stood out was {specific_observation}. I also noticed {relevant_issue}, which may make it harder for a new visitor to understand the offer, see the proof behind it, or know what to do next.
 
-Takes 3–5 business days. Includes a walkthrough and a follow-up Q&A.
+I offer a Trust & Discoverability Mini Audit that reviews a homepage or main landing page together with one primary social profile. The result is a written review, a prioritized 30-day action plan, a recorded walkthrough, and a follow-up Q&A.
 
-No rebrand required. No retainer. Just clarity on what matters most.
+The standard fixed fee is $350, with a typical turnaround of 3–5 business days. You can see the full scope here: https://sklarzcreative.com/audit/
 
-Given what I'm seeing, I think it would be useful. Worth a 15-minute conversation to talk through whether it makes sense?
+If it looks relevant, reply with the page and social profile you would want reviewed. I can confirm fit before you commit.
 
-[Your name]
-```
+Cassandra Sklarz
 
----
+Founder & Strategic Marketing Consultant
 
-## Template B: Consultants, Experts, Coaches
+Sklarz Creative
 
-**Subject line options:**
-- [First Name], quick positioning question
-- Your expertise deserves clearer positioning
-- One thing probably costs you clients
+### Central Massachusetts variation
 
----
+For a qualifying Central Massachusetts founder, replace the pricing paragraph with:
 
-**Email:**
+> I am also opening five introductory Central Massachusetts founder spots at $199, subject to availability. The scope and deliverables are the same as the standard $350 audit. You can see the full details here: https://sklarzcreative.com/audit/
 
-```
-Hi [First Name],
+## 2. LinkedIn message
 
-I do strategy work for consultants and experts who are tired of being invisible or mistaken for generalists.
+Hi {first_name}, I found {company} through {referrer_or_context} and looked at {website_or_link}. {specific_observation} stood out. I also noticed {relevant_issue}, which may be worth tightening. I offer a focused $350 Trust & Discoverability Mini Audit covering a homepage or main landing page plus one social profile, followed by a prioritized 30-day plan. Details: https://sklarzcreative.com/audit/ If it seems useful, I can confirm fit by message.
 
-I looked at your positioning—[one specific observation: "your bio," "your website," "the way you describe your work," etc.]—and I see the real depth there.
+For a qualifying Central Massachusetts founder, change “$350” to “$199 introductory Central Massachusetts founder rate, subject to availability.”
 
-But I also see [one specific clarity problem: "people probably don't know what makes you different," "your offer gets mixed with everything else you do," "it's not clear who you actually help," "proof of what you deliver isn't visible," etc.].
+## 3. Local chamber or directory message
 
-That gap costs consultants like you real fees and real clients. Not because you're not good. Because people don't immediately understand why they should hire you instead of the person next to you.
+Hi {first_name},
 
-I built a $199 audit specifically for this. It looks at your positioning, messaging, and digital presence across six trust dimensions. Then you get a prioritized action plan—the stuff that actually moves the needle first.
+I found {company} through {referrer_or_context}. I am Cassandra Sklarz, founder of Sklarz Creative, and I work with founder-led and expert-led businesses on positioning, trust, and discoverability.
 
-3–5 business days. Walk through included. No obligation after.
+After reviewing {website_or_link}, I noticed {specific_observation}. There may also be an opportunity to improve {relevant_issue}.
 
-Worth 15 minutes to see if it fits?
+I am opening five introductory Trust & Discoverability Mini Audit spots for qualified Central Massachusetts founders at $199, subject to availability. The audit reviews a homepage or main landing page plus one primary social profile and provides a written review, prioritized 30-day action plan, recorded walkthrough, and follow-up Q&A. The standard price is $350.
 
-[Your name]
-```
+Full details are available at https://sklarzcreative.com/audit/. If it is relevant, reply with the page and profile you would want reviewed and I will confirm fit.
 
----
+Best,
 
-## Template C: Wellness, Health-Adjacent, Purpose-Driven Brands
+Cassandra
 
-**Subject line options:**
-- Quick question about your credibility positioning
-- Making science-informed [practice/brand] trustworthy online
-- [First Name] + clarity
+## Follow-up sequence
 
----
+Use this sequence only for individually researched cold prospects. Stop immediately after a reply or opt-out.
 
-**Email:**
+### Day 0: Initial outreach
 
-```
-Hi [First Name],
+Send the most relevant version above. Record the exact observation and issue in the prospect tracker before sending.
 
-I work with wellness, health-adjacent, and purpose-driven brands on a specific problem: how to be credible online when people need to trust you before they'll work with you.
+### Day 3: Useful reminder
 
-I looked at [Business Name]'s positioning—and I see the real expertise there. But I also notice [one specific issue: "the evidence is hard to find," "it's not clear what makes this different from trends," "proof of results gets buried," "messaging changes depending on where people find you," etc.].
+**Subject:** Re: A focused question about {company}
 
-When credibility is your business, that inconsistency costs you. Good clients pass by because they're not sure.
+Hi {first_name},
 
-I built an audit for this exact situation: $199, focused, practical. It reviews your website, one social profile, and your positioning across clarity, consistency, credibility, connection, and discoverability.
+Following up in case my note was buried. The specific point I noticed was {relevant_issue}.
 
-You get: a written review, prioritized 30-day action plan, a walkthrough, and a follow-up Q&A.
+Even if an audit is not the right next step, it may be worth checking whether a first-time visitor can understand the offer, find credible proof, and identify the next action without additional context.
 
-3–5 business days. No rebrand or retainer required.
+The Mini Audit scope is here if you want to review it: https://sklarzcreative.com/audit/
 
-Given the work you're doing, I think it would be useful. Want to talk through it?
+Best,
 
-[Your name]
-```
+Cassandra
 
----
+### Day 7: Close the loop
 
-## Tips for Using These
+**Subject:** Closing the loop on {company}
 
-### Personalization Fields (Required)
-- `[First Name]` – Use their actual name
-- `[Business Name]` – Their company or practice name
-- `[one specific observation]` – You must look at their site/profile and note something real (not generic)
-- `[one specific fixable problem]` – Same—what's actually broken or unclear
+Hi {first_name},
 
-### Where to Find Personalization Details
-- Homepage/about page
-- LinkedIn profile or company page
-- Google Business Profile
-- Primary social channel (Instagram, Facebook, LinkedIn)
-- Look for: messaging clarity, proof/credentials visibility, consistency across channels, calls to action
+I will close the loop after this note. I reached out because {specific_observation}, and I thought a focused review of {relevant_issue} could be useful.
 
-### Subject Line Strategy
-- **Avoid:** "I can help your business," "Quick question," "Opportunity"
-- **Use:** Their name, a real observation, a specific problem they have
-- **Test:** Rotate between the three options per template to see what gets opened
+If the timing changes, the Mini Audit details will remain here: https://sklarzcreative.com/audit/
 
-### Send Timing
-- **Best days:** Tuesday–Thursday
-- **Best times:** 8–10am or 5–7pm (early morning or end of business day)
-- **Volume:** 5–8 per day max to maintain personalization
+No need to reply if it is not a priority right now.
 
-### Conversion Expectations
-- **Open rate:** 25–40% (depends on subject line quality)
-- **Reply rate:** 5–15% (depends on personalization quality)
-- **Sales rate:** 30–60% of replies book audits
+Best,
 
-### Red Flags to Avoid
-- Don't send generic emails (they'll know)
-- Don't oversell the audit (it's $199–$350, not a strategy engagement)
-- Don't imply the audit leads to bigger work (it does, but that's their discovery)
-- Don't use templates as-is (personalization is non-negotiable)
+Cassandra
 
----
+## Prospect qualification
 
-## What Happens After They Reply
+Prioritize prospects that meet at least three of these conditions:
 
-**If they're interested:**
-- Direct them to: `sklarzcreative.com/audit`
-- Or: Send a Calendly link for a 15-minute fit check
-- Or: Offer the $199 introductory rate directly if they're a Central MA founder
+- Founder-led or expert-led business
+- Website and one active social profile are publicly reviewable
+- A specific clarity, consistency, credibility, connection, conversion, or discoverability issue is observable
+- The offer depends heavily on trust or expert authority
+- A decision-maker can be identified
+- The business appears active and able to act on recommendations
+- Central Massachusetts location, when considering the $199 offer
 
-**If they ask about bigger work:**
-- "Let's start with the audit so you know exactly what needs to move. Then we can talk about scope and timeline for implementation."
+Do not contact a prospect until `{specific_observation}` and `{relevant_issue}` are completed with evidence-based notes.
 
-**If they don't reply by Day 3:**
-- Send the follow-up sequence (below)
+## Workflow
+
+1. **Research:** Capture the business, decision-maker, source, website, social profile, and evidence.
+2. **Qualify:** Score fit and confirm whether the local founder rate applies.
+3. **Draft:** Select one channel and personalize it. Do not send the same pitch through multiple channels at once.
+4. **Review:** Verify every claim and link before sending.
+5. **Send:** Record the date, channel, exact template version, and next action.
+6. **Follow up:** Day 3 and Day 7 only. Stop after a reply, opt-out, or final follow-up.
+7. **Close or convert:** Record outcome, quoted price, and any agreed next step.
+
+## Status values
+
+Use: `Researching`, `Qualified`, `Ready for review`, `Approved to send`, `Sent`, `Follow-up 1`, `Follow-up 2`, `Replied`, `Call booked`, `Audit sold`, `Not now`, `Not a fit`, or `Do not contact`.
+
+No outreach should be sent without Cassandra's review and approval.
