@@ -2,6 +2,7 @@
 import argparse
 import json
 import sys
+from pathlib import Path
 
 from . import (autopilot, canonical, config, doctor as doc, package,
                reconcile, routing, runner, state as st, vectorbuild, workspace)
@@ -198,6 +199,39 @@ def cmd_preview_diagram(a):
     return 0
 
 
+def cmd_ingest_artwork(a):
+    """Check artwork drawn outside the pipeline and admit it for review."""
+    from . import intake
+    try:
+        intake.ingest(a.figure_id, a.file, record_path=a.record,
+                      drawn_by=a.drawn_by)
+    except intake.IntakeRefused as e:
+        print(f"REFUSED: {e}", file=sys.stderr)
+        return 5
+    print("\nAdmitted for review. This is NOT an approval: the artwork sits at "
+          "CANDIDATE_READY\nand its only onward step is OA_REVIEW.")
+    return 0
+
+
+def cmd_check_artwork(a):
+    """Run the intake checks without admitting anything. Read-only."""
+    from . import intake
+    figures = canonical.load_figures()
+    if a.figure_id not in figures:
+        print(f"ERROR: {a.figure_id} is not in the canonical tracker",
+              file=sys.stderr)
+        return 4
+    fig = figures[a.figure_id]
+    record = Path(a.record).read_text(errors="replace") if a.record else ""
+    findings = intake.inspect(a.file, fig, routing.Router().route(fig), record)
+    for f in findings:
+        print(f"  [{f.level}] {f.code}: {f.detail}")
+    fails = sum(1 for f in findings if f.level == "FAIL")
+    warns = sum(1 for f in findings if f.level == "WARN")
+    print(f"\n{len(findings)} finding(s): {fails} blocking, {warns} advisory")
+    return 1 if fails else 0
+
+
 def cmd_fetch_chem(a):
     """Fetch a structure from PubChem into the verified registry (needs network)."""
     import json as _json
@@ -379,6 +413,21 @@ def build_parser():
     pv = sub.add_parser("preview-diagram", help="render a spec for review (draft banner)")
     pv.add_argument("figure_id"); pv.add_argument("--width", default=1400)
     pv.add_argument("--height", default=800); pv.set_defaults(fn=cmd_preview_diagram)
+
+    ia = sub.add_parser("ingest-artwork",
+                        help="check externally drawn artwork and admit it for review")
+    ia.add_argument("figure_id")
+    ia.add_argument("--file", required=True, help="artwork file (.svg or raster)")
+    ia.add_argument("--record", help="the illustrator's decision record (text file)")
+    ia.add_argument("--drawn-by", default="external", dest="drawn_by")
+    ia.set_defaults(fn=cmd_ingest_artwork)
+
+    ca = sub.add_parser("check-artwork",
+                        help="run the intake checks read-only, admitting nothing")
+    ca.add_argument("figure_id")
+    ca.add_argument("--file", required=True)
+    ca.add_argument("--record")
+    ca.set_defaults(fn=cmd_check_artwork)
 
     fc = sub.add_parser("fetch-chem", help="add a structure from PubChem to the registry")
     fc.add_argument("name"); fc.add_argument("--cid", required=True)
