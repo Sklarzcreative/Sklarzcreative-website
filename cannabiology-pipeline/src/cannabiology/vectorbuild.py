@@ -35,13 +35,56 @@ def label_coverage(required, artwork_texts):
     overlay. Deciding this by inspection, rather than by route, keeps the
     tracker's label list authoritative either way.
     """
-    haystack = " | ".join(_norm(t) for t in artwork_texts)
+    haystack = " | ".join(_fold(t) for t in artwork_texts)
     covered, missing = [], []
     for label in required:
-        parts = [p for p in re.split(r"[/,]", label) if p.strip()]
-        hit = any(_norm(p) and _norm(p) in haystack for p in parts)
-        (covered if hit else missing).append(label)
+        (covered if _label_present(label, haystack) else missing).append(label)
     return covered, missing
+
+
+# A slash-separated label is split so that "cannabinoids/terpenes" matches
+# artwork printing either. The danger is a fragment so short it matches almost
+# any text: "Gi/o" was reported covered because of the bare letter "o". A label
+# wrongly called covered never gets overlaid, so it silently vanishes from the
+# finished figure - the worse direction of the two.
+#
+# Whole-word matching is what fixes that: a standalone "o" does not appear in
+# real artwork text. A blunt character minimum was tried first and was wrong -
+# it rejected "QC/analytical testing", where "QC" is two characters and is
+# genuinely drawn.
+def _fold(t):
+    """Normalise, then fold plurals so a singular label matches plural artwork.
+
+    The tracker writes "randomized controlled trial"; the artwork draws
+    "Randomized Controlled Trials". Those are the same label.
+    """
+    out = []
+    for w in _norm(t).split():
+        if w.endswith("yses"):            # analyses -> analysis
+            w = w[:-4] + "ysis"
+        if w.endswith("ies") and len(w) > 4:
+            w = w[:-3] + "y"
+        elif w.endswith("s") and not w.endswith("ss") and len(w) > 3:
+            # Plain -s only. Stripping -es turned "guidelines" into "guidelin"
+            # while the singular "guideline" stayed whole, so they stopped
+            # matching each other.
+            w = w[:-1]
+        out.append(w)
+    return " ".join(out)
+
+
+def _present(needle, haystack):
+    """Whole-word containment, so "cb1" does not match inside "cb10"."""
+    n = _fold(needle)
+    return bool(n) and re.search(rf"(?<![a-z0-9]){re.escape(n)}(?![a-z0-9])",
+                                 haystack) is not None
+
+
+def _label_present(label, haystack):
+    if _present(label, haystack):
+        return True
+    parts = [p for p in re.split(r"[/,;]", label) if p.strip()]
+    return len(parts) > 1 and any(_present(p, haystack) for p in parts)
 
 
 class BuildSpecMissing(RuntimeError):

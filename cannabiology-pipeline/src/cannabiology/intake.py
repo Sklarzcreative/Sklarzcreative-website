@@ -180,6 +180,42 @@ def check_invented_data(svg):
     return out
 
 
+# Phrases that only appear when an illustrator writes a note to the reviewer
+# inside the artwork. Deliberately specific: "production" alone would fire on a
+# production-workflow figure, which is legitimate subject matter.
+COMMENTARY = (
+    "must be overlaid", "manual overlay", "remains manual",
+    "source-verified", "source verified", "source-gated", "source gated",
+    "verified source", "controlling source", "controlling manuscript",
+    "are asserted", "not asserted", "are encoded", "encoded in this figure",
+    "production rule", "science boundary", "evidence boundary",
+    "deterministic", "no claims", "claims are encoded",
+)
+
+
+def check_production_commentary(svg):
+    """Notes to the reviewer, printed inside the artwork.
+
+    The caption-strip check only sees the bottom band. Four of six files in one
+    batch printed editorial text in the artwork body, well clear of that floor -
+    one gave a quarter of the canvas to a panel headed "PRODUCTION / SCIENCE
+    BOUNDARY" listing this pipeline's own rules. None of it fired, and all of it
+    would print in the finished book. Notes belong in the decision record.
+    """
+    out = []
+    for b in svgtext.text_boxes(svg):
+        low = b["text"].lower()
+        for phrase in COMMENTARY:
+            if phrase in low:
+                out.append(_fail(
+                    "text.production_commentary",
+                    f"artwork prints a note to the reviewer at y={b['y']:.0f}: "
+                    f"{b['text'][:90]!r}. Production notes belong in the "
+                    "decision record, not in the figure."))
+                break
+    return out
+
+
 def check_route(figure, decision):
     """A figure on HOLD is waiting on a decision. Drawing it does not settle it."""
     out = []
@@ -214,6 +250,7 @@ def inspect(path, figure, decision, record_text, footer_reserve=96):
             if decision.route in WORDLESS_ROUTES:
                 findings += check_asserted_text(svg, figure.manual_labels)
             findings += check_invented_data(svg)
+            findings += check_production_commentary(svg)
         except svgtext.MalformedSVG as e:
             findings.append(_fail("file.malformed", str(e)))
     elif suffix in RASTER_SUFFIXES:

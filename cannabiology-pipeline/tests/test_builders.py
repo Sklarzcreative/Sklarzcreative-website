@@ -827,3 +827,40 @@ class TestNodeTextFitsItsBox(WorkspaceTest):
             self.assertLessEqual(
                 w, diagram.NODE_W,
                 f"{body!r} measures {w:.0f}px inside a {diagram.NODE_W}px box")
+
+
+class TestLabelFragmentMatching(WorkspaceTest):
+    """A label wrongly reported covered never gets overlaid, and vanishes.
+
+    That is the dangerous direction, so short fragments must not match.
+    """
+
+    ART = ["Presynaptic terminal", "Postsynaptic neuron", "CB1 receptor"]
+
+    def test_one_letter_fragment_does_not_count_as_covered(self):
+        from cannabiology.vectorbuild import label_coverage
+        covered, missing = label_coverage(["Gi/o"], self.ART)
+        self.assertEqual(covered, [])
+        self.assertEqual(missing, ["Gi/o"])
+
+    def test_substantial_fragments_still_match_either_side(self):
+        from cannabiology.vectorbuild import label_coverage
+        covered, _ = label_coverage(
+            ["cannabinoids/terpenes"], ["Terpenes and volatiles"])
+        self.assertEqual(covered, ["cannabinoids/terpenes"])
+
+    def test_a_short_whole_label_still_matches_itself(self):
+        """The minimum applies to fragments, not to the label as written."""
+        from cannabiology.vectorbuild import label_coverage
+        covered, _ = label_coverage(["CB1"], self.ART)
+        self.assertEqual(covered, ["CB1"])
+
+    def test_matching_is_whole_word(self):
+        from cannabiology.vectorbuild import label_coverage
+        _, missing = label_coverage(["CB1"], ["CB10 variant only"])
+        self.assertEqual(missing, ["CB1"])
+
+    def test_absent_label_is_still_reported_missing(self):
+        from cannabiology.vectorbuild import label_coverage
+        _, missing = label_coverage(["MAGL/FAAH", "AEA"], self.ART)
+        self.assertEqual(sorted(missing), ["AEA", "MAGL/FAAH"])

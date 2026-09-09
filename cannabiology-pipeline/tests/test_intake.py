@@ -302,3 +302,30 @@ class TestAssertedTextIsScopedToWordlessRoutes(WorkspaceTest):
         path = self._svg_path(text("cannabinoids"), name="art2.svg")
         codes = [f.code for f in intake.inspect(path, fig, dec, GOOD_RECORD)]
         self.assertIn("text.asserted_label", codes)
+
+
+class TestProductionCommentary(WorkspaceTest):
+    """Notes to the reviewer, printed inside the artwork, would ship."""
+
+    def test_a_production_note_in_the_body_is_caught(self):
+        from cannabiology import intake
+        art = svg(text("PRODUCTION RULE", y=600),
+                  text("No causal gene names until supported by the "
+                       "controlling source.", y=630))
+        codes = [f.code for f in intake.check_production_commentary(art)]
+        self.assertEqual(codes.count("text.production_commentary"), 2)
+
+    def test_it_sees_notes_above_the_caption_strip(self):
+        """The caption-strip check only looks at the bottom band."""
+        from cannabiology import intake
+        art = svg(text("Exact labels must be overlaid from the verified "
+                       "pangenome source.", y=200))
+        self.assertTrue(intake.check_production_commentary(art))
+        self.assertEqual(intake.check_geometry(art), [])
+
+    def test_ordinary_figure_text_is_not_commentary(self):
+        from cannabiology import intake
+        art = svg(text("Extraction vessel", y=300),
+                  text("Production workflow", y=340),
+                  text("Regulatory review", y=380))
+        self.assertEqual(intake.check_production_commentary(art), [])
