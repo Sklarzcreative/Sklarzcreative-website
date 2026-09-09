@@ -23,6 +23,13 @@ venv/
 __pycache__/
 *.pyc
 
+# Node local environment. The site is plain static files with no build step, so
+# an installed tree here is always local tooling - a headless browser used to
+# check layout, say - and never something the site is served from.
+node_modules/
+npm-debug.log*
+yarn-error.log*
+
 # OS / editor noise
 .DS_Store
 Thumbs.db
