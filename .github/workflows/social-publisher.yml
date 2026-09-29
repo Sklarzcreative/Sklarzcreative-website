@@ -104,7 +104,12 @@ jobs:
           SHEET_ID: 1DQ_2ThldqZjh_rqMSh8LkzZeUFZaCr5PtRZBgmbggbk
           WORKSHEET_NAME: MAKE - Publish Queue
           GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
-        run: python -m social_publisher.main --dry-run
+        run: |
+          if [ -z "$GOOGLE_SERVICE_ACCOUNT_JSON" ]; then
+            echo "Google publisher credential not configured; GitHub publisher remains safely dormant."
+            exit 0
+          fi
+          python -m social_publisher.main --dry-run
 
   publish:
     if: >-
