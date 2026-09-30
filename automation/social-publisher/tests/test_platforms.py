@@ -112,3 +112,53 @@ def test_linkedin_status_poll_allows_write_only_member_token(monkeypatch):
         lambda *args, **kwargs: FakeResponse(403),
     )
     platforms._wait_for_linkedin_image("urn:li:image:abc", "secret", "202608")
+
+
+@pytest.mark.parametrize(
+    "configured",
+    ["@sklarz.bsky.social", "sklarz.bsky.social", "  @sklarz.bsky.social  "],
+)
+def test_bluesky_handle_accepts_the_displayed_at_prefix(monkeypatch, configured):
+    """Bluesky displays @handle, but createSession needs the bare form.
+
+    The @ is what gets copied off the profile page. Left in place it fails
+    authentication and also corrupts the post URL written back to the Sheet.
+    """
+    calls = []
+
+    def fake_post(url, **kwargs):
+        calls.append((url, kwargs))
+        if "createSession" in url:
+            return FakeResponse(200, {"accessJwt": "jwt", "did": "did:plc:abc"})
+        return FakeResponse(200, {"uri": "at://did:plc:abc/app.bsky.feed.post/rkey123"})
+
+    monkeypatch.setenv("BLUESKY_HANDLE", configured)
+    monkeypatch.setenv("BLUESKY_APP_PASSWORD", "aaaa-bbbb-cccc-dddd")
+    monkeypatch.setattr(platforms.requests, "post", fake_post)
+
+    published_url = platforms.publish_bluesky(
+        QueueRow(2, {"Publish ID": "BS-1", "Platform": "Bluesky", "Copy": "Hello"})
+    )
+
+    session_body = calls[0][1]["json"]
+    assert session_body["identifier"] == "sklarz.bsky.social"
+    assert published_url == "https://bsky.app/profile/sklarz.bsky.social/post/rkey123"
+
+
+def test_bluesky_posts_the_copy_verbatim(monkeypatch):
+    """The record text must be exactly the Copy cell, with no decoration."""
+
+    def fake_post(url, **kwargs):
+        if "createSession" in url:
+            return FakeResponse(200, {"accessJwt": "jwt", "did": "did:plc:abc"})
+        assert kwargs["json"]["record"]["text"] == "Exact copy from the Sheet."
+        assert kwargs["json"]["collection"] == "app.bsky.feed.post"
+        return FakeResponse(200, {"uri": "at://did:plc:abc/app.bsky.feed.post/r1"})
+
+    monkeypatch.setenv("BLUESKY_HANDLE", "sklarz.bsky.social")
+    monkeypatch.setenv("BLUESKY_APP_PASSWORD", "aaaa-bbbb-cccc-dddd")
+    monkeypatch.setattr(platforms.requests, "post", fake_post)
+
+    platforms.publish_bluesky(
+        QueueRow(2, {"Publish ID": "BS-2", "Platform": "Bluesky", "Copy": "Exact copy from the Sheet."})
+    )
