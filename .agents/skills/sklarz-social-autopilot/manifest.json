@@ -1,0 +1,46 @@
+{
+  "name": "Sklarz Social Autopilot",
+  "version": "0.2.0",
+  "updated": "2026-10-01",
+  "entrypoint": "SKILL.md",
+  "route_registry": "config/publishing-routes.json",
+  "timezone": "America/New_York",
+  "existing_weekly_task": {
+    "id": "6abbf3fa6f5481919b69ed1ac1cbeaa6",
+    "owner": "existing ChatGPT task",
+    "create_another": false
+  },
+  "canonical_sheet_id": "1DQ_2ThldqZjh_rqMSh8LkzZeUFZaCr5PtRZBgmbggbk",
+  "legacy_worksheet": {
+    "name": "MAKE - Publish Queue",
+    "role": "dormant direct-publisher queue and history; preserve HOLD rows"
+  },
+  "project_record": "https://trello.com/c/33kgSmqq/19-autonomous-social-engine-sklarz-creative-our-family-story",
+  "brands": [
+    "sklarz-creative",
+    "curves-ahead",
+    "our-family-story"
+  ],
+  "excluded_brands": [
+    "cannamatrix"
+  ],
+  "approval_policy": "policies/APPROVAL_RULES.md",
+  "skills": [
+    "01-content-director",
+    "02-brand-router",
+    "03-post-writer",
+    "04-quality-grader",
+    "05-repurpose",
+    "06-hook-library",
+    "07-visual-director",
+    "08-publisher"
+  ],
+  "direct_publisher": {
+    "repo": "Sklarzcreative/Sklarzcreative-website",
+    "path": "automation/social-publisher",
+    "state": "dormant"
+  },
+  "make_state": "inactive",
+  "contains_credentials": false,
+  "background_buffer_access": "unverified; requires evidence from actual task execution"
+}

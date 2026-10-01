@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "timezone": "America/New_York",
+  "routes": [
+    {
+      "destination": "sklarz-creative/facebook",
+      "primary_publisher": "metricool",
+      "brand_id": "6721661",
+      "requires_suitable_approved_media": false
+    },
+    {
+      "destination": "sklarz-creative/instagram",
+      "primary_publisher": "metricool",
+      "brand_id": "6721661",
+      "requires_suitable_approved_media": false
+    },
+    {
+      "destination": "sklarz-creative/threads",
+      "primary_publisher": "metricool",
+      "brand_id": "6721661",
+      "requires_suitable_approved_media": false
+    },
+    {
+      "destination": "sklarz-creative/pinterest",
+      "primary_publisher": "metricool",
+      "brand_id": "6721661",
+      "requires_suitable_approved_media": false
+    },
+    {
+      "destination": "sklarz-creative/tiktok",
+      "primary_publisher": "metricool",
+      "brand_id": "6721661",
+      "requires_suitable_approved_media": true
+    },
+    {
+      "destination": "sklarz-creative/youtube",
+      "primary_publisher": "metricool",
+      "brand_id": "6721661",
+      "requires_suitable_approved_media": true
+    },
+    {
+      "destination": "cassandra/personal-linkedin",
+      "primary_publisher": "buffer",
+      "organization_id": "6a81282c358dd6921c9dc82b",
+      "channel_id": "6a9a3057065799be46850905"
+    },
+    {
+      "destination": "sklarz-creative/x",
+      "primary_publisher": "buffer",
+      "organization_id": "6a81282c358dd6921c9dc82b",
+      "channel_id": "6abd8e30ea19ca0bde3a8c74"
+    },
+    {
+      "destination": "cassandra/substack-notes",
+      "primary_publisher": "buffer",
+      "organization_id": "6a81282c358dd6921c9dc82b",
+      "channel_id": "6abd8a0bea19ca0bde3a221e"
+    }
+  ],
+  "unassigned_destination_policy": "HOLD; do not choose or activate a fallback automatically",
+  "disabled_publishers": [
+    "direct-python",
+    "make"
+  ],
+  "substack": {
+    "profile_destination": "cassandra/substack-notes",
+    "content_brands": [
+      "curves-ahead",
+      "sklarz-creative",
+      "our-family-story"
+    ],
+    "full_newsletters": "native Substack; not Buffer Notes"
+  },
+  "enforcement": "Declarative contract. Check it and live queues before every scheduling operation; not installed as a provider-side lock."
+}
