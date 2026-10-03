@@ -1,0 +1,23 @@
+{
+  "purpose": "Historical identifiers to reconcile, never instructions to create posts",
+  "posts": [
+    {
+      "provider": "buffer",
+      "channel_id": "6abd8a0bea19ca0bde3a221e",
+      "post_id": "6abd9de9f245fa4cd5367d31",
+      "scheduled_at": "2026-09-30T22:23:00-04:00"
+    },
+    {
+      "provider": "buffer",
+      "channel_id": "6abd8e30ea19ca0bde3a8c74",
+      "post_id": "6abd9dd2f245fa4cd5367983",
+      "scheduled_at": "2026-10-01T08:30:00-04:00"
+    },
+    {
+      "provider": "buffer",
+      "channel_id": "6a9a3057065799be46850905",
+      "post_id": "6abd9dd0532e76427a47eb6c",
+      "scheduled_at": "2026-10-01T13:59:00-04:00"
+    }
+  ]
+}
