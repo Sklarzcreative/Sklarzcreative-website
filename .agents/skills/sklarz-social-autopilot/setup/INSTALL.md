@@ -13,13 +13,13 @@ First inspect AGENTS.md/project instructions and the current repository checkout
 - Codex project skill: `<repo>/.agents/skills/sklarz-social-autopilot/`
 - Claude Code project skill: `<repo>/.claude/skills/sklarz-social-autopilot/`
 
-The root SKILL.md has name/description frontmatter for discovery. Nested skills are supporting references, not separately installed scheduled agents. Check the installed client's skill discovery behavior; restart/reload if needed. If discovery is unavailable, explicitly instruct the agent to read the root file. Do not claim installation merely because a ZIP was attached.
+The root SKILL.md has name/description frontmatter for discovery. Supporting workflows use GUIDE.md filenames, so only the root SKILL.md is a discovery entry point. They are referenced instructions, not separately installed scheduled agents. Check the installed client's skill discovery behavior; restart/reload if needed. If discovery is unavailable, explicitly instruct the agent to read the root file. Do not claim installation merely because a ZIP was attached.
 
 Keep one canonical copy/version in the existing repository. If using both clients, point their project instructions at that copy or synchronize a reviewable copy of the same version into the second client's skill directory. Do not maintain divergent policies. Do not commit credential stores, .env files, OAuth callbacks or local runtime receipts containing secrets.
 
 ## Copy/paste handoff after attaching the ZIP
 
-“Use this v0.2.0 Sklarz Social Autopilot pack. Read its root SKILL.md and install the complete folder in this client's project skill directory in the existing Sklarzcreative-website checkout, preserving local changes. Confirm the installed path and whether skill discovery works. Preserve the existing task 6abbf3fa6f5481919b69ed1ac1cbeaa6. Do not create another recurrence, activate Python/Make, change routes or schedule posts merely to test installation. Verify required provider access with harmless reads in this environment; report unavailable access without requesting secret values. Do not assume interactive access proves unattended execution.”
+“Use this v0.2.1 Sklarz Social Autopilot pack. Read its root SKILL.md and install the complete folder in this client's project skill directory in the existing Sklarzcreative-website checkout, preserving local changes. Confirm the installed path and whether skill discovery works. Preserve the existing task 6abbf3fa6f5481919b69ed1ac1cbeaa6. Do not create another recurrence, activate Python/Make, change routes or schedule posts merely to test installation. Verify required provider access with harmless reads in this environment; report unavailable access without requesting secret values. Do not assume interactive access proves unattended execution.”
 
 ## Validation and authentication
 

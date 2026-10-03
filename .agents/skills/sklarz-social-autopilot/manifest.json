@@ -1,6 +1,6 @@
 {
   "name": "Sklarz Social Autopilot",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "updated": "2026-10-01",
   "entrypoint": "SKILL.md",
   "route_registry": "config/publishing-routes.json",
@@ -42,5 +42,15 @@
   },
   "make_state": "inactive",
   "contains_credentials": false,
-  "background_buffer_access": "unverified; requires evidence from actual task execution"
+  "background_buffer_access": "unverified; requires evidence from actual task execution",
+  "workflow_guides": {
+    "01-content-director": "skills/01-content-director/GUIDE.md",
+    "02-brand-router": "skills/02-brand-router/GUIDE.md",
+    "03-post-writer": "skills/03-post-writer/GUIDE.md",
+    "04-quality-grader": "skills/04-quality-grader/GUIDE.md",
+    "05-repurpose": "skills/05-repurpose/GUIDE.md",
+    "06-hook-library": "skills/06-hook-library/GUIDE.md",
+    "07-visual-director": "skills/07-visual-director/GUIDE.md",
+    "08-publisher": "skills/08-publisher/GUIDE.md"
+  }
 }

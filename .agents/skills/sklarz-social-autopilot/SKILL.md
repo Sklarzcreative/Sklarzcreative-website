@@ -9,7 +9,7 @@ This is the entry point for the entire pack. Supporting skills are referenced wo
 
 Read `manifest.json`, `config/publishing-routes.json`, `policies/APPROVAL_RULES.md`, `policies/PUBLISHING_CONTRACT.md` and `policies/WEEKLY_RUNBOOK.md` before scheduling. Follow the user's current instructions over older project documents. Report actual tool results, not inferred completion.
 
-Use `skills/01-content-director/SKILL.md` for the content workflow. It selects brand guidance and invokes the writer, repurposer, visual and quality instructions as needed. Read `policies/FACT_CHECKING.md` for factual claims. All final derivatives need review after adaptation.
+Use `skills/01-content-director/GUIDE.md` for the content workflow. It selects brand guidance and invokes the writer, repurposer, visual and quality instructions as needed. Read `policies/FACT_CHECKING.md` for factual claims. All final derivatives need review after adaptation.
 
 The existing weekly task is Sklarz Social Autopilot, ID `6abbf3fa6f5481919b69ed1ac1cbeaa6`, Tuesday approximately 3 PM America/New_York. Preserve it. Installing or invoking this skill does not create a schedule or authorize a second background loop.
 

@@ -1,3 +1,9 @@
+# 0.2.1 — October 1, 2026
+
+- Renamed eight supporting SKILL.md files to GUIDE.md and updated references, leaving a single discoverable skill entry point.
+- Added explicit supporting-guide paths to the manifest.
+- Recorded pre-merge QA and the environment limitation preventing runtime discovery verification.
+
 # 0.2.0 — October 1, 2026
 
 - Replaced legacy direct-publisher architecture with current Metricool/Buffer route ownership; preserved dormant publisher and HOLD protections.

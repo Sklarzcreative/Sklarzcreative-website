@@ -1,4 +1,4 @@
-# Sklarz Social Autopilot 0.2.0
+# Sklarz Social Autopilot 0.2.1
 
 Prepared October 1, 2026 from Cass's current instructions. Continues the existing system without adding a paid service or another scheduler. Start with `SKILL.md`; installation directions are in `setup/INSTALL.md`.
 
